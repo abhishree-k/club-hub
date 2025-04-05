@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | DSCEClubs</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="stars-background"></div>
+    
+    <nav class="cosmic-nav">
+        <div class="nav-logo">
+            <span class="logo-icon">🌌</span>
+            <span class="logo-text">DSCEClubs</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html" class="active">Live & Upcoming Events</a></li>
+            <li><a href="past-events.html">Past Events</a></li>
+            <li><a href="registration.html">Registration</a></li>
+            <li><a href="admin-login.html">Admin</a></li>
+        </ul>
+        <div class="nav-hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+    </nav>
+
+    <header class="events-hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Upcoming <span class="text-gradient">Events</span></h1>
+            <p class="hero-subtitle">Discover, participate, and create memories</p>
+        </div>
+    </header>
+
+    <main class="events-main">
+        <section class="calendar-section">
+            <div class="calendar-controls">
+                <button id="prev-month" class="calendar-nav"><i class="fas fa-chevron-left"></i></button>
+                <h2 id="current-month" class="section-title">October 2025</h2>
+                <button id="next-month" class="calendar-nav"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="calendar-grid">
+                <div class="calendar-header">Sun</div>
+                <div class="calendar-header">Mon</div>
+                <div class="calendar-header">Tue</div>
+                <div class="calendar-header">Wed</div>
+                <div class="calendar-header">Thu</div>
+                <div class="calendar-header">Fri</div>
+                <div class="calendar-header">Sat</div>
+                
+                <!-- Calendar days will be populated by JavaScript -->
+            </div>
+            
+            <div class="calendar-legend">
+                <div class="legend-item">
+                    <span class="legend-color tech"></span>
+                    <span>Tech Society- POINT BLANK</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color arts"></span>
+                    <span>Creative Arts- AALEKA</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color debate"></span>
+                    <span>Debate Club- LITSOC</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color music"></span>
+                    <span>Music Society</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color sports"></span>
+                    <span>Sports Club</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color science"></span>
+                    <span>Dnace Club- ABCD</span>
+                </div>
+            </div>
+        </section>
+        
+        <section class="event-details-section">
+            <h2 class="section-title">Event <span class="text-gradient">Details</span></h2>
+            <div id="event-details-container">
+                <div class="no-event-selected">
+                    <i class="fas fa-calendar-alt"></i>
+                    <p>Select an event from the calendar to view details</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="event-actions">
+            <a href="past-events.html" class="action-button">
+                <i class="fas fa-history"></i>
+                <span>Past Events</span>
+            </a>
+            <a href="feedback.html" class="action-button">
+                <i class="fas fa-comment-alt"></i>
+                <span>Event Feedback</span>
+            </a>
+        </section>
+    </main>
+
+    <footer class="cosmic-footer">
+        <!-- Same footer as index.html -->
+    </footer>
+
+    <!-- Event Modal (hidden by default) -->
+    <div id="event-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">Add New Event</h2>
+            <form id="event-form">
+                <div class="form-group">
+                    <label for="event-name">Event Name</label>
+                    <input type="text" id="event-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-club">Club</label>
+                    <select id="event-club" required>
+                        <option value="">Select Club</option>
+                        <option value="tech">Tech Society</option>
+                        <option value="arts">Creative Arts</option>
+                        <option value="debate">Debate Club</option>
+                        <option value="music">Music Society</option>
+                        <option value="sports">Sports Club</option>
+                        <option value="science">Dance Club</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="event-date">Date</label>
+                    <input type="date" id="event-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-time">Time</label>
+                    <input type="time" id="event-time" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-location">Location</label>
+                    <input type="text" id="event-location" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-description">Description</label>
+                    <textarea id="event-description" rows="4" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" id="save-event" class="modal-button">Save Event</button>
+                    <button type="button" id="delete-event" class="modal-button danger">Delete Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

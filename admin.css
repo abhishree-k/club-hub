@@ -470,7 +470,6 @@
     color: var(--accent-color);
 }
 
-/* Responsive Styles */
 @media (max-width: 1200px) {
     .admin-sidebar {
         width: 240px;

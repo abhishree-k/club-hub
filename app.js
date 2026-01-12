@@ -175,8 +175,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-});
-document.addEventListener('DOMContentLoaded', function() {
     // Calendar functionality
     const calendarGrid = document.querySelector('.calendar-grid');
     const currentMonthElement = document.getElementById('current-month');
@@ -519,139 +517,11 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
     }
-});
-document.addEventListener('DOMContentLoaded', function() {
-    // Admin login functionality
-    const adminLoginForm = document.getElementById('admin-login-form');
     
-    if (adminLoginForm) {
-        adminLoginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('admin-username').value;
-            const password = document.getElementById('admin-password').value;
-            
-            // In a real app, this would be a server-side check
-            if (username === 'admin' && password === 'admin123') {
-                // Store login state (in a real app, use proper session management)
-                localStorage.setItem('adminLoggedIn', 'true');
-                window.location.href = 'admin-dashboard.html';
-            } else {
-                alert('Invalid credentials. Please try again.');
-            }
-        });
-    }
+
     
-    // Check admin login state for dashboard
-    const adminDashboard = document.getElementById('admin-dashboard');
     
-    if (adminDashboard) {
-        const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-        
-        if (!isLoggedIn) {
-            window.location.href = 'admin-login.html';
-        } else {
-            // Load admin dashboard content
-            loadAdminDashboard();
-            
-            // Logout button
-            const logoutButton = document.getElementById('admin-logout');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', function() {
-                    localStorage.removeItem('adminLoggedIn');
-                    window.location.href = 'admin-login.html';
-                });
-            }
-        }
-    }
     
-    // Load admin dashboard content
-    function loadAdminDashboard() {
-        // In a real app, this would fetch data from a server
-        const registrations = [
-            { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
-            { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' },
-            { id: 3, name: 'Alex Johnson', email: 'alex@example.com', studentId: 'S12347', clubs: ['sports', 'science'], registeredAt: '2023-10-17' }
-        ];
-        
-        const eventRegistrations = [
-            { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' },
-            { id: 2, eventId: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', registeredAt: '2023-10-19' },
-            { id: 3, eventId: 1, name: 'Alex Johnson', email: 'alex@example.com', studentId: 'S12347', registeredAt: '2023-10-20' }
-        ];
-        
-        // Render registrations table
-        const registrationsTable = document.getElementById('registrations-table');
-        if (registrationsTable) {
-            registrations.forEach(reg => {
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td>${reg.id}</td>
-                    <td>${reg.name}</td>
-                    <td>${reg.email}</td>
-                    <td>${reg.studentId}</td>
-                    <td>${reg.clubs.map(club => getClubName(club)).join(', ')}</td>
-                    <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
-                    <td>
-                        <button class="admin-action view" data-id="${reg.id}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="admin-action delete" data-id="${reg.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                
-                registrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
-        
-        // Render event registrations table
-        const eventRegistrationsTable = document.getElementById('event-registrations-table');
-        if (eventRegistrationsTable) {
-            eventRegistrations.forEach(reg => {
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td>${reg.id}</td>
-                    <td>${getEventName(reg.eventId)}</td>
-                    <td>${reg.name}</td>
-                    <td>${reg.email}</td>
-                    <td>${reg.studentId}</td>
-                    <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
-                    <td>
-                        <button class="admin-action view" data-id="${reg.id}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="admin-action delete" data-id="${reg.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                
-                eventRegistrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
-        
-        // Add event listeners to action buttons
-        document.querySelectorAll('.admin-action.view').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                alert(`View details for registration ${id}`);
-            });
-        });
-        
-        document.querySelectorAll('.admin-action.delete').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                if (confirm('Are you sure you want to delete this registration?')) {
-                    alert(`Registration ${id} deleted`);
-                    // In real app, would make API call to delete
-                }
-            });
-        });
-    }
     
     // Helper function to get club name
     function getClubName(clubId) {
@@ -720,8 +590,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.reset();
         });
     }
-});
-document.addEventListener('DOMContentLoaded', function() {
     // Animate elements when they come into view
     const animateOnScroll = function() {
         const elements = document.querySelectorAll('.club-card, .section-title, .hero-content');
@@ -858,93 +726,14 @@ document.addEventListener('DOMContentLoaded', function() {
             heroSection.style.backgroundPositionY = `${scrollPosition * 0.5}px`;
         });
     }
-});
-// Admin Login Page Specific Code
-document.addEventListener('DOMContentLoaded', function() {
-    // Toggle password visibility
-    const togglePassword = document.querySelector('.toggle-password');
-    const passwordInput = document.getElementById('admin-password');
-    
-    if (togglePassword && passwordInput) {
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-        });
-    }
-    
-    // Form submission
-    const loginForm = document.getElementById('admin-login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('admin-username').value;
-            const password = document.getElementById('admin-password').value;
-            const rememberMe = document.getElementById('remember-me').checked;
-            
-            // Simple validation
-            if (!username || !password) {
-                alert('Please enter both username and password');
-                return;
-            }
-            
-            // In a real application, you would make an AJAX call to your server here
-            // This is just a simulation
-            if (username === 'admin' && password === 'admin123') {
-                // Store login state (in a real app, use proper session management)
-                if (rememberMe) {
-                    localStorage.setItem('adminRemembered', 'true');
-                    localStorage.setItem('adminUsername', username);
-                } else {
-                    localStorage.removeItem('adminRemembered');
-                    localStorage.removeItem('adminUsername');
-                }
-                
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                
-                // Show loading state
-                const loginButton = document.querySelector('.login-button');
-                if (loginButton) {
-                    loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Logging in...</span>';
-                    loginButton.disabled = true;
-                }
-                
-                // Simulate API call delay
-                setTimeout(() => {
-                    window.location.href = 'admin-dashboard.html';
-                }, 1500);
-            } else {
-                alert('Invalid credentials. Please try again.');
-            }
-        });
-    }
-    
-    // Check for remembered username
-    if (localStorage.getItem('adminRemembered') === 'true') {
-        const rememberedUsername = localStorage.getItem('adminUsername');
-        if (rememberedUsername) {
-            document.getElementById('admin-username').value = rememberedUsername;
-            document.getElementById('remember-me').checked = true;
-        }
-    }
-});
-// Timeline animation on scroll
-const timelineItems = document.querySelectorAll('.timeline-item');
 
-function checkTimelineItems() {
-    timelineItems.forEach(item => {
-        const itemTop = item.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        
-        if (itemTop < windowHeight * 0.75) {
-            item.classList.add('visible');
-        }
-    });
+    // ---------- Admin Navbar Link ----------
+const adminLink = document.querySelector('a[href="admin-login.html"]');
+
+if (adminLink && localStorage.getItem('adminLoggedIn') === 'true') {
+    adminLink.textContent = 'Dashboard';
+    adminLink.href = 'admin-dashboard.html';
 }
 
-// Initial check
-checkTimelineItems();
+});
 
-// Check on scroll
-window.addEventListener('scroll', checkTimelineItems);

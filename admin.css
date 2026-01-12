@@ -526,3 +526,122 @@
         padding: 0.8rem 0.5rem;
     }
 }
+
+/* ================= AUTH PAGES (LOGIN & SIGNUP) ================= */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20, 20, 40, 0.9);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Reuse stars background if present */
+.auth-page .stars-background {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+/* Auth Card */
+.auth-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(26, 26, 46, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    padding: 2.5rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Header */
+.auth-container h2 {
+    color: white;
+    font-size: 1.6rem;
+    margin-bottom: 1.8rem;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+}
+
+/* Inputs */
+.auth-container input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.auth-container input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.auth-container input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* Button */
+.auth-container button {
+    width: 100%;
+    padding: 0.9rem;
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-container button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(253, 121, 168, 0.35);
+}
+
+/* Error Message */
+.auth-container .error {
+    color: #ff7675;
+    font-size: 0.85rem;
+    margin-top: 0.6rem;
+    text-align: center;
+}
+
+/* Footer Links */
+.auth-container p {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+}
+
+.auth-container a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-container a:hover {
+    text-decoration: underline;
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 2rem 1.5rem;
+    }
+}

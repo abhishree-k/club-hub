@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Signup | DSCE Clubs</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="auth-page">
+<div class="stars-background"></div>
+
+  <div class="auth-container">
+    <h2>Admin Sign Up</h2>
+
+    <form id="adminSignupForm">
+      <input type="email" id="signupEmail" placeholder="Email" required>
+      <input type="password" id="signupPassword" placeholder="Password" required>
+      <input type="password" id="signupConfirm" placeholder="Confirm Password" required>
+      <button type="submit">Sign Up</button>
+    </form>
+
+    <p id="signupError" class="error"></p>
+    <p><a href="admin-login.html">Back to login</a></p>
+  </div>
+  <script src="auth.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

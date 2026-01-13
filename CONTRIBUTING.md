@@ -91,6 +91,7 @@ When opening a PR, please ensure:
 - Code is well-formatted and readable
 - Documentation is updated where necessary
 - PR description clearly explains what and why
+- Make sure to attach screenshots/snapshots and recordings
 - Incomplete or unclear PRs may require revisions.
 
 ### 8️⃣ Wait for Review

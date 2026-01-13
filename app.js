@@ -345,17 +345,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     )}</span>
                     <span><i class="far fa-clock"></i> ${event.time}</span>
                 </div>
-                <div class="event-location">
-                    <i class="fas fa-map-marker-alt"></i> ${event.location}
-                </div>
+                <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</div>
                 <p class="event-description">${event.description}</p>
                 <div class="event-actions">
-                    <button id="register-for-event" class="action-button">
-                        <i class="fas fa-user-plus"></i> Register
-                    </button>
-                    <button id="share-event" class="action-button">
-                        <i class="fas fa-share-alt"></i> Share
-                    </button>
+                    <button id="register-for-event" class="action-button"><i class="fas fa-user-plus"></i> Register</button>
+                    <button id="share-event" class="action-button"><i class="fas fa-share-alt"></i> Share</button>
                 </div>
             </div>
         `;
@@ -698,14 +692,8 @@ document.addEventListener("DOMContentLoaded", function () {
                       .map((club) => getClubName(club))
                       .join(", ")}</td>
                     <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
-                    <td>
-                        <button class="admin-action view" data-id="${reg.id}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="admin-action delete" data-id="${reg.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
+                    <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+                        <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
                 `;
 
         registrationsTable.querySelector("tbody").appendChild(row);

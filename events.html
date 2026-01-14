@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events | DSCEClubs</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
     <div class="stars-background"></div>
-    
+
     <nav class="cosmic-nav">
         <div class="nav-logo">
             <span class="logo-icon">🌌</span>
@@ -18,10 +22,13 @@
         </div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
-            <li><a href="events.html" class="active">Live & Upcoming Events</a></li>
+            <li><a href="events.html" class="active">Events</a></li>
             <li><a href="past-events.html">Past Events</a></li>
             <li><a href="registration.html">Registration</a></li>
+            <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
             <li><a href="admin-login.html">Admin</a></li>
+            <li id="nav-login"><a href="registration.html#student-login">Login</a></li>
+            <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
         </ul>
         <div class="nav-hamburger">
             <div class="line"></div>
@@ -44,7 +51,7 @@
                 <h2 id="current-month" class="section-title">October 2025</h2>
                 <button id="next-month" class="calendar-nav"><i class="fas fa-chevron-right"></i></button>
             </div>
-            
+
             <div class="calendar-grid">
                 <div class="calendar-header">Sun</div>
                 <div class="calendar-header">Mon</div>
@@ -53,10 +60,10 @@
                 <div class="calendar-header">Thu</div>
                 <div class="calendar-header">Fri</div>
                 <div class="calendar-header">Sat</div>
-                
+
                 <!-- Calendar days will be populated by JavaScript -->
             </div>
-            
+
             <div class="calendar-legend">
                 <div class="legend-item">
                     <span class="legend-color tech"></span>
@@ -84,7 +91,7 @@
                 </div>
             </div>
         </section>
-        
+
         <section class="event-details-section">
             <h2 class="section-title">Event <span class="text-gradient">Details</span></h2>
             <div id="event-details-container">
@@ -94,7 +101,7 @@
                 </div>
             </div>
         </section>
-        
+
         <section class="event-actions">
             <a href="past-events.html" class="action-button">
                 <i class="fas fa-history"></i>
@@ -158,4 +165,5 @@
     </div>
     <script src="app.js"></script>
 </body>
+
 </html>

@@ -1,17 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>College Club Hub</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <script type="text/javascript" src="darkmode.js" defer></script>
+  </head>
+  <body>
     <div class="stars-background"></div>
-    
+
     <nav class="cosmic-nav">
+      <div class="nav-logo">
+        <span class="logo-icon">🌌</span>
+        <span class="logo-text">DSCE CLUBS!!</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="events.html">Live & Upcoming Events</a></li>
+        <li><a href="past-events.html">Past Events</a></li>
+        <li><a href="registration.html">Registration</a></li>
+        <li><a href="admin-login.html">Admin</a></li>
+
+        <!-- button for switch themes -->
+        <button id="theme-switch">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z"
+            />
+          </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Z"
+            />
+          </svg>
+        </button>
+      </ul>
+      <div class="nav-hamburger">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
         <div class="nav-logo">
             <span class="logo-icon">🌌</span>
             <span class="logo-text">DSCE CLUBS!!</span>
@@ -34,155 +83,206 @@
     </nav>
 
     <header class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-title">Explore Your <span class="text-gradient">Passions</span></h1>
-            <p class="hero-subtitle">Join our vibrant community of clubs and societies</p>
-            <a href="#clubs" class="hero-cta">Discover Clubs</a>
-        </div>
-        <div class="hero-planets">
-            <div class="planet planet-1"></div>
-            <div class="planet planet-2"></div>
-            <div class="planet planet-3"></div>
-        </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Explore Your <span class="text-gradient">Passions</span>
+        </h1>
+        <p class="hero-subtitle">
+          Join our vibrant community of clubs and societies
+        </p>
+        <a href="#clubs" class="hero-cta">Discover Clubs</a>
+      </div>
+      <div class="hero-planets">
+        <div class="planet planet-1"></div>
+        <div class="planet planet-2"></div>
+        <div class="planet planet-3"></div>
+      </div>
     </header>
 
     <main>
-        <section id="clubs" class="clubs-section">
-            <h2 class="section-title">Our <span class="text-gradient">Clubs</span></h2>
-            <div class="clubs-grid">
-                <div class="club-card" data-club="tech">
-                    <div class="club-icon">💻</div>
-                    <h3>Tech Society- POINT BLANK </h3>
-                    <p>Innovate, code, and build the future with fellow tech enthusiasts.</p>
-                    <div class="club-tags">
-                        <span>Hackathons</span>
-                        <span>Weekly Hustle</span>
-                        <span>AI/ML</span>
-                        <span>Cyber</span>
-                    </div>
-                </div>
-                
-                <div class="club-card" data-club="arts">
-                    <div class="club-icon">🎨</div>
-                    <h3>Creative Arts-AALEKA</h3>
-                    <p>Express yourself through painting, sculpture, and digital art.</p>
-                    <div class="club-tags">
-                        <span>Exhibitions</span>
-                        <span>Live Demos</span>
-                        <span>Collaborations</span>
-                        <span>Competitionss</span>
-                    </div>
-                </div>
-                
-                <div class="club-card" data-club="debate">
-                    <div class="club-icon">💬</div>
-                    <h3>Debate Club- LITSOC</h3>
-                    <p>Sharpen your rhetoric and critical thinking skills.</p>
-                    <div class="club-tags">
-                        <span>Tournaments</span>
-                        <span>Public Speaking</span>
-                        <span>Model UN</span>
-                    </div>
-                </div>
-                
-                <div class="club-card" data-club="music">
-                    <div class="club-icon">🎵</div>
-                    <h3>Music Society- </h3>
-                    <p>Create, perform, and appreciate music in all its forms.</p>
-                    <div class="club-tags">
-                        <span>Concerts</span>
-                        <span>Jam Sessions</span>
-                        <span>Composition</span>
-                        <span>Shayari</span>
-                    </div>
-                </div>
-                
-                <div class="club-card" data-club="sports">
-                    <div class="club-icon">⚽</div>
-                    <h3>Sports Club</h3>
-                    <p>Stay active and compete in various sports activities.</p>
-                    <div class="club-tags">
-                        <span>Tournaments</span>
-                        <span>Fitness</span>
-                        <span>Team Building</span>
-                    </div>
-                </div>
-                
-                <div class="club-card" data-club="science">
-                    <div class="club-icon">💃</div>
-                    <h3>Dance club- ABCD </h3>
-                    <p>"Let's move to the beat and make memories together!".</p>
-                    <div class="club-tags">
-                        <span>Live Performances</span>
-                        <span>Cine stars meetups</span>
-                        <span>Competitions</span>
-                    </div>
-                </div>
+      <section id="clubs" class="clubs-section">
+        <h2 class="section-title">
+          Our <span class="text-gradient">Clubs</span>
+        </h2>
+        <div class="clubs-grid">
+          <div class="club-card" data-club="tech">
+            <div class="club-icon">💻</div>
+            <h3>Tech Society- POINT BLANK</h3>
+            <p>
+              Innovate, code, and build the future with fellow tech enthusiasts.
+            </p>
+            <div class="club-tags">
+              <span>Hackathons</span>
+              <span>Weekly Hustle</span>
+              <span>AI/ML</span>
+              <span>Cyber</span>
             </div>
-        </section>
+          </div>
 
-        <section class="testimonials-section">
-            <h2 class="section-title">Student <span class="text-gradient">Voices</span></h2>
-            <div class="testimonial-carousel">
-                <div class="testimonial-slide active">
-                    <p>"Joining the Tech Society transformed my college experience. I've learned so much and made lifelong friends!"</p>
-                    <div class="testimonial-author">-ABM, Computer Science</div>
-                </div>
-                <div class="testimonial-slide">
-                    <p>"The Creative Arts club gave me the confidence to showcase my work and connect with other artists."</p>
-                    <div class="testimonial-author">- Jamie, Fine Arts</div>
-                </div>
-                <div class="testimonial-slide">
-                    <p>"Through Debate Club, I've improved my public speaking and critical thinking skills immensely."</p>
-                    <div class="testimonial-author">- Taylor, Political Science</div>
-                </div>
+          <div class="club-card" data-club="arts">
+            <div class="club-icon">🎨</div>
+            <h3>Creative Arts-AALEKA</h3>
+            <p>
+              Express yourself through painting, sculpture, and digital art.
+            </p>
+            <div class="club-tags">
+              <span>Exhibitions</span>
+              <span>Live Demos</span>
+              <span>Collaborations</span>
+              <span>Competitionss</span>
             </div>
-            <div class="carousel-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
+          </div>
+
+          <div class="club-card" data-club="debate">
+            <div class="club-icon">💬</div>
+            <h3>Debate Club- LITSOC</h3>
+            <p>Sharpen your rhetoric and critical thinking skills.</p>
+            <div class="club-tags">
+              <span>Tournaments</span>
+              <span>Public Speaking</span>
+              <span>Model UN</span>
             </div>
-        </section>
+          </div>
+
+          <div class="club-card" data-club="music">
+            <div class="club-icon">🎵</div>
+            <h3>Music Society-</h3>
+            <p>Create, perform, and appreciate music in all its forms.</p>
+            <div class="club-tags">
+              <span>Concerts</span>
+              <span>Jam Sessions</span>
+              <span>Composition</span>
+              <span>Shayari</span>
+            </div>
+          </div>
+
+          <div class="club-card" data-club="sports">
+            <div class="club-icon">⚽</div>
+            <h3>Sports Club</h3>
+            <p>Stay active and compete in various sports activities.</p>
+            <div class="club-tags">
+              <span>Tournaments</span>
+              <span>Fitness</span>
+              <span>Team Building</span>
+            </div>
+          </div>
+
+          <div class="club-card" data-club="science">
+            <div class="club-icon">💃</div>
+            <h3>Dance club- ABCD</h3>
+            <p>"Let's move to the beat and make memories together!".</p>
+            <div class="club-tags">
+              <span>Live Performances</span>
+              <span>Cine stars meetups</span>
+              <span>Competitions</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="testimonials-section">
+        <h2 class="section-title">
+          Student <span class="text-gradient">Voices</span>
+        </h2>
+        <div class="testimonial-carousel">
+          <div class="testimonial-slide active">
+            <p>
+              "Joining the Tech Society transformed my college experience. I've
+              learned so much and made lifelong friends!"
+            </p>
+            <div class="testimonial-author">-ABM, Computer Science</div>
+          </div>
+          <div class="testimonial-slide">
+            <p>
+              "The Creative Arts club gave me the confidence to showcase my work
+              and connect with other artists."
+            </p>
+            <div class="testimonial-author">- Jamie, Fine Arts</div>
+          </div>
+          <div class="testimonial-slide">
+            <p>
+              "Through Debate Club, I've improved my public speaking and
+              critical thinking skills immensely."
+            </p>
+            <div class="testimonial-author">- Taylor, Political Science</div>
+          </div>
+        </div>
+        <div class="carousel-dots">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </section>
+
+      <!-- scroll top button -->
+      <button id="scrollTopBtn" title="Back to Top">
+        <i class="fas fa-chevron-up"></i>
+      </button>
+
+      <!-- scroll translate top button -->
+      <button id="showTranslateBtn" title="Translate Page">
+        <i id="google_translate_element"></i>
+      </button>
     </main>
 
     <footer class="cosmic-footer">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <span class="logo-icon">🌌</span>
-                <span class="logo-text">DSCE</span>
-            </div>
-            <div class="footer-links">
-                <div class="footer-column">
-                    <h4>Explore</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="events.html">Events</a></li>
-                        <li><a href="past-events.html">Past Events</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Get Involved</h4>
-                    <ul>
-                        <li><a href="registration.html">Register</a></li>
-                        <li><a href="#">Volunteer</a></li>
-                        <li><a href="#">Start a Club</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Connect</h4>
-                    <ul>
-                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
-                        <li><a href="#"><i class="fa fa-twitter"></i> Twitter</a></li>
-                        <li><a href="#"><i class='fab fa-discord'></i> Discord</a></li>
-                    </ul>
-                </div>
-            </div>
+      <div class="footer-content">
+        <div class="footer-logo">
+          <span class="logo-icon">🌌</span>
+          <span class="logo-text">DSCE</span>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 ClubsDSCE. All rights reserved.</p>
+        <div class="footer-links">
+          <div class="footer-column">
+            <h4>Explore</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="events.html">Events</a></li>
+              <li><a href="past-events.html">Past Events</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Get Involved</h4>
+            <ul>
+              <li><a href="registration.html">Register</a></li>
+              <li><a href="#">Volunteer</a></li>
+              <li><a href="#">Start a Club</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Connect</h4>
+            <ul>
+              <li>
+                <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+              </li>
+              <li>
+                <a href="#"><i class="fa fa-twitter"></i> Twitter</a>
+              </li>
+              <li>
+                <a href="#"><i class="fab fa-discord"></i> Discord</a>
+              </li>
+            </ul>
+          </div>
         </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 ClubsDSCE. All rights reserved.</p>
+      </div>
     </footer>
 
     <script src="app.js"></script>
-</body>
+
+    <!-- script for swithc the themes -->
+    <script>
+      function themes() {
+        const body = document.body;
+        const currentTheme = body.getAttribute("data-theme");
+
+        if (currentTheme === "dark") {
+          body.setAttribute("data-theme", "light");
+        } else {
+          body.setAttribute("data-theme", "dark");
+        }
+      }
+    </script>
+  </body>
 </html>

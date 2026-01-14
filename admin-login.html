@@ -1,5 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | DSCE Clubs</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script type="text/javascript" src="darkmode.js" defer></script>
+  </head>
+  <body>
+    <div class="stars-background"></div>
+
+    <nav class="cosmic-nav">
+      <div class="nav-logo">
+        <span class="logo-icon">🌌</span>
+        <span class="logo-text">DSCE Clubs</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="events.html">Live & Upcoming Events</a></li>
+        <li><a href="past-events.html">Past Events</a></li>
+        <li><a href="registration.html">Registration</a></li>
+        <li><a href="admin-dashboard.html" class="active">Admin</a></li>
+        <!-- button for switch themes -->
+        <button id="theme-switch">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z"
+            />
+          </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            <path
+              d="M480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Z"
+            />
+          </svg>
+        </button>
+      </ul>
+      <div class="nav-hamburger">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
 
 <head>
     <meta charset="UTF-8">
@@ -39,16 +100,100 @@
     </nav>
 
     <div class="admin-container">
-        <!-- Admin Sidebar -->
-        <aside class="admin-sidebar">
-            <div class="admin-profile">
-                <div class="profile-avatar">
-                    <i class="fas fa-user-shield"></i>
+      <!-- Admin Sidebar -->
+      <aside class="admin-sidebar">
+        <div class="admin-profile">
+          <div class="profile-avatar">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <div class="profile-info">
+            <h3>Admin User</h3>
+            <p>Super Administrator</p>
+          </div>
+        </div>
+
+        <nav class="admin-menu">
+          <ul>
+            <li class="active">
+              <a href="#dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="#events">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Manage Events</span>
+              </a>
+            </li>
+            <li>
+              <a href="#registrations">
+                <i class="fas fa-users"></i>
+                <span>Registrations</span>
+              </a>
+            </li>
+            <li>
+              <a href="#certificates">
+                <i class="fas fa-certificate"></i>
+                <span>E-Certificates</span>
+              </a>
+            </li>
+            <li>
+              <a href="#clubs">
+                <i class="fas fa-chess-rook"></i>
+                <span>Club Management</span>
+              </a>
+            </li>
+            <li>
+              <a href="#settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="admin-logout">
+          <button id="admin-logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="admin-main">
+        <header class="admin-header">
+          <h1>Admin Dashboard</h1>
+          <div class="admin-search">
+            <input type="text" placeholder="Search..." />
+            <button><i class="fas fa-search"></i></button>
+          </div>
+          <div class="admin-notifications">
+            <button class="notification-btn">
+              <i class="fas fa-bell"></i>
+              <span class="notification-badge">3</span>
+            </button>
+          </div>
+        </header>
+
+        <div class="admin-content">
+          <!-- Dashboard Overview -->
+          <section class="dashboard-overview">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-users"></i>
                 </div>
-                <div class="profile-info">
-                    <h3>Admin User</h3>
-                    <p>Super Administrator</p>
+                <div class="stat-info">
+                  <h3>1,248</h3>
+                  <p>Total Members</p>
                 </div>
+
+                <div class="stat-trend up">
+                  <i class="fas fa-arrow-up"></i> 12%
+                </div>
+              </div>
             </div>
 
             <nav class="admin-menu">
@@ -100,20 +245,71 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
-        <main class="admin-main">
-            <header class="admin-header">
-                <h1>Admin Dashboard</h1>
-                <div class="admin-search">
-                    <input type="text" placeholder="Search...">
-                    <button><i class="fas fa-search"></i></button>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-calendar-check"></i>
                 </div>
-                <div class="admin-notifications">
-                    <button class="notification-btn">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge">3</span>
-                    </button>
+                <div class="stat-info">
+                  <h3>24</h3>
+                  <p>Upcoming Events</p>
                 </div>
+                <div class="stat-trend up">
+                  <i class="fas fa-arrow-up"></i> 5%
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-ticket-alt"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>356</h3>
+                  <p>New Registrations</p>
+                </div>
+                <div class="stat-trend down">
+                  <i class="fas fa-arrow-down"></i> 8%
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-certificate"></i>
+                </div>
+                <div class="stat-info">
+                  <h3>128</h3>
+                  <p>Certificates Issued</p>
+                </div>
+                <div class="stat-trend up">
+                  <i class="fas fa-arrow-up"></i> 22%
+                </div>
+              </div>
+            </div>
+
+            <div class="dashboard-grid">
+              <div class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <div class="activity-icon">
+                      <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="activity-details">
+                      <p>New member registered - Alex Johnson</p>
+                      <span class="activity-time">10 minutes ago</span>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon">
+                      <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <div class="activity-details">
+                      <p>New event created - Tech Workshop</p>
+                      <span class="activity-time">1 hour ago</span>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon">
+                      <i class="fas fa-certificate"></i>
             </header>
 
             <div class="admin-content">
@@ -323,13 +519,158 @@
                             </tbody>
                         </table>
                     </div>
-                </section>
+                    <div class="activity-details">
+                      <p>Certificate issued to Jane Smith</p>
+                      <span class="activity-time">3 hours ago</span>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon">
+                      <i class="fas fa-comment-alt"></i>
+                    </div>
+                    <div class="activity-details">
+                      <p>New feedback received for Debate Club</p>
+                      <span class="activity-time">5 hours ago</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="quick-actions">
+                <h2>Quick Actions</h2>
+                <div class="actions-grid">
+                  <button class="action-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add Event</span>
+                  </button>
+                  <button class="action-btn">
+                    <i class="fas fa-upload"></i>
+                    <span>Upload Certificates</span>
+                  </button>
+                  <button class="action-btn">
+                    <i class="fas fa-envelope"></i>
+                    <span>Send Announcement</span>
+                  </button>
+                  <button class="action-btn">
+                    <i class="fas fa-file-export"></i>
+                    <span>Export Data</span>
+                  </button>
+                </div>
+              </div>
             </div>
-        </main>
+          </section>
+
+          <!-- Recent Registrations Table -->
+          <section class="admin-section">
+            <div class="section-header">
+              <h2>Recent Registrations</h2>
+              <button class="view-all">View All</button>
+            </div>
+
+            <div class="table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Clubs</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>#1001</td>
+                    <td>John Doe</td>
+                    <td>john@example.com</td>
+                    <td>Tech Society, Debate Club</td>
+                    <td>2023-11-15</td>
+                    <td>
+                      <button class="table-action view">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="table-action edit">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>#1002</td>
+                    <td>Jane Smith</td>
+                    <td>jane@example.com</td>
+                    <td>Creative Arts</td>
+                    <td>2023-11-14</td>
+                    <td>
+                      <button class="table-action view">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="table-action edit">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>#1003</td>
+                    <td>Alex Johnson</td>
+                    <td>alex@example.com</td>
+                    <td>Sports Club</td>
+                    <td>2023-11-14</td>
+                    <td>
+                      <button class="table-action view">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="table-action edit">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>#1004</td>
+                    <td>Sarah Williams</td>
+                    <td>sarah@example.com</td>
+                    <td>Music Society</td>
+                    <td>2023-11-13</td>
+                    <td>
+                      <button class="table-action view">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="table-action edit">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <!-- scroll top button -->
+          <button id="scrollTopBtn" title="Back to Top">
+            <i class="fas fa-chevron-up"></i>
+          </button>
+
+          <!-- scroll translate top button -->
+          <button id="showTranslateBtn" title="Translate Page">
+            <i id="google_translate_element"></i>
+          </button>
+        </div>
+      </main>
     </div>
 
     <script src="app.js"></script>
     <script src="admin.js"></script>
-</body>
+    <!-- script for swithc the themes -->
+    <script>
+      function themes() {
+        const body = document.body;
+        const currentTheme = body.getAttribute("data-theme");
 
+        if (currentTheme === "dark") {
+          body.setAttribute("data-theme", "light");
+        } else {
+          body.setAttribute("data-theme", "dark");
+        }
+      }
+    </script>
+  </body>
 </html>

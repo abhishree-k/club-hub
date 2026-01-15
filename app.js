@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', function () {
     initAdmin();
     initAnimations();
     initStudentSession();
+  
+    const yearEl = document.getElementById("year");
+      if (yearEl) {
+          yearEl.textContent = new Date().getFullYear();
+    }
 });
 
 /**
@@ -27,6 +32,7 @@ function initNavigation() {
             hamburger.classList.toggle('active');
         });
     }
+  
 
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

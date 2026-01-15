@@ -734,4 +734,8 @@ function initAnimations() {
             heroSection.style.backgroundPositionY = `${window.pageYOffset * 0.5}px`;
         });
     }
+    
+    // Footer year 
+    document.getElementById("year").textContent = new Date().getFullYear();
+
 }

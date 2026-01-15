@@ -52,6 +52,32 @@
                 <button id="next-month" class="calendar-nav"><i class="fas fa-chevron-right"></i></button>
             </div>
 
+            <div class="calendar-jump-controls">
+                <label>
+                    <span>Jump to:</span>
+                    <select id="calendar-jump-month">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Year:</span>
+                    <input type="number" id="calendar-jump-year" min="2000" max="2100" step="1">
+                </label>
+                <button id="calendar-jump-btn" class="action-button small">Go</button>
+                <button id="calendar-today-btn" class="action-button small secondary">Today</button>
+            </div>
+
             <div class="calendar-grid">
                 <div class="calendar-header">Sun</div>
                 <div class="calendar-header">Mon</div>

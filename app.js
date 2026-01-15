@@ -2,6 +2,119 @@
  * Main Entry Point
  * All functionality is initialized here via modular functions.
  */
+
+// Centralized Event Data Source
+// NOTE: duration is expressed in hours and is used for conflict / overlap detection.
+const ALL_EVENTS = [
+    { id: 1, name: "AI Workshop Series", club: "tech", date: "2023-11-15", time: "14:00", duration: 3, location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
+    { id: 2, name: "Digital Art Masterclass", club: "arts", date: "2023-11-20", time: "16:00", duration: 3, location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
+    { id: 3, name: "Public Speaking Workshop", club: "debate", date: "2023-11-22", time: "15:00", duration: 3, location: "Humanities Building, Room 205", description: "Improve your speaking skills." },
+    // Deliberate overlap with AI Workshop for testing direct conflict behaviour
+    { id: 4, name: "Music Jam Session", club: "music", date: "2023-11-15", time: "15:00", duration: 2, location: "Auditorium", description: "Open mic and jam session." },
+    { id: 5, name: "Football Match", club: "sports", date: "2023-11-25", time: "10:00", duration: 3, location: "College Ground", description: "Inter-department match." }
+];
+
+// Default buffer used for "near conflicts" (minutes before/after an event)
+const DEFAULT_CONFLICT_BUFFER_MINUTES = 30;
+
+/**
+ * Helper: compute start/end Date objects (with optional buffer)
+ * Supports (optional) multi‑day events via endDate if ever added.
+ */
+function getEventTimeRange(ev, bufferMinutes = 0) {
+    const baseStart = new Date(`${ev.date}T${ev.time}`);
+    const durationHours = ev.duration || 1;
+    const baseEnd = new Date(baseStart.getTime() + durationHours * 60 * 60 * 1000);
+
+    const start = bufferMinutes
+        ? new Date(baseStart.getTime() - bufferMinutes * 60 * 1000)
+        : baseStart;
+    const end = bufferMinutes
+        ? new Date(baseEnd.getTime() + bufferMinutes * 60 * 1000)
+        : baseEnd;
+
+    return {
+        start,
+        end,
+        baseStart,
+        baseEnd
+    };
+}
+
+/**
+ * Utility: Check for conflicts
+ * Returns a rich conflict object if one exists, otherwise null.
+ * - type: 'direct' (time windows overlap) or 'near' (buffer-time overlap only)
+ * - overlapMinutes: approximate duration of the overlap window
+ * @param {Object} newEvent - The event user wants to register for
+ * @param {Array} registeredEvents - Array of events user is already registered for
+ * @param {Object} options - { bufferMinutes?: number }
+ */
+function findConflict(newEvent, registeredEvents, options = {}) {
+    if (!registeredEvents || registeredEvents.length === 0) return null;
+
+    const bufferMinutes = options.bufferMinutes ?? DEFAULT_CONFLICT_BUFFER_MINUTES;
+    const newRange = getEventTimeRange(newEvent, 0);
+    const newBufferedRange = getEventTimeRange(newEvent, bufferMinutes);
+
+    let foundConflict = null;
+
+    registeredEvents.forEach(existingEvent => {
+        if (foundConflict) return;
+
+        // Skip comparing with itself (if re-registering)
+        if (existingEvent.id === newEvent.id) return;
+
+        if (existingEvent.date !== newEvent.date) return;
+
+        const existingRange = getEventTimeRange(existingEvent, 0);
+        const existingBufferedRange = getEventTimeRange(existingEvent, bufferMinutes);
+
+        // Direct overlap: (StartA < EndB) and (EndA > StartB)
+        const hasDirectOverlap =
+            newRange.baseStart < existingRange.baseEnd &&
+            newRange.baseEnd > existingRange.baseStart;
+
+        // Near overlap: no direct overlap, but overlaps when buffer applied
+        const hasBufferedOverlap =
+            !hasDirectOverlap &&
+            newBufferedRange.start < existingBufferedRange.end &&
+            newBufferedRange.end > existingBufferedRange.start;
+
+        if (!hasDirectOverlap && !hasBufferedOverlap) return;
+
+        const overlapStart = hasDirectOverlap
+            ? new Date(Math.max(newRange.baseStart.getTime(), existingRange.baseStart.getTime()))
+            : new Date(Math.max(newBufferedRange.start.getTime(), existingBufferedRange.start.getTime()));
+        const overlapEnd = hasDirectOverlap
+            ? new Date(Math.min(newRange.baseEnd.getTime(), existingRange.baseEnd.getTime()))
+            : new Date(Math.min(newBufferedRange.end.getTime(), existingBufferedRange.end.getTime()));
+
+        const overlapMinutes = Math.max(0, Math.round((overlapEnd - overlapStart) / (60 * 1000)));
+
+        foundConflict = {
+            existingEvent,
+            type: hasDirectOverlap ? 'direct' : 'near',
+            overlapMinutes,
+            bufferMinutes
+        };
+    });
+
+    return foundConflict;
+}
+
+/**
+ * Utility: Get Alternatives
+ * Returns events from same club or same day that don't conflict.
+ */
+function getAlternatives(conflictingEvent, registeredEvents) {
+    return ALL_EVENTS.filter(ev =>
+        ev.id !== conflictingEvent.id && // Not the conflict itself
+        (ev.club === conflictingEvent.club || ev.date === conflictingEvent.date) && // Contextually relevant
+        !findConflict(ev, registeredEvents) // Must not also conflict
+    );
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     initNavigation();
     initTestimonialsAndSliders();
@@ -11,6 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initAdmin();
     initAnimations();
     initStudentSession();
+    initConflictModal(); // New module
 });
 
 /**
@@ -306,7 +420,8 @@ function initForms() {
             // Check for conflicts if logged in
             const student = JSON.parse(localStorage.getItem('studentUser'));
             if (student && student.id === studentId) {
-                const events = [
+                // Use Centralized Data
+                const events = (typeof ALL_EVENTS !== 'undefined') ? ALL_EVENTS : [
                     { id: 1, name: "AI Workshop Series", date: "2023-11-15", time: "14:00" },
                     { id: 2, name: "Digital Art Masterclass", date: "2023-11-20", time: "16:00" },
                     { id: 3, name: "Public Speaking Workshop", date: "2023-11-22", time: "15:00" }
@@ -316,16 +431,20 @@ function initForms() {
                 if (currentEvent) {
                     const studentEvents = JSON.parse(localStorage.getItem(`events_${studentId}`)) || [];
 
-                    // Conflict detection: Same day, overlapping time (mocking 2 hour duration)
-                    const conflict = studentEvents.find(se => {
-                        if (se.date !== currentEvent.date) return false;
-                        const seTime = parseInt(se.time.split(':')[0]);
-                        const ceTime = parseInt(currentEvent.time.split(':')[0]);
-                        return Math.abs(seTime - ceTime) < 2;
-                    });
+                    // New Conflict Logic (direct + near conflicts with buffer)
+                    const conflict = findConflict(currentEvent, studentEvents);
 
                     if (conflict) {
-                        alert(`Conflict Detected! You are already registered for "${conflict.name}" at ${conflict.time} on this day.`);
+                        // Trigger Modal instead of silent block
+                        if (typeof window.showConflictModal === 'function') {
+                            window.showConflictModal(currentEvent, conflict.existingEvent, studentEvents, conflict);
+                            // Hide the registration form
+                            const container = document.getElementById('event-registration-form-container');
+                            if (container) container.classList.add('hidden');
+                        } else {
+                            const label = conflict.type === 'near' ? 'Near conflict' : 'Conflict';
+                            alert(`${label} detected! You are already registered for "${conflict.existingEvent.name}" at ${conflict.existingEvent.time} on this day.`);
+                        }
                         return;
                     }
 
@@ -637,8 +756,112 @@ function initCalendar() {
         dateFilter.addEventListener('change', filterEvents);
     }
 
+
     // Initialize View
+    // Using global ALL_EVENTS if available, else local fallback
+    // Note: In a real app we might merge local and global, but for this feature we prioritize ALL_EVENTS
+    // Update render function to use ALL_EVENTS
+    events = (typeof ALL_EVENTS !== 'undefined') ? JSON.parse(JSON.stringify(ALL_EVENTS)) : events;
+
+    // Check local storage for user registered events to highlight conflicts
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    let registeredEvents = [];
+    if (student) {
+        registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+    }
+
+    // Enrich events with conflict status for calendar visualization
+    events.forEach(ev => {
+        const conflict = findConflict(ev, registeredEvents);
+        // If it's the exact same event ID, it's 'registered', not 'conflict'
+        if (conflict && conflict.existingEvent.id !== ev.id) {
+            ev.isConflict = true;
+            ev.conflictType = conflict.type; // 'direct' or 'near'
+            ev.conflictsWith = conflict.existingEvent.name;
+        }
+    });
+
     renderCalendar();
+
+    // Helper to render calendar with conflicts
+    function renderCalendar() {
+        while (calendarGrid.children.length > 7) {
+            calendarGrid.removeChild(calendarGrid.lastChild);
+        }
+
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        if (currentMonthElement) currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const today = new Date();
+        const isCurrentMonth = currentMonth === today.getMonth() && currentYear === today.getFullYear();
+
+        // Empty cells for previous month
+        for (let i = 0; i < firstDay; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.classList.add('calendar-day', 'empty');
+            calendarGrid.appendChild(emptyDay);
+        }
+
+        // Days
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dayElement = document.createElement('div');
+            dayElement.classList.add('calendar-day');
+            if (isCurrentMonth && i === today.getDate()) dayElement.classList.add('today');
+
+            const dayNumber = document.createElement('div');
+            dayNumber.classList.add('day-number');
+            dayNumber.textContent = i;
+            dayElement.appendChild(dayNumber);
+
+            // Events for day
+            const dayEvents = document.createElement('div');
+            dayEvents.classList.add('day-events');
+            const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+            const dayEventsData = events.filter(event => event.date === dateStr);
+
+            let hasDayConflict = false;
+
+            dayEventsData.forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.classList.add('day-event', event.club);
+
+                if (event.isConflict) {
+                    const typeClass = event.conflictType === 'near' ? 'conflict-near' : 'conflict-direct';
+                    eventElement.classList.add('conflict', typeClass);
+                    hasDayConflict = true;
+
+                    // Simple tooltip-style native title
+                    const label = event.conflictType === 'near' ? 'Near conflict' : 'Direct conflict';
+                    eventElement.title = `${label} with "${event.conflictsWith}"`;
+                }
+
+                eventElement.textContent = event.name + (event.isConflict ? " (⚠)" : "");
+                eventElement.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showEventDetails(event);
+                });
+                dayEvents.appendChild(eventElement);
+            });
+
+            if (hasDayConflict) {
+                dayElement.classList.add('has-conflict');
+            }
+
+            dayElement.appendChild(dayEvents);
+
+            // Click day to add event
+            dayElement.addEventListener('click', function (e) {
+                if (e.target === this || e.target.classList.contains('day-number')) {
+                    openEventModal(null, dateStr);
+                }
+            });
+
+            calendarGrid.appendChild(dayElement);
+        }
+    }
+
     if (eventDetailsContainer) {
         eventDetailsContainer.innerHTML = `<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>`;
     }
@@ -798,106 +1021,298 @@ function initAdmin() {
  * Handles Timeline, Gallery scroll, Parallax, and Decorative particles.
  */
 function initAnimations() {
-    // Scroll Detection Helper
-    const checkScrollAnimations = () => {
-        const windowHeight = window.innerHeight;
+    // Timeline Scroll Animation
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    if (timelineItems.length > 0) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
 
-        // Timeline Items
-        document.querySelectorAll('.timeline-item').forEach(item => {
-            if (item.getBoundingClientRect().top < windowHeight * 0.75) item.classList.add('visible');
+        timelineItems.forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(50px)';
+            item.style.transition = 'all 0.6s ease';
+            observer.observe(item);
         });
-
-        // Slide Up Elements
-        document.querySelectorAll('.club-card, .section-title, .hero-content').forEach(el => {
-            if (el.getBoundingClientRect().top < windowHeight * 0.75) el.classList.add('slide-up');
-        });
-    };
-
-    // Initial check and Listener
-    checkScrollAnimations();
-    window.addEventListener('scroll', checkScrollAnimations);
-
-    // Floating Planets
-    document.querySelectorAll('.planet').forEach(planet => {
-        const duration = 6 + Math.random() * 4;
-        const delay = Math.random() * 2;
-        planet.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
-    });
-
-    // Twinkling Stars
-    const starsBackground = document.querySelector('.stars-background');
-    if (starsBackground) {
-        for (let i = 0; i < 50; i++) {
-            const star = document.createElement('div');
-            star.classList.add('star', 'twinkle');
-            star.style.left = `${Math.random() * 100}%`;
-            star.style.top = `${Math.random() * 100}%`;
-            const size = 1 + Math.random() * 2;
-            star.style.width = `${size}px`;
-            star.style.height = `${size}px`;
-            star.style.animationDelay = `${Math.random() * 5}s`;
-            starsBackground.appendChild(star);
-        }
     }
 
-    // Gallery Drag Scroll
-    document.querySelectorAll('.gallery-scroll').forEach(gallery => {
-        let isDown = false, startX, scrollLeft;
-        gallery.addEventListener('mousedown', (e) => {
-            isDown = true;
-            gallery.classList.add('active'); // Optional visual cue class
-            startX = e.pageX - gallery.offsetLeft;
-            scrollLeft = gallery.scrollLeft;
-            gallery.style.cursor = 'grabbing';
-        });
-        gallery.addEventListener('mouseleave', () => { isDown = false; gallery.style.cursor = 'grab'; });
-        gallery.addEventListener('mouseup', () => { isDown = false; gallery.style.cursor = 'grab'; });
-        gallery.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - gallery.offsetLeft;
-            const walk = (x - startX) * 2;
-            gallery.scrollLeft = scrollLeft - walk;
-        });
-    });
+    // Parallax effect for planets
+    const planets = document.querySelectorAll('.planet');
+    if (planets.length > 0) {
+        window.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
 
-    // Featured Items Gradient Border
-    document.querySelectorAll('.featured-item').forEach(item => item.classList.add('gradient-border'));
-
-    // Button Pulse Effect
-    document.querySelectorAll('.action-button, .submit-button, .register-button').forEach(btn => {
-        btn.addEventListener('mouseenter', () => btn.classList.add('pulse'));
-        btn.addEventListener('mouseleave', () => btn.classList.remove('pulse'));
-    });
-
-    // Loading Spinner
-    const spinner = document.querySelector('.loading-spinner');
-    if (spinner) spinner.classList.add('rotate');
-
-    // Typewriter Effect
-    const heroSubtitle = document.querySelector('.hero-subtitle');
-    if (heroSubtitle) {
-        const text = heroSubtitle.textContent;
-        heroSubtitle.textContent = '';
-        let i = 0;
-        const typing = setInterval(() => {
-            if (i < text.length) {
-                heroSubtitle.textContent += text.charAt(i);
-                i++;
-            } else {
-                clearInterval(typing);
-            }
-        }, 50);
-    }
-
-    // Parallax
-    const heroSection = document.querySelector('.hero-section');
-    if (heroSection) {
-        window.addEventListener('scroll', () => {
-            heroSection.style.backgroundPositionY = `${window.pageYOffset * 0.5}px`;
+            planets.forEach((planet, index) => {
+                const speed = (index + 1) * 20;
+                planet.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
         });
     }
 }
+
+/**
+ * 8. Conflict Modal Logic
+ * Handles showing the conflict warning modal and alternatives.
+ */
+function initConflictModal() {
+    const modal = document.getElementById('conflict-modal');
+    if (!modal) return;
+
+    // Close Logic
+    const closeBtn = modal.querySelector('.close-conflict-modal');
+    const cancelBtn = document.getElementById('conflict-cancel-btn');
+    const swapBtn = document.getElementById('conflict-swap-btn');
+    const proceedBtn = document.getElementById('conflict-proceed-btn');
+
+    function hideModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', hideModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', hideModal);
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) hideModal();
+    });
+
+    // Store handlers on modal so showConflictModal can attach per-conflict behaviour
+    modal._controls = { hideModal, swapBtn, proceedBtn };
+}
+
+/**
+ * Global API to trigger conflict modal
+ */
+window.showConflictModal = function (newEvent, conflictingEvent, registeredEvents, conflictMeta) {
+    const modal = document.getElementById('conflict-modal');
+    if (!modal) return;
+
+    const { hideModal, swapBtn, proceedBtn } = modal._controls || {};
+
+    // Populate details
+    document.getElementById('conflict-new-event-name').textContent = newEvent.name;
+
+    const existingDetails = document.getElementById('conflict-existing-details');
+    existingDetails.innerHTML = `
+        <strong>${conflictingEvent.name}</strong><br>
+        <span class="text-xs"><i class="far fa-clock"></i> ${conflictingEvent.date} @ ${conflictingEvent.time}</span>
+    `;
+
+    const newDetails = document.getElementById('conflict-new-details');
+    newDetails.innerHTML = `
+        <strong>${newEvent.name}</strong><br>
+        <span class="text-xs"><i class="far fa-clock"></i> ${newEvent.date} @ ${newEvent.time}</span>
+    `;
+
+    // Conflict meta details (type + overlap duration + simple timeline)
+    const typeBadge = document.getElementById('conflict-type-badge');
+    const overlapText = document.getElementById('conflict-overlap-text');
+    const timelineExisting = document.getElementById('conflict-timeline-existing');
+    const timelineNew = document.getElementById('conflict-timeline-new');
+
+    if (conflictMeta && typeBadge && overlapText && timelineExisting && timelineNew) {
+        const label = conflictMeta.type === 'near' ? 'Near Conflict (buffer time overlap)' : 'Direct Conflict';
+        typeBadge.textContent = label;
+        typeBadge.className = 'conflict-type-badge ' + (conflictMeta.type === 'near' ? 'near' : 'direct');
+
+        const minutes = conflictMeta.overlapMinutes;
+        if (minutes && minutes > 0) {
+            overlapText.textContent = `Approximate overlap: ${minutes} minute${minutes === 1 ? '' : 's'}.`;
+        } else {
+            overlapText.textContent = '';
+        }
+
+        // Very lightweight visual timeline using flex widths
+        const existingRange = getEventTimeRange(conflictingEvent, 0);
+        const newRange = getEventTimeRange(newEvent, 0);
+
+        const dayStart = new Date(existingRange.baseStart);
+        dayStart.setHours(6, 0, 0, 0); // assume earliest 6 AM
+        const dayEnd = new Date(existingRange.baseStart);
+        dayEnd.setHours(22, 0, 0, 0); // assume latest 10 PM
+        const totalMs = dayEnd - dayStart;
+
+        function toPercent(range) {
+            const startOffset = Math.max(0, range.baseStart - dayStart);
+            const endOffset = Math.min(totalMs, range.baseEnd - dayStart);
+            const width = Math.max(5, ((endOffset - startOffset) / totalMs) * 100);
+            const left = (startOffset / totalMs) * 100;
+            return { left, width };
+        }
+
+        const existingPerc = toPercent(existingRange);
+        const newPerc = toPercent(newRange);
+
+        timelineExisting.style.left = `${existingPerc.left}%`;
+        timelineExisting.style.width = `${existingPerc.width}%`;
+
+        timelineNew.style.left = `${newPerc.left}%`;
+        timelineNew.style.width = `${newPerc.width}%`;
+    }
+
+    // Populate Alternatives
+    const alternativesContainer = document.getElementById('conflict-alternatives-list');
+    const alternatives = getAlternatives(conflictingEvent, registeredEvents);
+
+    alternativesContainer.innerHTML = '';
+
+    if (alternatives.length === 0) {
+        alternativesContainer.innerHTML = '<p style="color:rgba(255,255,255,0.6); font-style:italic;">No non-conflicting alternatives found.</p>';
+    } else {
+        alternatives.forEach(alt => {
+            const el = document.createElement('div');
+            el.className = 'alternative-card';
+            el.innerHTML = `
+                <div class="alternative-info">
+                    <h5>${alt.name}</h5>
+                    <p>${alt.date} @ ${alt.time}</p>
+                </div>
+                <button class="action-button small" onclick="registerForAlternative(${alt.id})">
+                    Register
+                </button>
+            `;
+            alternativesContainer.appendChild(el);
+        });
+    }
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+
+    // Wire up conflict actions (swap / proceed) fresh for each invocation
+    if (swapBtn) {
+        swapBtn.onclick = function () {
+            const student = JSON.parse(localStorage.getItem('studentUser'));
+            if (!student) return;
+
+            let studentEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+            // Remove the conflicting event, then add the new one
+            studentEvents = studentEvents.filter(e => e.id !== conflictingEvent.id);
+            studentEvents.push(newEvent);
+            localStorage.setItem(`events_${student.id}`, JSON.stringify(studentEvents));
+
+            alert(`You are now registered for "${newEvent.name}" instead of "${conflictingEvent.name}".`);
+            if (hideModal) hideModal();
+            if (typeof updateEnrollmentStatus === 'function') updateEnrollmentStatus();
+            // Refresh calendar / hub views if present
+            try { window.location.reload(); } catch (e) { /* no-op */ }
+        };
+    }
+
+    if (proceedBtn) {
+        proceedBtn.onclick = function () {
+            const student = JSON.parse(localStorage.getItem('studentUser'));
+            if (!student) return;
+
+            const studentEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+            studentEvents.push(newEvent);
+            localStorage.setItem(`events_${student.id}`, JSON.stringify(studentEvents));
+
+            alert(`You have been additionally registered for "${newEvent.name}" (overlapping schedule).`);
+            if (hideModal) hideModal();
+            if (typeof updateEnrollmentStatus === 'function') updateEnrollmentStatus();
+            try { window.location.reload(); } catch (e) { /* no-op */ }
+        };
+    }
+};
+
+window.registerForAlternative = function (altId) {
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (!student) return;
+
+    const event = ALL_EVENTS.find(e => e.id === altId);
+    if (event) {
+        const studentEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+        studentEvents.push(event);
+        localStorage.setItem(`events_${student.id}`, JSON.stringify(studentEvents));
+
+        alert(`Successfully registered for alternative: ${event.name}`);
+        document.getElementById('conflict-modal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+
+        // Refresh UI if on My Hub
+        if (typeof updateEnrollmentStatus === 'function') updateEnrollmentStatus();
+        window.location.reload(); // Simple refresh to update state
+    }
+};    // Twinkling Stars
+const starsBackground = document.querySelector('.stars-background');
+if (starsBackground) {
+    for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star', 'twinkle');
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        const size = 1 + Math.random() * 2;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        starsBackground.appendChild(star);
+    }
+}
+
+// Gallery Drag Scroll
+document.querySelectorAll('.gallery-scroll').forEach(gallery => {
+    let isDown = false, startX, scrollLeft;
+    gallery.addEventListener('mousedown', (e) => {
+        isDown = true;
+        gallery.classList.add('active'); // Optional visual cue class
+        startX = e.pageX - gallery.offsetLeft;
+        scrollLeft = gallery.scrollLeft;
+        gallery.style.cursor = 'grabbing';
+    });
+    gallery.addEventListener('mouseleave', () => { isDown = false; gallery.style.cursor = 'grab'; });
+    gallery.addEventListener('mouseup', () => { isDown = false; gallery.style.cursor = 'grab'; });
+    gallery.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - gallery.offsetLeft;
+        const walk = (x - startX) * 2;
+        gallery.scrollLeft = scrollLeft - walk;
+    });
+});
+
+// Featured Items Gradient Border
+document.querySelectorAll('.featured-item').forEach(item => item.classList.add('gradient-border'));
+
+// Button Pulse Effect
+document.querySelectorAll('.action-button, .submit-button, .register-button').forEach(btn => {
+    btn.addEventListener('mouseenter', () => btn.classList.add('pulse'));
+    btn.addEventListener('mouseleave', () => btn.classList.remove('pulse'));
+});
+
+// Loading Spinner
+const spinner = document.querySelector('.loading-spinner');
+if (spinner) spinner.classList.add('rotate');
+
+// Typewriter Effect
+const heroSubtitle = document.querySelector('.hero-subtitle');
+if (heroSubtitle) {
+    const text = heroSubtitle.textContent;
+    heroSubtitle.textContent = '';
+    let i = 0;
+    const typing = setInterval(() => {
+        if (i < text.length) {
+            heroSubtitle.textContent += text.charAt(i);
+            i++;
+        } else {
+            clearInterval(typing);
+        }
+    }, 50);
+}
+
+// Parallax
+const heroSection = document.querySelector('.hero-section');
+if (heroSection) {
+    window.addEventListener('scroll', () => {
+        heroSection.style.backgroundPositionY = `${window.pageYOffset * 0.5}px`;
+    });
+}
+
 
 function initStudentSession() {
     updateUIForStudent();

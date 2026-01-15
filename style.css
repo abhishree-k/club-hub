@@ -525,12 +525,24 @@ img {
 
 .calendar-jump-controls select,
 .calendar-jump-controls input[type="number"] {
-    padding: 0.4rem 0.6rem;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(0, 0, 0, 0.3);
-    color: #fff;
-    font-size: 0.9rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.calendar-jump-controls select:focus,
+.calendar-jump-controls input[type="number"]:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 1px rgba(253, 121, 168, 0.7);
+}
+
+.calendar-jump-controls select:hover,
+.calendar-jump-controls input[type="number"]:hover {
+    border-color: rgba(255, 255, 255, 0.7);
 }
 
 .calendar-nav {

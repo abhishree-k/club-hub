@@ -513,6 +513,10 @@ function initCalendar() {
     const currentMonthElement = document.getElementById('current-month');
     const prevMonthButton = document.getElementById('prev-month');
     const nextMonthButton = document.getElementById('next-month');
+    const jumpMonthSelect = document.getElementById('calendar-jump-month');
+    const jumpYearInput = document.getElementById('calendar-jump-year');
+    const jumpButton = document.getElementById('calendar-jump-btn');
+    const todayButton = document.getElementById('calendar-today-btn');
     const eventModal = document.getElementById('event-modal');
     const eventForm = document.getElementById('event-form');
     const saveEventButton = document.getElementById('save-event'); // Kept variable, though used in form submit
@@ -712,6 +716,36 @@ function initCalendar() {
         nextMonthButton.addEventListener('click', function () {
             currentMonth++;
             if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar();
+        });
+    }
+
+    // Jump to specific month/year
+    if (jumpButton && jumpMonthSelect && jumpYearInput) {
+        // Pre-fill jump controls with current view
+        jumpMonthSelect.value = String(currentMonth);
+        jumpYearInput.value = String(currentYear);
+
+        jumpButton.addEventListener('click', function () {
+            const monthVal = parseInt(jumpMonthSelect.value, 10);
+            const yearVal = parseInt(jumpYearInput.value, 10);
+            if (isNaN(monthVal) || isNaN(yearVal)) return;
+            if (yearVal < 2000 || yearVal > 2100) return;
+
+            currentMonth = monthVal;
+            currentYear = yearVal;
+            renderCalendar();
+        });
+    }
+
+    // Jump back to current month/year ("Today")
+    if (todayButton) {
+        todayButton.addEventListener('click', function () {
+            const today = new Date();
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+            if (jumpMonthSelect) jumpMonthSelect.value = String(currentMonth);
+            if (jumpYearInput) jumpYearInput.value = String(currentYear);
             renderCalendar();
         });
     }

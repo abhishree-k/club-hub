@@ -29,6 +29,14 @@ All contributions—small or large—are valued.
 
 ---
 
+## ⚠️ Warning
+
+- Don't change the theme of website. Be careful what you change in the existing code. Adding new features or enhancements should also align with the theme.
+- Compulsorily test before creating a PR.
+- Always make sure your working on the latest updated code files from the repository.
+
+---
+
 ## 🛠 Tech Stack
 
 - **Frontend:** HTML5, CSS3

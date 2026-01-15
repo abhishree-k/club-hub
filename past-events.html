@@ -15,6 +15,7 @@
     />
     <script type="text/javascript" src="darkmode.js" defer></script>
   </head>
+
   <body>
     <div class="stars-background"></div>
 
@@ -28,7 +29,14 @@
         <li><a href="events.html">Live & Upcoming Events</a></li>
         <li><a href="past-events.html" class="active">Past Events</a></li>
         <li><a href="registration.html">Registration</a></li>
+        <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
         <li><a href="admin-login.html">Admin</a></li>
+        <li id="nav-login">
+          <a href="registration.html#student-login">Login</a>
+        </li>
+        <li id="nav-logout" class="hidden">
+          <a href="#" id="student-logout-btn">Logout</a>
+        </li>
         <!-- button for switch themes -->
         <button id="theme-switch">
           <svg
@@ -60,41 +68,6 @@
         <div class="line"></div>
         <div class="line"></div>
       </div>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Past Events | DSCEClubs</title>
-    <link rel="stylesheet" href="style.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-
-<body>
-    <div class="stars-background"></div>
-
-    <nav class="cosmic-nav">
-        <div class="nav-logo">
-            <span class="logo-icon">🌌</span>
-            <span class="logo-text">DSCE Clubs</span>
-        </div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="events.html">Live & Upcoming Events</a></li>
-            <li><a href="past-events.html" class="active">Past Events</a></li>
-            <li><a href="registration.html">Registration</a></li>
-            <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
-            <li><a href="admin-login.html">Admin</a></li>
-            <li id="nav-login"><a href="registration.html#student-login">Login</a></li>
-            <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
-        </ul>
-        <div class="nav-hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
     </nav>
 
     <header class="past-events-hero">
@@ -170,96 +143,6 @@
                   <img src="images/debate-1.jpg" alt="Debate Championship" />
                   <img src="images/debate-2.jpg" alt="Debate Championship" />
                   <img src="images/debate-3.jpg" alt="Debate Championship" />
-        <section class="timeline-section">
-            <h2 class="section-title">Our <span class="text-gradient">Timeline</span></h2>
-
-            <div class="timeline-container">
-                <div class="timeline-line"></div>
-
-                <div class="timeline-item left">
-                    <div class="timeline-content">
-                        <div class="timeline-date">May 2025</div>
-                        <h3 class="timeline-event">PB Hustle</h3>
-                        <p class="timeline-description">Three days of workshops, hackathons, and tech talks featuring
-                            industry leaders.</p>
-                        <div class="timeline-club">Tech Society</div>
-                        <div class="timeline-gallery">
-                            <div class="gallery-scroll">
-                                <img src="images/tech-symposium-1.jpg" alt="Tech Symposium">
-                                <img src="images/tech-symposium-2.jpg" alt="Tech Symposium">
-                                <img src="images/tech-symposium-3.jpg" alt="Tech Symposium">
-                                <img src="images/tech-symposium-4.jpg" alt="Tech Symposium">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="timeline-item right">
-                    <div class="timeline-content">
-                        <div class="timeline-date">April 2025</div>
-                        <h3 class="timeline-event">Spring Art Exhibition</h3>
-                        <p class="timeline-description">Showcasing student artwork with live demonstrations and
-                            interactive installations.</p>
-                        <div class="timeline-club">Aaleka</div>
-                        <div class="timeline-gallery">
-                            <div class="gallery-scroll">
-                                <img src="images/art-exhibition-1.jpg" alt="Art Exhibition">
-                                <img src="images/art-exhibition-2.jpg" alt="Art Exhibition">
-                                <img src="images/art-exhibition-3.jpg" alt="Art Exhibition">
-                                <img src="images/art-exhibition-4.jpg" alt="Art Exhibition">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="timeline-item left">
-                    <div class="timeline-content">
-                        <div class="timeline-date">March 2025</div>
-                        <h3 class="timeline-event">Inter-College Debate Championship</h3>
-                        <p class="timeline-description">Our team won first place in the regional debate competition.</p>
-                        <div class="timeline-club">Litsoc</div>
-                        <div class="timeline-gallery">
-                            <div class="gallery-scroll">
-                                <img src="images/debate-1.jpg" alt="Debate Championship">
-                                <img src="images/debate-2.jpg" alt="Debate Championship">
-                                <img src="images/debate-3.jpg" alt="Debate Championship">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="timeline-item right">
-                    <div class="timeline-content">
-                        <div class="timeline-date">February 2025</div>
-                        <h3 class="timeline-event">Winter Music Festival</h3>
-                        <p class="timeline-description">A weekend of performances from classical to contemporary music.
-                        </p>
-                        <div class="timeline-club">Music Society</div>
-                        <div class="timeline-gallery">
-                            <div class="gallery-scroll">
-                                <img src="images/music-festival-1.jpg" alt="Music Festival">
-                                <img src="images/music-festival-2.jpg" alt="Music Festival">
-                                <img src="images/music-festival-3.jpg" alt="Music Festival">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="timeline-item left">
-                    <div class="timeline-content">
-                        <div class="timeline-date">January 2025</div>
-                        <h3 class="timeline-event">IEDC E'SUMMIT</h3>
-                        <p class="timeline-description">Student projects showcasing cutting-edge research and innovative
-                            solutions.</p>
-                        <div class="timeline-club">IEDC</div>
-                        <div class="timeline-gallery">
-                            <div class="gallery-scroll">
-                                <img src="images/science-fair-1.jpg" alt="Science Fair">
-                                <img src="images/science-fair-2.jpg" alt="Science Fair">
-                                <img src="images/science-fair-3.jpg" alt="Science Fair">
-                            </div>
-                        </div>
-                    </div>
                 </div>
               </div>
             </div>
@@ -297,43 +180,6 @@
                   <img src="images/science-fair-1.jpg" alt="Science Fair" />
                   <img src="images/science-fair-2.jpg" alt="Science Fair" />
                   <img src="images/science-fair-3.jpg" alt="Science Fair" />
-        </section>
-
-        <section class="highlights-section">
-            <h2 class="section-title">Event <span class="text-gradient">Highlights</span></h2>
-            <div class="highlights-grid">
-                <div class="highlight-card">
-                    <div class="highlight-media">
-                        <video controls poster="images/tech-highlight-poster.jpg">
-                            <source src="videos/tech-highlight.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="highlight-content">
-                        <h3>Tech Symposium Highlights</h3>
-                        <p>Relive the key moments from our biggest tech event of the year.</p>
-                        <div class="highlight-stats">
-                            <span><i class="fas fa-users"></i> 450+ Attendees</span>
-                            <span><i class="fas fa-lightbulb"></i> 35 Projects</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="highlight-card">
-                    <div class="highlight-media">
-                        <div class="image-slider">
-                            <img src="images/art-highlight-1.jpg" alt="Art Exhibition" class="active">
-                            <img src="images/art-highlight-2.jpg" alt="Art Exhibition">
-                            <img src="images/art-highlight-3.jpg" alt="Art Exhibition">
-                        </div>
-                    </div>
-                    <div class="highlight-content">
-                        <h3>Art Exhibition Gallery</h3>
-                        <p>A visual journey through our spring art showcase.</p>
-                        <div class="highlight-stats">
-                            <span><i class="fas fa-paint-brush"></i> 120 Artworks</span>
-                            <span><i class="fas fa-shopping-bag"></i> 28 Pieces Sold</span>
-                        </div>
-                    </div>
                 </div>
               </div>
             </div>
@@ -387,7 +233,6 @@
           </div>
         </div>
       </section>
-
       <!-- scroll top button -->
       <button id="scrollTopBtn" title="Back to Top">
         <i class="fas fa-chevron-up"></i>

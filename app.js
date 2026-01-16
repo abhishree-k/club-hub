@@ -726,6 +726,29 @@ function initAdmin() {
         if (!isLoggedIn) {
             window.location.href = 'admin-login.html';
         } else {
+            // Init Sidebar Navigation
+            const sidebarLinks = document.querySelectorAll('.admin-menu a');
+            const sections = document.querySelectorAll('.admin-tab-content');
+            
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        e.preventDefault();
+                        const targetId = href.substring(1);
+                        
+                        // Update Active State
+                        document.querySelectorAll('.admin-menu li').forEach(li => li.classList.remove('active'));
+                        link.parentElement.classList.add('active');
+                        
+                        // Show Target Section
+                        sections.forEach(sec => sec.style.display = 'none');
+                        const targetSec = document.getElementById(targetId);
+                        if (targetSec) targetSec.style.display = 'block';
+                    }
+                });
+            });
+
             loadAdminDashboard();
             const logoutButton = document.getElementById('admin-logout');
             if (logoutButton) {
@@ -758,6 +781,7 @@ function initAdmin() {
         // Render Student Registrations
         const registrationsTable = document.getElementById('registrations-table');
         if (registrationsTable) {
+            registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
             const registrations = [
                 { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
                 { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
@@ -778,6 +802,7 @@ function initAdmin() {
         // Render Event Registrations
         const eventRegistrationsTable = document.getElementById('event-registrations-table');
         if (eventRegistrationsTable) {
+             eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
             const eventRegs = [
                 { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
             ];

@@ -324,6 +324,34 @@
                         </table>
                     </div>
                 </section>
+
+                <!-- Club Management Section -->
+                <section id="clubs" class="admin-section admin-tab-content" style="display: none;">
+                    <div class="section-header">
+                        <h2>Club Memberships</h2>
+                        <button class="action-btn" id="add-club-member-btn">
+                            <i class="fas fa-plus"></i> Add Member
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="admin-table" id="clubs-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Student Name</th>
+                                    <th>Student ID</th>
+                                    <th>Club</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </div>
         </main>
     </div>
@@ -356,6 +384,49 @@
                 <div class="form-actions">
                     <button type="button" class="btn-cancel">Cancel</button>
                     <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Club Member Modal -->
+    <div id="club-member-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="club-modal-title">Add Club Member</h2>
+                <span class="close-modal close-club-modal">&times;</span>
+            </div>
+            <form id="club-member-form">
+                <input type="hidden" id="club-member-id">
+                <div class="form-group">
+                    <label for="club-student-name">Student Name</label>
+                    <input type="text" id="club-student-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="club-student-db-id">Student ID</label>
+                    <input type="text" id="club-student-db-id" required>
+                </div>
+                <div class="form-group">
+                    <label for="club-select">Club</label>
+                    <select id="club-select" required>
+                        <option value="tech">Tech Society</option>
+                        <option value="arts">Creative Arts</option>
+                        <option value="debate">Debate Club</option>
+                        <option value="music">Music Society</option>
+                        <option value="sports">Sports Club</option>
+                        <option value="science">Dance club- ABCD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="club-status">Status</label>
+                    <select id="club-status" required>
+                        <option value="Active">Active</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel close-club-modal">Cancel</button>
+                    <button type="submit" class="btn-save">Save</button>
                 </div>
             </form>
         </div>

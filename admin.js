@@ -36,14 +36,71 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Modal functionality
+    const modal = document.getElementById('edit-modal');
+    const closeModal = document.querySelector('.close-modal');
+    const cancelBtn = document.querySelector('.btn-cancel');
+    const editForm = document.getElementById('edit-form');
+    let currentRow = null;
+
+    function openModal() {
+        if (modal) modal.classList.add('active');
+    }
+
+    function closeModalFunc() {
+        if (modal) modal.classList.remove('active');
+        currentRow = null;
+    }
+
+    if (closeModal) closeModal.addEventListener('click', closeModalFunc);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModalFunc);
+
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) closeModalFunc();
+    });
+
+    // Edit functionality
     document.querySelectorAll('.table-action.edit').forEach(button => {
         button.addEventListener('click', function() {
-            const row = this.closest('tr');
-            const id = row.querySelector('td:first-child').textContent;
-            alert(`Edit registration ${id}`);
+            currentRow = this.closest('tr');
+            const cells = currentRow.querySelectorAll('td');
+            
+            // Populate form
+            document.getElementById('edit-row-id').value = cells[0].textContent;
+            document.getElementById('edit-name').value = cells[1].textContent;
+            document.getElementById('edit-email').value = cells[2].textContent;
+            document.getElementById('edit-clubs').value = cells[3].textContent;
+            document.getElementById('edit-date').value = cells[4].textContent;
+
+            openModal();
         });
     });
-    
+
+    // Save functionality
+    if (editForm) {
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (currentRow) {
+                const cells = currentRow.querySelectorAll('td');
+                
+                // Update table with new values
+                cells[1].textContent = document.getElementById('edit-name').value;
+                cells[2].textContent = document.getElementById('edit-email').value;
+                cells[3].textContent = document.getElementById('edit-clubs').value;
+                cells[4].textContent = document.getElementById('edit-date').value;
+                
+                // Visual feedback
+                currentRow.style.backgroundColor = 'rgba(0, 184, 148, 0.1)';
+                setTimeout(() => {
+                    currentRow.style.backgroundColor = '';
+                }, 1000);
+
+                closeModalFunc();
+            }
+        });
+    }
+
     // Quick action buttons
     document.querySelectorAll('.action-btn').forEach(button => {
         button.addEventListener('click', function() {
@@ -51,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert(`${action} action triggered`);
         });
     });
-    
+
     // Responsive table
     function handleTableResponsive() {
         const tables = document.querySelectorAll('.admin-table');

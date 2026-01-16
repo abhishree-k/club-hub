@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
     <div class="stars-background"></div>
-    
+
     <nav class="cosmic-nav">
         <div class="nav-logo">
             <span class="logo-icon">🌌</span>
@@ -22,7 +26,10 @@
             <li><a href="events.html">Live & Upcoming Events</a></li>
             <li><a href="past-events.html">Past Events</a></li>
             <li><a href="registration.html">Registration</a></li>
-            <li><a href="admin-dashboard.html" class="active">Admin</a></li>
+            <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
+            <li><a href="admin-login.html" class="active">Admin</a></li>
+            <li id="nav-login"><a href="registration.html#student-login">Login</a></li>
+            <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
         </ul>
         <div class="nav-hamburger">
             <div class="line"></div>
@@ -43,7 +50,7 @@
                     <p>Super Administrator</p>
                 </div>
             </div>
-            
+
             <nav class="admin-menu">
                 <ul>
                     <li class="active">
@@ -84,7 +91,7 @@
                     </li>
                 </ul>
             </nav>
-            
+
             <div class="admin-logout">
                 <button id="admin-logout">
                     <i class="fas fa-sign-out-alt"></i>
@@ -108,7 +115,7 @@
                     </button>
                 </div>
             </header>
-            
+
             <div class="admin-content">
                 <!-- Dashboard Overview -->
                 <section class="dashboard-overview">
@@ -125,7 +132,7 @@
                                 <i class="fas fa-arrow-up"></i> 12%
                             </div>
                         </div>
-                        
+
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-calendar-check"></i>
@@ -138,7 +145,7 @@
                                 <i class="fas fa-arrow-up"></i> 5%
                             </div>
                         </div>
-                        
+
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-ticket-alt"></i>
@@ -151,7 +158,7 @@
                                 <i class="fas fa-arrow-down"></i> 8%
                             </div>
                         </div>
-                        
+
                         <div class="stat-card">
                             <div class="stat-icon">
                                 <i class="fas fa-certificate"></i>
@@ -165,7 +172,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="dashboard-grid">
                         <div class="recent-activity">
                             <h2>Recent Activity</h2>
@@ -208,7 +215,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="quick-actions">
                             <h2>Quick Actions</h2>
                             <div class="actions-grid">
@@ -232,14 +239,14 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Recent Registrations Table -->
                 <section class="admin-section">
                     <div class="section-header">
                         <h2>Recent Registrations</h2>
                         <button class="view-all">View All</button>
                     </div>
-                    
+
                     <div class="table-container">
                         <table class="admin-table">
                             <thead>
@@ -325,4 +332,5 @@
     <script src="app.js"></script>
     <script src="admin.js"></script>
 </body>
+
 </html>

@@ -274,15 +274,46 @@ function initTabsAndModals() {
  * Handles general public-facing form submissions (Club Reg, Certificate, etc).
  */
 function initForms() {
-    // Club Registration
+    // ---------------------------------------------------------
+    // CONFLICT 1 RESOLUTION: Club Registration
+    // Merged validation rules with LocalStorage logic
+    // ---------------------------------------------------------
     const clubRegistrationForm = document.getElementById('club-registration-form');
     if (clubRegistrationForm) {
-        clubRegistrationForm.addEventListener('submit', function (e) {
+        // Define validation rules
+        const clubFormRules = {
+            'club-first-name': ['required', 'name', { type: 'minLength', value: 2 }],
+            'club-last-name': ['required', 'name', { type: 'minLength', value: 2 }],
+            'club-email': ['required', 'email'],
+            'club-student-id': ['required', 'studentId'],
+            'club-major': ['required', { type: 'minLength', value: 2 }],
+            'club-year': ['required']
+        };
+        
+        // Initialize real-time validation
+        initRealTimeValidation(clubRegistrationForm, clubFormRules);
+        
+        clubRegistrationForm.addEventListener('submit', function(e) {
             e.preventDefault();
-
-            const studentId = document.getElementById('club-student-id').value;
+            
+            // Clear previous errors
+            clearFormErrors(clubRegistrationForm);
+            
+            // Validate form
+            if (!validateForm(clubRegistrationForm, clubFormRules)) {
+                showFormError(clubRegistrationForm, 'Please fix the errors below before submitting.');
+                return;
+            }
+            
+            // Check if at least one club is selected
             const selectedClubs = Array.from(this.querySelectorAll('input[name="club"]:checked')).map(cb => cb.value);
+            if (selectedClubs.length === 0) {
+                showFormError(clubRegistrationForm, 'Please select at least one club.');
+                return;
+            }
 
+            // --- Business Logic (Main Branch) ---
+            const studentId = document.getElementById('club-student-id').value;
             if (selectedClubs.length > 0) {
                 const student = JSON.parse(localStorage.getItem('studentUser'));
                 if (student && student.id === studentId) {
@@ -293,22 +324,53 @@ function initForms() {
                     localStorage.setItem(`clubs_${studentId}`, JSON.stringify(joinedClubs));
                 }
             }
-
-            alert('Club registration submitted successfully!');
-            this.reset();
-            updateEnrollmentStatus();
+            // ------------------------------------
+            
+            // Show success message
+            showFormSuccess(clubRegistrationForm, 'Club registration submitted successfully!');
+            
+            // Reset form after a short delay
+            setTimeout(() => {
+                this.reset();
+                clearFormErrors(clubRegistrationForm);
+                updateEnrollmentStatus(); // Update UI
+            }, 2000);
         });
     }
 
-    // Event Registration
+    // ---------------------------------------------------------
+    // CONFLICT 2 RESOLUTION: Event Registration
+    // Merged validation with Conflict Detection logic
+    // ---------------------------------------------------------
     const eventRegistrationForm = document.getElementById('event-registration-form');
     if (eventRegistrationForm) {
-        eventRegistrationForm.addEventListener('submit', function (e) {
+        // Define validation rules
+        const eventFormRules = {
+            'event-first-name': ['required', 'name', { type: 'minLength', value: 2 }],
+            'event-last-name': ['required', 'name', { type: 'minLength', value: 2 }],
+            'event-email': ['required', 'email'],
+            'event-student-id': ['required', 'studentId']
+        };
+        
+        // Initialize real-time validation
+        initRealTimeValidation(eventRegistrationForm, eventFormRules);
+        
+        eventRegistrationForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Clear previous errors
+            clearFormErrors(eventRegistrationForm);
+            
+            // Validate form fields
+            if (!validateForm(eventRegistrationForm, eventFormRules)) {
+                showFormError(eventRegistrationForm, 'Please fix the errors below before submitting.');
+                return;
+            }
 
+            // --- Business Logic (Conflict Check) ---
             const eventName = document.getElementById('selected-event-name').textContent;
             const studentId = document.getElementById('event-student-id').value;
-
+            
             // Check for conflicts if logged in
             const student = JSON.parse(localStorage.getItem('studentUser'));
             if (student && student.id === studentId) {
@@ -322,7 +384,7 @@ function initForms() {
                 if (currentEvent) {
                     const studentEvents = JSON.parse(localStorage.getItem(`events_${studentId}`)) || [];
 
-                    // Conflict detection: Same day, overlapping time (mocking 2 hour duration)
+                    // Conflict detection: Same day, overlapping time
                     const conflict = studentEvents.find(se => {
                         if (se.date !== currentEvent.date) return false;
                         const seTime = parseInt(se.time.split(':')[0]);
@@ -331,7 +393,7 @@ function initForms() {
                     });
 
                     if (conflict) {
-                        alert(`Conflict Detected! You are already registered for "${conflict.name}" at ${conflict.time} on this day.`);
+                        showFormError(eventRegistrationForm, `Conflict Detected! You are already registered for "${conflict.name}" at ${conflict.time} on this day.`);
                         return;
                     }
 
@@ -339,16 +401,26 @@ function initForms() {
                     localStorage.setItem(`events_${studentId}`, JSON.stringify(studentEvents));
                 }
             }
-
-            alert('Event registration submitted successfully!');
-            this.reset();
-            const container = document.getElementById('event-registration-form-container');
-            if (container) container.classList.add('hidden');
-            updateEnrollmentStatus();
+            // ---------------------------------------
+            
+            // Show success message
+            showFormSuccess(eventRegistrationForm, 'Event registration submitted successfully!');
+            
+            // Reset form and hide container after a short delay
+            setTimeout(() => {
+                this.reset();
+                clearFormErrors(eventRegistrationForm);
+                const container = document.getElementById('event-registration-form-container');
+                if (container) container.classList.add('hidden');
+                updateEnrollmentStatus();
+            }, 2000);
         });
     }
 
-    // Student Login
+    // ---------------------------------------------------------
+    // CONFLICT 3 RESOLUTION: Student Login
+    // Retained functionality from Main branch
+    // ---------------------------------------------------------
     const studentLoginForm = document.getElementById('student-login-form');
     if (studentLoginForm) {
         studentLoginForm.addEventListener('submit', function (e) {
@@ -369,21 +441,51 @@ function initForms() {
         });
     }
 
-    // Certificate Upload
+    // ---------------------------------------------------------
+    // CONFLICT 4 RESOLUTION: Certificate Upload
+    // Merged validation with File Check logic
+    // ---------------------------------------------------------
     const certificateForm = document.getElementById('certificate-form');
     if (certificateForm) {
-        certificateForm.addEventListener('submit', function (e) {
+        // Define validation rules for certificate form
+        const certificateFormRules = {
+            'certificate-student-id': ['required', 'studentId'],
+            'certificate-event': ['required']
+        };
+        
+        // Initialize real-time validation
+        initRealTimeValidation(certificateForm, certificateFormRules);
+        
+        certificateForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const studentId = document.getElementById('certificate-student-id').value;
-            const eventId = document.getElementById('certificate-event').value;
-            const certificateFile = document.getElementById('certificate-file').files[0];
-
-            if (!studentId || !eventId || !certificateFile) {
-                alert('Please fill all fields and select a file');
+            
+            // Clear previous errors
+            clearFormErrors(certificateForm);
+            
+            // Validate form fields
+            if (!validateForm(certificateForm, certificateFormRules)) {
+                showFormError(certificateForm, 'Please fix the errors below before submitting.');
                 return;
             }
-            alert(`Certificate for student ${studentId} for event ${eventId} uploaded successfully!`);
-            this.reset();
+            
+            // Check file upload (From Main logic)
+            const certificateFile = document.getElementById('certificate-file');
+            if (!certificateFile || !certificateFile.files[0]) {
+                showFormError(certificateForm, 'Please select a certificate file to upload.');
+                return;
+            }
+            
+            const studentId = document.getElementById('certificate-student-id').value;
+            const eventId = document.getElementById('certificate-event').value;
+            
+            // Show success message
+            showFormSuccess(certificateForm, `Certificate for student ${studentId} for event ${eventId} uploaded successfully!`);
+            
+            // Reset form after a short delay
+            setTimeout(() => {
+                this.reset();
+                clearFormErrors(certificateForm);
+            }, 2000);
         });
     }
 }
@@ -548,10 +650,37 @@ function initCalendar() {
         eventModal.style.display = 'flex';
     }
 
-    // Event Form Submit
+    // ---------------------------------------------------------
+    // CONFLICT 5 RESOLUTION: Calendar Event Form
+    // Merged validation with Event Creation/Update Logic
+    // ---------------------------------------------------------
     if (eventForm) {
-        eventForm.addEventListener('submit', function (e) {
+        // Define validation rules for event form
+        const eventFormRules = {
+            'event-name': ['required', { type: 'minLength', value: 3 }],
+            'event-club': ['required'],
+            'event-date': ['required'],
+            'event-time': ['required'],
+            'event-location': ['required', { type: 'minLength', value: 3 }],
+            'event-description': ['required', { type: 'minLength', value: 10 }]
+        };
+        
+        // Initialize real-time validation
+        initRealTimeValidation(eventForm, eventFormRules);
+        
+        eventForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Clear previous errors
+            clearFormErrors(eventForm);
+            
+            // Validate form
+            if (!validateForm(eventForm, eventFormRules)) {
+                showFormError(eventForm, 'Please fix the errors below before saving the event.');
+                return;
+            }
+            
+            // --- Business Logic (Main Branch) ---
             const eventData = {
                 name: document.getElementById('event-name').value,
                 club: document.getElementById('event-club').value,
@@ -563,14 +692,22 @@ function initCalendar() {
 
             if (selectedEvent) {
                 Object.assign(selectedEvent, eventData);
+                showFormSuccess(eventForm, 'Event updated successfully!');
             } else {
                 eventData.id = events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1;
                 events.push(eventData);
                 selectedEvent = eventData;
+                showFormSuccess(eventForm, 'Event created successfully!');
             }
-            renderCalendar();
-            showEventDetails(selectedEvent);
-            eventModal.style.display = 'none';
+            // ------------------------------------
+            
+            // Update calendar and close modal after short delay
+            setTimeout(() => {
+                renderCalendar();
+                showEventDetails(selectedEvent);
+                eventModal.style.display = 'none';
+                clearFormErrors(eventForm);
+            }, 1500);
         });
     }
 
@@ -671,6 +808,15 @@ function initAdmin() {
 
     // Login Submission
     if (adminLoginForm) {
+        // Define validation rules for admin login form
+        const adminLoginRules = {
+            'admin-username': ['required', { type: 'minLength', value: 3 }],
+            'admin-password': ['required', { type: 'minLength', value: 6 }]
+        };
+        
+        // Initialize real-time validation
+        initRealTimeValidation(adminLoginForm, adminLoginRules);
+        
         // Auto-fill if remembered
         if (localStorage.getItem('adminRemembered') === 'true') {
             const remembered = localStorage.getItem('adminUsername');
@@ -683,14 +829,19 @@ function initAdmin() {
 
         adminLoginForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            
+            // Clear previous errors
+            clearFormErrors(adminLoginForm);
+            
+            // Validate form
+            if (!validateForm(adminLoginForm, adminLoginRules)) {
+                showFormError(adminLoginForm, 'Please fix the errors below before submitting.');
+                return;
+            }
+            
             const username = document.getElementById('admin-username').value;
             const password = document.getElementById('admin-password').value;
             const rememberMe = document.getElementById('remember-me')?.checked;
-
-            if (!username || !password) {
-                alert('Please enter both username and password');
-                return;
-            }
 
             // Mock Validation
             if (username === 'admin' && password === 'admin123') {
@@ -704,7 +855,13 @@ function initAdmin() {
 
                 // Session Mock
                 localStorage.setItem('adminLoggedIn', 'true'); // Using local storage to persist across page loads in this demo
-
+                
+                // ---------------------------------------------------------
+                // CONFLICT 6 RESOLUTION: Admin Login Success
+                // Kept success message UI from inline-form-validation
+                // ---------------------------------------------------------
+                showFormSuccess(adminLoginForm, 'Login successful! Redirecting...');
+                
                 // UI Feedback
                 const loginButton = document.querySelector('.login-button');
                 if (loginButton) {
@@ -714,7 +871,7 @@ function initAdmin() {
                 setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 1000);
 
             } else {
-                alert('Invalid credentials. Please try again.');
+                showFormError(adminLoginForm, 'Invalid credentials. Please check your username and password.');
             }
         });
     }
@@ -737,14 +894,44 @@ function initAdmin() {
         }
     }
 
-    // Admin Event Management Form
+    // ---------------------------------------------------------
+    // CONFLICT 7 (Count correction: 6) RESOLUTION: Admin Event Form
+    // Merged validation with logic
+    // ---------------------------------------------------------
     const adminEventForm = document.getElementById('admin-event-form');
     if (adminEventForm) {
-        adminEventForm.addEventListener('submit', function (e) {
+        // Define validation rules for admin event form (if it exists)
+        const adminEventFormRules = {
+            'admin-event-name': ['required', { type: 'minLength', value: 3 }]
+        };
+        
+        // Initialize real-time validation if form exists
+        if (adminEventForm.querySelector('#admin-event-name')) {
+            initRealTimeValidation(adminEventForm, adminEventFormRules);
+        }
+        
+        adminEventForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('admin-event-name').value;
-            alert(`Event "${name}" saved successfully!`);
-            this.reset();
+            
+            // Clear previous errors
+            clearFormErrors(adminEventForm);
+            
+            // Validate form if it has the expected fields
+            if (adminEventForm.querySelector('#admin-event-name')) {
+                if (!validateForm(adminEventForm, adminEventFormRules)) {
+                    showFormError(adminEventForm, 'Please fix the errors below before saving.');
+                    return;
+                }
+            }
+            
+            const name = document.getElementById('admin-event-name')?.value || 'Event';
+            showFormSuccess(adminEventForm, `Event "${name}" saved successfully!`);
+            
+            // Reset form after a short delay
+            setTimeout(() => {
+                this.reset();
+                clearFormErrors(adminEventForm);
+            }, 2000);
         });
     }
 

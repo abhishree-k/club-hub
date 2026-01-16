@@ -146,6 +146,18 @@ We welcome contributions from all experience levels 💙
 
 📌 Please read **CONTRIBUTING.md** before contributing.
 
+## 🧑‍🤝‍🧑 Contributors
+
+Thanks to all the amazing people who have contributed to **ClubHub** 💙
+
+<a href="https://github.com/abhishree-k/club-hub/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=abhishree-k/club-hub" />
+</a>
+
+Want to see you here?  
+Check out the **Contributing Guide** and start contributing 🚀
+
+
 ### Contribution Flow
 ```bash
 git checkout -b feature/your-feature

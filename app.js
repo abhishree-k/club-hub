@@ -11,10 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
     initAdmin();
     initAnimations();
     initStudentSession();
-  
+
     const yearEl = document.getElementById("year");
-      if (yearEl) {
-          yearEl.textContent = new Date().getFullYear();
+    if (yearEl) {
+        yearEl.textContent = new Date().getFullYear();
     }
 });
 
@@ -66,7 +66,7 @@ function initNavigation() {
             hamburger.classList.toggle('active');
         });
     }
-  
+
 
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -314,24 +314,108 @@ function initForms() {
     // Club Registration
     const clubRegistrationForm = document.getElementById('club-registration-form');
     if (clubRegistrationForm) {
+        // Clear errors on input
+        clubRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', function() {
+                clearFieldError(this);
+            });
+        });
+
         clubRegistrationForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            clearFormErrors(this);
 
-            const studentId = document.getElementById('club-student-id').value;
+            // Validate all required fields
+            const firstName = document.getElementById('club-first-name');
+            const lastName = document.getElementById('club-last-name');
+            const email = document.getElementById('club-email');
+            const studentId = document.getElementById('club-student-id');
+            const major = document.getElementById('club-major');
+            const year = document.getElementById('club-year');
+            
+            let isValid = true;
+
+            if (!firstName.value.trim()) {
+                showFieldError(firstName, 'First name is required');
+                isValid = false;
+            }
+
+            if (!lastName.value.trim()) {
+                showFieldError(lastName, 'Last name is required');
+                isValid = false;
+            }
+
+            if (!email.value.trim()) {
+                showFieldError(email, 'Email is required');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                showFieldError(email, 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            if (!studentId.value.trim()) {
+                showFieldError(studentId, 'Student ID is required');
+                isValid = false;
+            }
+
+            if (!major.value.trim()) {
+                showFieldError(major, 'Major is required');
+                isValid = false;
+            }
+
+            if (!year.value) {
+                showFieldError(year, 'Please select your year of study');
+                isValid = false;
+            }
+
             const selectedClubs = Array.from(this.querySelectorAll('input[name="club"]:checked')).map(cb => cb.value);
+            const clubCheckboxContainer = this.querySelector('.club-checkboxes');
 
+            if (selectedClubs.length === 0) {
+                // Avoid duplicating error elements
+                let existingClubError = clubCheckboxContainer.parentNode.querySelector('.form-error.club-error');
+                if (!existingClubError) {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.classList.add('form-error', 'club-error');
+                    errorMsg.textContent = 'Please select at least one club';
+                    errorMsg.style.marginTop = '0.5rem';
+                    clubCheckboxContainer.parentNode.appendChild(errorMsg);
+                }
+
+                // Attach change listeners once to clear the error when a club is selected
+                if (!clubCheckboxContainer.dataset.clubListenersAttached) {
+                    const clubCheckboxes = this.querySelectorAll('input[name="club"]');
+                    clubCheckboxes.forEach(cb => {
+                        cb.addEventListener('change', () => {
+                            const anyChecked = clubCheckboxContainer.querySelectorAll('input[name="club"]:checked').length > 0;
+                            const clubError = clubCheckboxContainer.parentNode.querySelector('.form-error.club-error');
+                            if (anyChecked && clubError) {
+                                clubError.remove();
+                            }
+                        });
+                    });
+                    clubCheckboxContainer.dataset.clubListenersAttached = 'true';
+                }
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            // Save to localStorage if user is logged in
             if (selectedClubs.length > 0) {
                 const student = JSON.parse(localStorage.getItem('studentUser'));
-                if (student && student.id === studentId) {
-                    const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${studentId}`)) || [];
+                if (student && student.id === studentId.value) {
+                    const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${studentId.value}`)) || [];
                     selectedClubs.forEach(club => {
                         if (!joinedClubs.includes(club)) joinedClubs.push(club);
                     });
-                    localStorage.setItem(`clubs_${studentId}`, JSON.stringify(joinedClubs));
+                    localStorage.setItem(`clubs_${studentId.value}`, JSON.stringify(joinedClubs));
                 }
             }
 
-            alert('Club registration submitted successfully!');
+            showFormSuccess(this, 'Club registration submitted successfully! We will contact you soon.');
             this.reset();
             updateEnrollmentStatus();
         });
@@ -340,15 +424,55 @@ function initForms() {
     // Event Registration
     const eventRegistrationForm = document.getElementById('event-registration-form');
     if (eventRegistrationForm) {
+        // Clear errors on input
+        eventRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', function() {
+                clearFieldError(this);
+            });
+        });
+
         eventRegistrationForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            clearFormErrors(this);
 
             const eventName = document.getElementById('selected-event-name').textContent;
-            const studentId = document.getElementById('event-student-id').value;
+            const firstName = document.getElementById('event-first-name');
+            const lastName = document.getElementById('event-last-name');
+            const email = document.getElementById('event-email');
+            const studentId = document.getElementById('event-student-id');
+
+            let isValid = true;
+
+            if (!firstName.value.trim()) {
+                showFieldError(firstName, 'First name is required');
+                isValid = false;
+            }
+
+            if (!lastName.value.trim()) {
+                showFieldError(lastName, 'Last name is required');
+                isValid = false;
+            }
+
+            if (!email.value.trim()) {
+                showFieldError(email, 'Email is required');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                showFieldError(email, 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            if (!studentId.value.trim()) {
+                showFieldError(studentId, 'Student ID is required');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
 
             // Check for conflicts if logged in
             const student = JSON.parse(localStorage.getItem('studentUser'));
-            if (student && student.id === studentId) {
+            if (student && student.id === studentId.value) {
                 const events = [
                     { id: 1, name: "AI Workshop Series", date: "2023-11-15", time: "14:00" },
                     { id: 2, name: "Digital Art Masterclass", date: "2023-11-20", time: "16:00" },
@@ -357,7 +481,7 @@ function initForms() {
 
                 const currentEvent = events.find(ev => ev.name === eventName);
                 if (currentEvent) {
-                    const studentEvents = JSON.parse(localStorage.getItem(`events_${studentId}`)) || [];
+                    const studentEvents = JSON.parse(localStorage.getItem(`events_${studentId.value}`)) || [];
 
                     // Conflict detection: Same day, overlapping time (mocking 2 hour duration)
                     const conflict = studentEvents.find(se => {
@@ -368,19 +492,21 @@ function initForms() {
                     });
 
                     if (conflict) {
-                        alert(`Conflict Detected! You are already registered for "${conflict.name}" at ${conflict.time} on this day.`);
+                        showFieldError(studentId, `Conflict Detected! You are already registered for "${conflict.name}" at ${conflict.time} on this day.`);
                         return;
                     }
 
                     studentEvents.push(currentEvent);
-                    localStorage.setItem(`events_${studentId}`, JSON.stringify(studentEvents));
+                    localStorage.setItem(`events_${studentId.value}`, JSON.stringify(studentEvents));
                 }
             }
 
-            alert('Event registration submitted successfully!');
-            this.reset();
-            const container = document.getElementById('event-registration-form-container');
-            if (container) container.classList.add('hidden');
+            showFormSuccess(this, 'Event registration submitted successfully!');
+            setTimeout(() => {
+                this.reset();
+                const container = document.getElementById('event-registration-form-container');
+                if (container) container.classList.add('hidden');
+            }, 5000);
             updateEnrollmentStatus();
         });
     }
@@ -388,39 +514,105 @@ function initForms() {
     // Student Login
     const studentLoginForm = document.getElementById('student-login-form');
     if (studentLoginForm) {
+        // Clear errors on input
+        studentLoginForm.querySelectorAll('input').forEach(field => {
+            field.addEventListener('input', function() {
+                clearFieldError(this);
+            });
+        });
+
         studentLoginForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            const name = document.getElementById('login-student-name').value;
-            const id = document.getElementById('login-student-id').value;
+            clearFormErrors(this);
 
-            if (name && id) {
-                const student = { name, id };
-                localStorage.setItem('studentUser', JSON.stringify(student));
-                updateUIForStudent();
-                document.getElementById('login-message').textContent = 'Login successful!';
-                setTimeout(() => {
-                    const clubTab = document.querySelector('[data-tab="club-registration"]');
-                    if (clubTab) clubTab.click();
-                }, 1000);
+            const nameField = document.getElementById('login-student-name');
+            const idField = document.getElementById('login-student-id');
+            const name = nameField.value.trim();
+            const id = idField.value.trim();
+
+            let isValid = true;
+
+            if (!name) {
+                showFieldError(nameField, 'Full name is required');
+                isValid = false;
             }
+
+            if (!id) {
+                showFieldError(idField, 'Student ID is required');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            const student = { name, id };
+            localStorage.setItem('studentUser', JSON.stringify(student));
+            updateUIForStudent();
+            
+            const loginMessage = document.getElementById('login-message');
+            if (loginMessage) {
+                loginMessage.textContent = 'Login successful! Redirecting...';
+                loginMessage.style.color = 'var(--success-color)';
+            }
+            
+            setTimeout(() => {
+                const clubTab = document.querySelector('[data-tab="club-registration"]');
+                if (clubTab) clubTab.click();
+            }, 1000);
         });
     }
 
     // Certificate Upload
     const certificateForm = document.getElementById('certificate-form');
     if (certificateForm) {
+        // Clear errors on input/change
+        certificateForm.querySelectorAll('input, select').forEach(field => {
+            field.addEventListener('input', function() {
+                clearFieldError(this);
+            });
+            field.addEventListener('change', function() {
+                clearFieldError(this);
+            });
+        });
+
         certificateForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            const studentId = document.getElementById('certificate-student-id').value;
-            const eventId = document.getElementById('certificate-event').value;
-            const certificateFile = document.getElementById('certificate-file').files[0];
+            clearFormErrors(this);
 
-            if (!studentId || !eventId || !certificateFile) {
-                alert('Please fill all fields and select a file');
+            const studentIdField = document.getElementById('certificate-student-id');
+            const eventIdField = document.getElementById('certificate-event');
+            const fileField = document.getElementById('certificate-file');
+
+            const studentId = studentIdField.value.trim();
+            const eventId = eventIdField.value;
+            const certificateFile = fileField.files[0];
+
+            let isValid = true;
+
+            if (!studentId) {
+                showFieldError(studentIdField, 'Student ID is required');
+                isValid = false;
+            }
+
+            if (!eventId) {
+                showFieldError(eventIdField, 'Please select an event');
+                isValid = false;
+            }
+
+            if (!certificateFile) {
+                showFieldError(fileField, 'Please select a certificate file');
+                isValid = false;
+            }
+
+            if (!isValid) {
                 return;
             }
-            alert(`Certificate for student ${studentId} for event ${eventId} uploaded successfully!`);
-            this.reset();
+
+            showFormSuccess(this, `Certificate for student ${studentId} for event ${eventId} uploaded successfully!`);
+            setTimeout(() => {
+                this.reset();
+            }, 3000);
         });
     }
 }
@@ -697,6 +889,46 @@ function initAdmin() {
     const adminLoginForm = document.getElementById('admin-login-form');
     const togglePassword = document.querySelector('.toggle-password');
     const passwordInput = document.getElementById('admin-password');
+    const confirmPasswordGroup = document.getElementById('confirm-password-group');
+    const confirmPasswordInput = document.getElementById('admin-confirm-password');
+    const tabLogin = document.getElementById('tab-login');
+    const tabSignup = document.getElementById('tab-signup');
+    const toggleModeLink = document.getElementById('toggle-mode');
+    const loginButton = document.querySelector('.login-button');
+    const footerText = document.getElementById('footer-text');
+
+    let isLoginMode = true;
+
+    function toggleMode(login) {
+        isLoginMode = login;
+        if (login) {
+            confirmPasswordGroup.style.display = 'none';
+            loginButton.textContent = 'Login';
+            tabLogin.classList.add('active');
+            tabSignup.classList.remove('active');
+            footerText.textContent = "Don't have an account?";
+            toggleModeLink.textContent = "Sign Up";
+        } else {
+            confirmPasswordGroup.style.display = 'block';
+            loginButton.textContent = 'Create Account';
+            tabSignup.classList.add('active');
+            tabLogin.classList.remove('active');
+            footerText.textContent = "Already have an account?";
+            toggleModeLink.textContent = "Login";
+        }
+    }
+
+    if (tabLogin && tabSignup) {
+        tabLogin.addEventListener('click', () => toggleMode(true));
+        tabSignup.addEventListener('click', () => toggleMode(false));
+    }
+
+    if (toggleModeLink) {
+        toggleModeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMode(!isLoginMode);
+        });
+    }
 
     // Password Toggle
     if (togglePassword && passwordInput) {
@@ -719,43 +951,97 @@ function initAdmin() {
             }
         }
 
+        // Clear errors on input
+        adminLoginForm.querySelectorAll('input').forEach(field => {
+            field.addEventListener('input', function() {
+                clearFieldError(this);
+            });
+        });
+
         adminLoginForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            const username = document.getElementById('admin-username').value;
-            const password = document.getElementById('admin-password').value;
+            clearFormErrors(this);
+
+            const usernameField = document.getElementById('admin-username');
+            const passwordField = document.getElementById('admin-password');
+            const username = usernameField.value.trim();
+            const password = passwordField.value.trim();
             const rememberMe = document.getElementById('remember-me')?.checked;
 
-            if (!username || !password) {
-                alert('Please enter both username and password');
+            let isValid = true;
+
+            if (!username) {
+                showFieldError(usernameField, 'Username is required');
+                isValid = false;
+            }
+
+            if (!password) {
+                showFieldError(passwordField, 'Password is required');
+                isValid = false;
+            }
+
+            if (!isValid) {
                 return;
             }
 
-            // Mock Validation
-            if (username === 'admin' && password === 'admin123') {
-                if (rememberMe) {
-                    localStorage.setItem('adminRemembered', 'true');
-                    localStorage.setItem('adminUsername', username);
+            if (isLoginMode) {
+                // LOGIN LOGIC
+                // Check stored custom admins first, then hardcoded default
+                const result = checkAdminCredentials(username, password);
+
+                if (result.success) {
+                    if (rememberMe) {
+                        localStorage.setItem('adminRemembered', 'true');
+                        localStorage.setItem('adminUsername', username);
+                    } else {
+                        localStorage.removeItem('adminRemembered');
+                        localStorage.removeItem('adminUsername');
+                    }
+
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    localStorage.setItem('currentAdminUser', username);
+
+                    if (loginButton) {
+                        loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Logging in...</span>';
+                        loginButton.disabled = true;
+                    }
+                    setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 1000);
                 } else {
-                    localStorage.removeItem('adminRemembered');
-                    localStorage.removeItem('adminUsername');
+                    alert('Invalid credentials. Please try again.');
+                }
+            } else {
+                // SIGN UP LOGIC
+                const confirmPass = confirmPasswordInput.value;
+                if (password !== confirmPass) {
+                    alert('Passwords do not match!');
+                    return;
                 }
 
-                // Session Mock
-                localStorage.setItem('adminLoggedIn', 'true'); // Using local storage to persist across page loads in this demo
-
-                // UI Feedback
-                const loginButton = document.querySelector('.login-button');
-                if (loginButton) {
-                    loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Logging in...</span>';
-                    loginButton.disabled = true;
+                // Check if user exists
+                const existingAdmins = JSON.parse(localStorage.getItem('adminUsers')) || [];
+                if (username === 'admin' || existingAdmins.some(u => u.username === username)) {
+                    alert('Username already exists. Please choose another.');
+                    return;
                 }
-                setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 1000);
 
             } else {
-                alert('Invalid credentials. Please try again.');
+                showFieldError(passwordField, 'Invalid credentials. Please try again.');
             }
         });
     }
+
+    function checkAdminCredentials(u, p) {
+        // 1. Default Hardcoded
+        if (u === 'admin' && p === 'admin123') return { success: true };
+
+        // 2. Local Storage
+        const admins = JSON.parse(localStorage.getItem('adminUsers')) || [];
+        const found = admins.find(user => user.username === u && user.password === p);
+        if (found) return { success: true };
+
+        return { success: false };
+    }
+
 
     // 6b. Admin Dashboard Logic
     const adminDashboard = document.getElementById('admin-dashboard');
@@ -767,18 +1053,18 @@ function initAdmin() {
             // Init Sidebar Navigation
             const sidebarLinks = document.querySelectorAll('.admin-menu a');
             const sections = document.querySelectorAll('.admin-tab-content');
-            
+
             sidebarLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
                     const href = link.getAttribute('href');
                     if (href && href.startsWith('#')) {
                         e.preventDefault();
                         const targetId = href.substring(1);
-                        
+
                         // Update Active State
                         document.querySelectorAll('.admin-menu li').forEach(li => li.classList.remove('active'));
                         link.parentElement.classList.add('active');
-                        
+
                         // Show Target Section
                         sections.forEach(sec => sec.style.display = 'none');
                         const targetSec = document.getElementById(targetId);
@@ -788,6 +1074,7 @@ function initAdmin() {
             });
 
             loadAdminDashboard();
+            initClubManagement();
             const logoutButton = document.getElementById('admin-logout');
             if (logoutButton) {
                 logoutButton.addEventListener('click', function () {
@@ -801,11 +1088,66 @@ function initAdmin() {
     // Admin Event Management Form
     const adminEventForm = document.getElementById('admin-event-form');
     if (adminEventForm) {
+        // Clear errors on input
+        adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', function() {
+                clearFieldError(this);
+            });
+        });
+
         adminEventForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            const name = document.getElementById('admin-event-name').value;
-            alert(`Event "${name}" saved successfully!`);
-            this.reset();
+            clearFormErrors(this);
+
+            const nameField = document.getElementById('admin-event-name');
+            const clubField = document.getElementById('admin-event-club');
+            const dateField = document.getElementById('admin-event-date');
+            const timeField = document.getElementById('admin-event-time');
+            const locationField = document.getElementById('admin-event-location');
+
+            const name = nameField?.value.trim();
+            const club = clubField?.value;
+            const date = dateField?.value;
+            const time = timeField?.value;
+            const location = locationField?.value.trim();
+
+            let isValid = true;
+
+            if (!name) {
+                showFieldError(nameField, 'Event name is required');
+                isValid = false;
+            }
+
+            if (!club) {
+                showFieldError(clubField, 'Please select a club');
+                isValid = false;
+            }
+
+            if (!date) {
+                showFieldError(dateField, 'Event date is required');
+                isValid = false;
+            }
+
+            if (!time) {
+                showFieldError(timeField, 'Event time is required');
+                isValid = false;
+            }
+
+            if (!location) {
+                showFieldError(locationField, 'Event location is required');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            showFormSuccess(this, `Event "${name}" saved successfully!`);
+            setTimeout(() => {
+                this.reset();
+            }, 2000);
+        });
+    }
         });
     }
 
@@ -840,7 +1182,7 @@ function initAdmin() {
         // Render Event Registrations
         const eventRegistrationsTable = document.getElementById('event-registrations-table');
         if (eventRegistrationsTable) {
-             eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+            eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
             const eventRegs = [
                 { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
             ];
@@ -1053,6 +1395,139 @@ function updateEnrollmentStatus() {
                 regBtn.disabled = true;
                 regBtn.style.background = 'var(--success-color)';
                 regBtn.style.cursor = 'default';
+            }
+        }
+    });
+}
+
+/**
+ * 8. Club Management Logic
+ * Handles CRUD operations for club memberships in the Admin Dashboard.
+ */
+function initClubManagement() {
+    const tableBody = document.querySelector('#clubs-table tbody');
+    const addBtn = document.getElementById('add-club-member-btn');
+    const modal = document.getElementById('club-member-modal');
+    const form = document.getElementById('club-member-form');
+    const closeBtns = document.querySelectorAll('.close-club-modal');
+
+    // Make sure we are on the admin dashboard
+    if (!tableBody) return;
+
+    // 1. Initial Data Load & Mocking
+    let memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
+    if (memberships.length === 0) {
+        memberships = [
+            { id: 1, name: 'Alice Walker', studentId: 'S1001', club: 'tech', status: 'Active' },
+            { id: 2, name: 'Bob Builder', studentId: 'S1002', club: 'arts', status: 'Pending' },
+            { id: 3, name: 'Charlie Day', studentId: 'S1003', club: 'debate', status: 'Active' }
+        ];
+        localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
+    }
+
+    // 2. Render Table
+    function renderTable() {
+        tableBody.innerHTML = '';
+        memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
+
+        const getClubName = (code) => {
+            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD' };
+            return map[code] || code;
+        };
+
+        memberships.forEach(m => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>#${m.id}</td>
+                <td>${m.name}</td>
+                <td>${m.studentId}</td>
+                <td>${getClubName(m.club)}</td>
+                <td><span class="status-${m.status.toLowerCase()}">${m.status}</span></td>
+                <td>
+                    <button class="admin-action edit-club" data-id="${m.id}"><i class="fas fa-edit"></i></button>
+                    <button class="admin-action delete-club" data-id="${m.id}"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    renderTable();
+
+    // 3. Modal Actions
+    function openModal(member = null) {
+        const title = document.getElementById('club-modal-title');
+        const idInput = document.getElementById('club-member-id');
+        const nameInput = document.getElementById('club-student-name');
+        const dbIdInput = document.getElementById('club-student-db-id');
+        const clubInput = document.getElementById('club-select');
+        const statusInput = document.getElementById('club-status');
+
+        if (member) {
+            title.textContent = 'Edit Club Member';
+            idInput.value = member.id;
+            nameInput.value = member.name;
+            dbIdInput.value = member.studentId;
+            clubInput.value = member.club;
+            statusInput.value = member.status;
+        } else {
+            title.textContent = 'Add Club Member';
+            form.reset();
+            idInput.value = '';
+        }
+        modal.style.display = 'block';
+    }
+
+    if (addBtn) addBtn.addEventListener('click', () => openModal());
+
+    closeBtns.forEach(btn => btn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    }));
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+
+    // 4. Form Submit
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('club-member-id').value;
+        const name = document.getElementById('club-student-name').value;
+        const studentId = document.getElementById('club-student-db-id').value;
+        const club = document.getElementById('club-select').value;
+        const status = document.getElementById('club-status').value;
+
+        if (id) {
+            // Edit
+            const index = memberships.findIndex(m => m.id == id);
+            if (index !== -1) {
+                memberships[index] = { id: parseInt(id), name, studentId, club, status };
+            }
+        } else {
+            // Add
+            const newId = memberships.length > 0 ? Math.max(...memberships.map(m => m.id)) + 1 : 1;
+            memberships.push({ id: newId, name, studentId, club, status });
+        }
+
+        localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
+        renderTable();
+        modal.style.display = 'none';
+    });
+
+    // 5. Table Actions (Edit/Delete)
+    tableBody.addEventListener('click', (e) => {
+        const btn = e.target.closest('.admin-action');
+        if (!btn) return;
+
+        const id = btn.getAttribute('data-id');
+        if (btn.classList.contains('edit-club')) {
+            const member = memberships.find(m => m.id == id);
+            openModal(member);
+        } else if (btn.classList.contains('delete-club')) {
+            if (confirm('Are you sure you want to remove this member?')) {
+                memberships = memberships.filter(m => m.id != id);
+                localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
+                renderTable();
             }
         }
     });

@@ -2269,3 +2269,75 @@ img {
         gap: 0.5rem;
     }
 }
+
+
+/* =====================================================
+   FIX: Add New Event Modal – Form Visibility & Contrast
+   Issue #35 | SWoC 2026
+   ===================================================== */
+
+/* Modal title visibility */
+#modal-title {
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+/* Form labels – brighter & clearer */
+.modal-content .form-group label {
+    color: #f5f5f5;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    opacity: 1;
+}
+
+/* Input, select & textarea text visibility */
+.modal-content .form-group input,
+.modal-content .form-group select,
+.modal-content .form-group textarea {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Placeholder styling (different from user text) */
+.modal-content .form-group input::placeholder,
+.modal-content .form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+}
+
+/* Focus state – strong visual feedback */
+.modal-content .form-group input:focus,
+.modal-content .form-group select:focus,
+.modal-content .form-group textarea:focus {
+    border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(253, 121, 168, 0.3);
+}
+
+/* Select dropdown arrow visibility (dark mode) */
+.modal-content select option {
+    background: #1a1a2e;
+    color: #ffffff;
+}
+
+/* Improve spacing between form elements */
+.modal-content .form-group {
+    margin-bottom: 1.8rem;
+}
+
+/* Buttons clarity */
+.modal-content .modal-button {
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+/* Delete button better contrast */
+.modal-content .modal-button.danger {
+    background: rgba(214, 48, 49, 0.25);
+    color: #ff7675;
+    border: 1px solid rgba(214, 48, 49, 0.6);
+}
+

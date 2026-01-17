@@ -67,7 +67,6 @@ The test suite covers:
 - ✅ showFormSuccess() function
   - Success message display
   - ARIA status roles
-  - Auto-dismiss behavior
 - ✅ clearFormErrors() function
   - Clear all form errors
   - Clear success messages

@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎓 ClubHub  
+# 🎓 DSCE Clubs  
 ### Centralized Club Management Platform
 
 <p align="center">
@@ -19,7 +19,7 @@ A modern, lightweight, and open-source web platform for managing clubs, events, 
 
 ## 📖 About The Project
 
-**ClubHub** is a centralized, web-based platform designed to simplify **club management, event coordination, and campus communication** within educational institutions.
+**DSCE Clubs** is a centralized, web-based platform designed to simplify **club management, event coordination, and campus communication** within educational institutions.
 
 It offers a **single, unified interface** for students, club leads, and faculty administrators—ensuring transparency, accessibility, and smooth coordination of campus activities.
 
@@ -36,7 +36,7 @@ Educational institutions often face:
 
 ### ✅ Solution
 
-**ClubHub** brings all club-related activities under **one structured, accessible, and transparent system**.
+**DSCE Clubs** brings all club-related activities under **one structured, accessible, and transparent system**.
 
 ---
 
@@ -148,7 +148,7 @@ We welcome contributions from all experience levels 💙
 
 ## 🧑‍🤝‍🧑 Contributors
 
-Thanks to all the amazing people who have contributed to **ClubHub** 💙
+Thanks to all the amazing people who have contributed to **DSCE Clubs** 💙
 
 <a href="https://github.com/abhishree-k/club-hub/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=abhishree-k/club-hub" />

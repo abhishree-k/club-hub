@@ -329,7 +329,7 @@ function initForms() {
     if (clubRegistrationForm) {
         // Clear errors on input
         clubRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -345,7 +345,7 @@ function initForms() {
             const studentId = document.getElementById('club-student-id');
             const major = document.getElementById('club-major');
             const year = document.getElementById('club-year');
-            
+
             let isValid = true;
 
             if (!firstName.value.trim()) {
@@ -439,7 +439,7 @@ function initForms() {
     if (eventRegistrationForm) {
         // Clear errors on input
         eventRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -530,7 +530,7 @@ function initForms() {
     if (studentLoginForm) {
         // Clear errors on input
         studentLoginForm.querySelectorAll('input').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -563,13 +563,13 @@ function initForms() {
             const student = { name, id };
             localStorage.setItem('studentUser', JSON.stringify(student));
             updateUIForStudent();
-            
+
             const loginMessage = document.getElementById('login-message');
             if (loginMessage) {
                 loginMessage.textContent = 'Login successful! Redirecting...';
                 loginMessage.style.color = 'var(--success-color)';
             }
-            
+
             setTimeout(() => {
                 const clubTab = document.querySelector('[data-tab="club-registration"]');
                 if (clubTab) clubTab.click();
@@ -582,10 +582,10 @@ function initForms() {
     if (certificateForm) {
         // Clear errors on input/change
         certificateForm.querySelectorAll('input, select').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
-            field.addEventListener('change', function() {
+            field.addEventListener('change', function () {
                 clearFieldError(this);
             });
         });
@@ -967,7 +967,7 @@ function initAdmin() {
 
         // Clear errors on input
         adminLoginForm.querySelectorAll('input').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -1104,7 +1104,7 @@ function initAdmin() {
     if (adminEventForm) {
         // Clear errors on input
         adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -1162,60 +1162,60 @@ function initAdmin() {
             }, 2000);
         });
     }
-        });
+});
     }
 
-    function loadAdminDashboard() {
-        // Helper
-        const getClubName = (id) => {
-            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
-            return map[id] || id;
-        };
+function loadAdminDashboard() {
+    // Helper
+    const getClubName = (id) => {
+        const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
+        return map[id] || id;
+    };
 
-        // Render Student Registrations
-        const registrationsTable = document.getElementById('registrations-table');
-        if (registrationsTable) {
-            registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const registrations = [
-                { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
-                { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
-            ];
-            registrations.forEach(reg => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+    // Render Student Registrations
+    const registrationsTable = document.getElementById('registrations-table');
+    if (registrationsTable) {
+        registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const registrations = [
+            { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
+        ];
+        registrations.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                     <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
                     <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
                     <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
                     <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
                         <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
                 `;
-                registrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
+            registrationsTable.querySelector('tbody').appendChild(row);
+        });
+    }
 
-        // Render Event Registrations
-        const eventRegistrationsTable = document.getElementById('event-registrations-table');
-        if (eventRegistrationsTable) {
-            eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const eventRegs = [
-                { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
-            ];
-            eventRegs.forEach(reg => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+    // Render Event Registrations
+    const eventRegistrationsTable = document.getElementById('event-registrations-table');
+    if (eventRegistrationsTable) {
+        eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const eventRegs = [
+            { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
+        ];
+        eventRegs.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                     <td>${reg.id}</td><td>Event ${reg.eventId}</td><td>${reg.name}</td><td>${reg.email}</td>
                     <td>${reg.studentId}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
                     <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
                         <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
                 `;
-                eventRegistrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
-
-        // Dashboard Button Actions
-        document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
-        document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
+            eventRegistrationsTable.querySelector('tbody').appendChild(row);
+        });
     }
+
+    // Dashboard Button Actions
+    document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
+    document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
+}
 }
 
 /**

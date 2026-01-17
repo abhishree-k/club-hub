@@ -535,7 +535,7 @@ function initForms() {
                 this.reset();
                 const container = document.getElementById('event-registration-form-container');
                 if (container) container.classList.add('hidden');
-            }, 2000);
+            }, 5000);
             updateEnrollmentStatus();
         });
     }

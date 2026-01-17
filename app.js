@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', function () {
  * element.innerHTML = safe; // Renders as text, not executed
  * 
  * @example
- * // Safe display of user names
- * const userName = escapeHtml(localStorage.getItem('userName'));
- * document.getElementById('welcome').textContent = userName;
+ * // Safe display of user names using innerHTML with sanitization
+ * const userName = localStorage.getItem('userName');
+ * document.getElementById('welcome').innerHTML = escapeHtml(userName);
  */
 function escapeHtml(unsafe) {
     if (typeof unsafe !== 'string') {

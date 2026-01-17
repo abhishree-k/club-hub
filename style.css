@@ -793,6 +793,12 @@ img {
     transition: var(--transition);
 }
 
+/* Fix: Year of Study dropdown option visibility */
+.form-group select option {
+    color: #2d3436;
+    background-color: #ffffff;
+}
+
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {

@@ -1019,3 +1019,36 @@ function updateEnrollmentStatus() {
         }
     });
 }
+
+/**
+ * Export functions for testing
+ * Only exports if running in Node.js environment (for Jest tests)
+ */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        // Helper functions
+        escapeHtml,
+        getFutureDate,
+        getCurrentMonthYear,
+        showFieldError,
+        clearFieldError,
+        showFormSuccess,
+        clearFormErrors,
+        
+        // Main initialization functions
+        initNavigation,
+        initMyHub,
+        initTestimonialsAndSliders,
+        initTabsAndModals,
+        initCalendar,
+        initForms,
+        initAdmin,
+        initAnimations,
+        initStudentSession,
+        initDynamicEventDates,
+        
+        // UI update functions
+        updateUIForStudent,
+        updateEnrollmentStatus
+    };
+}

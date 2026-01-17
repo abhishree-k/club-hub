@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', function () {
 function showFieldError(field, message) {
     if (!field) return;
     
+    // Remove any existing error state (class and message)
+    clearFieldError(field);
+    
     // Add error class to field
     field.classList.add('error');
-    
-    // Remove any existing error message
-    clearFieldError(field);
     
     // Create and insert error message
     const errorDiv = document.createElement('div');

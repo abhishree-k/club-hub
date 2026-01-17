@@ -19,6 +19,40 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /**
+ * Security: HTML Sanitization Utility
+ * Prevents XSS attacks by escaping HTML special characters.
+ */
+
+/**
+ * Escapes HTML special characters to prevent XSS attacks
+ * @param {string} unsafe - The untrusted string to sanitize
+ * @returns {string} - The sanitized string safe for DOM insertion
+ * 
+ * @example
+ * // Prevents XSS from user input
+ * const userInput = '<script>alert("XSS")</script>';
+ * const safe = escapeHtml(userInput);
+ * element.innerHTML = safe; // Renders as text, not executed
+ * 
+ * @example
+ * // Safe display of user names
+ * const userName = escapeHtml(localStorage.getItem('userName'));
+ * document.getElementById('welcome').textContent = userName;
+ */
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') {
+        return unsafe;
+    }
+    
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+/**
  * 1. Navigation & Scrolling Logic
  * Handles mobile menu toggling and smooth scrolling.
  */
@@ -67,7 +101,8 @@ function initMyHub() {
     }
 
     const welcomeMsg = document.getElementById('hub-welcome-msg');
-    if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${student.name}!`;
+    // Sanitize user name to prevent XSS
+    if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${escapeHtml(student.name)}!`;
 
     const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
     const registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
@@ -88,7 +123,8 @@ function initMyHub() {
                     'sports': { name: 'Sports Club', icon: '⚽' },
                     'science': { name: 'Dance club- ABCD', icon: '💃' }
                 };
-                const club = clubs[clubId] || { name: clubId, icon: '🌟' };
+                // Sanitize clubId to prevent XSS if custom club name is added
+                const club = clubs[clubId] || { name: escapeHtml(clubId), icon: '🌟' };
 
                 const item = document.createElement('div');
                 item.classList.add('hub-item');
@@ -116,10 +152,11 @@ function initMyHub() {
             registeredEvents.forEach(event => {
                 const item = document.createElement('div');
                 item.classList.add('hub-item');
+                // Sanitize event data from localStorage
                 item.innerHTML = `
                     <div class="hub-item-info">
-                        <h4>${event.name}</h4>
-                        <p><i class="far fa-calendar-alt"></i> ${event.date} | <i class="far fa-clock"></i> ${event.time}</p>
+                        <h4>${escapeHtml(event.name)}</h4>
+                        <p><i class="far fa-calendar-alt"></i> ${escapeHtml(event.date)} | <i class="far fa-clock"></i> ${escapeHtml(event.time)}</p>
                     </div>
                 `;
                 eventsList.appendChild(item);
@@ -499,19 +536,20 @@ function initCalendar() {
         if (!eventDetailsContainer) return;
         selectedEvent = event;
 
+        // Sanitize all event data before rendering
         eventDetailsContainer.innerHTML = `
             <div class="event-details">
                 <div class="event-header">
-                    <span class="event-club-badge ${event.club}">${getClubName(event.club)}</span>
+                    <span class="event-club-badge ${escapeHtml(event.club)}">${escapeHtml(getClubName(event.club))}</span>
                     <button id="edit-event" class="action-button"><i class="fas fa-edit"></i> Edit</button>
                 </div>
-                <h2 class="event-title">${event.name}</h2>
+                <h2 class="event-title">${escapeHtml(event.name)}</h2>
                 <div class="event-date-time">
-                    <span><i class="far fa-calendar-alt"></i> ${formatDate(event.date)}</span>
-                    <span><i class="far fa-clock"></i> ${event.time}</span>
+                    <span><i class="far fa-calendar-alt"></i> ${escapeHtml(formatDate(event.date))}</span>
+                    <span><i class="far fa-clock"></i> ${escapeHtml(event.time)}</span>
                 </div>
-                <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</div>
-                <p class="event-description">${event.description}</p>
+                <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location)}</div>
+                <p class="event-description">${escapeHtml(event.description)}</p>
                 <div class="event-actions">
                     <button id="register-for-event" class="action-button"><i class="fas fa-user-plus"></i> Register</button>
                     <button id="share-event" class="action-button"><i class="fas fa-share-alt"></i> Share</button>

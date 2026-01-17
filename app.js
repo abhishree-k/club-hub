@@ -23,18 +23,130 @@ document.addEventListener('DOMContentLoaded', function () {
  * Handles mobile menu toggling and smooth scrolling.
  */
 function initNavigation() {
-    const hamburger = document.querySelector('.nav-hamburger');
-    const navLinks = document.querySelector('.nav-links');
+    // Elements
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle'); // toggle button
+    const mobileMenu = document.querySelector('.nav-links'); // nav list
 
-    if (hamburger && navLinks) {
-        hamburger.addEventListener('click', function () {
-            navLinks.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        });
+    if (!mobileMenuToggle || !mobileMenu) return; // nothing to do if missing
+
+    const navLinks = mobileMenu.querySelectorAll('a');
+    let isMenuOpen = false;
+
+    // Open the menu and move focus to first link
+    function openMenu() {
+        isMenuOpen = true;
+        mobileMenu.classList.add('active');
+        mobileMenuToggle.classList.add('active');
+        mobileMenuToggle.setAttribute('aria-expanded', 'true');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+
+        // Focus the first link inside the menu (small delay to allow CSS transition)
+        setTimeout(() => {
+            const firstLink = mobileMenu.querySelector('a');
+            if (firstLink) firstLink.focus();
+        }, 50);
+
+        // Attach document key handler for Escape, Tab trap and arrow navigation
+        document.addEventListener('keydown', onDocumentKeyDown);
     }
-  
 
-    // Smooth scrolling for anchor links
+    // Close the menu and return focus to toggle
+    function closeMenu() {
+        isMenuOpen = false;
+        mobileMenu.classList.remove('active');
+        mobileMenuToggle.classList.remove('active');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        mobileMenuToggle.focus();
+
+        // Remove document-level key handler
+        document.removeEventListener('keydown', onDocumentKeyDown);
+    }
+
+    function toggleMenu() {
+        if (isMenuOpen) closeMenu(); else openMenu();
+    }
+
+    // Click to toggle
+    mobileMenuToggle.addEventListener('click', function () {
+        toggleMenu();
+    });
+
+    // Keyboard activation for toggle (Enter / Space)
+    mobileMenuToggle.addEventListener('keydown', function (event) {
+        // Activate on Enter or Space
+        if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+            event.preventDefault();
+            toggleMenu();
+        }
+    });
+
+    // Helper: move focus by delta within menu links (wraps around)
+    function moveFocus(delta) {
+        const focusable = Array.from(mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])'));
+        if (!focusable.length) return;
+
+        const currentIndex = focusable.indexOf(document.activeElement);
+        let nextIndex = currentIndex + delta;
+
+        // If nothing is focused inside the menu, focus the first (or last if delta < 0)
+        if (currentIndex === -1) {
+            nextIndex = delta > 0 ? 0 : focusable.length - 1;
+        }
+
+        // Wrap around
+        if (nextIndex < 0) nextIndex = focusable.length - 1;
+        if (nextIndex >= focusable.length) nextIndex = 0;
+
+        focusable[nextIndex].focus();
+    }
+
+    // Document-level keyboard handler: Escape to close, Tab to trap focus, Arrow keys to navigate
+    function onDocumentKeyDown(event) {
+        // Close on Escape
+        if (event.key === 'Escape') {
+            if (isMenuOpen) closeMenu();
+            return;
+        }
+
+        // Arrow navigation (Left/Up = previous, Right/Down = next)
+        if (isMenuOpen && (event.key === 'ArrowDown' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowLeft')) {
+            event.preventDefault();
+            if (event.key === 'ArrowDown' || event.key === 'ArrowRight') moveFocus(1);
+            else moveFocus(-1);
+            return;
+        }
+
+        // Focus trap: if menu is open and Tab is pressed, ensure focus cycles within menu
+        if (event.key === 'Tab' && isMenuOpen) {
+            const focusable = mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+            if (!focusable.length) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (event.shiftKey) { // Shift+Tab
+                if (document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                }
+            } else { // Tab
+                if (document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+        }
+    }
+
+    // Close when clicking outside the menu
+    document.addEventListener('click', function (event) {
+        if (isMenuOpen && !mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+            closeMenu();
+        }
+    });
+
+    // Smooth scrolling for anchor links (preserve previous behavior)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -50,9 +162,8 @@ function initNavigation() {
                 });
 
                 // Close mobile menu if open
-                if (navLinks && navLinks.classList.contains('active')) {
-                    navLinks.classList.remove('active');
-                    if (hamburger) hamburger.classList.remove('active');
+                if (mobileMenu && mobileMenu.classList.contains('active')) {
+                    closeMenu();
                 }
             }
         });

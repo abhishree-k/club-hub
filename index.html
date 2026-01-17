@@ -9,14 +9,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="stars-background"></div>
     
-    <nav class="cosmic-nav">
+    <nav class="cosmic-nav" role="navigation" aria-label="Main navigation">
         <div class="nav-logo">
             <span class="logo-icon">🌌</span>
             <span class="logo-text">DSCE Clubs</span>
         </div>
-        <ul class="nav-links">
+        <ul class="nav-links" id="nav-links" aria-hidden="true">
             <li><a href="index.html" class="active">Home</a></li>
             <li><a href="events.html">Live & Upcoming Events</a></li>
             <li><a href="past-events.html">Past Events</a></li>
@@ -26,11 +27,13 @@
             <li id="nav-login"><a href="registration.html#student-login">Student Login</a></li>
             <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
         </ul>
-        <div class="nav-hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
+        <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links" type="button">
+            <span class="hamburger-icon" aria-hidden="true">
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+            </span>
+        </button>
     </nav>
 
     <header class="hero-section">
@@ -46,7 +49,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main-content" tabindex="-1">
         <section id="clubs" class="clubs-section">
             <h2 class="section-title">Our <span class="text-gradient">Clubs</span></h2>
             <div class="clubs-grid">

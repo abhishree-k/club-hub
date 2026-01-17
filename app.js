@@ -102,7 +102,7 @@ function initMyHub() {
 
     const welcomeMsg = document.getElementById('hub-welcome-msg');
     // Sanitize user name to prevent XSS
-    if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${escapeHtml(student.name)}!`;
+    if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${student.name}!`;
 
     const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
     const registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];

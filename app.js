@@ -11,12 +11,59 @@ document.addEventListener('DOMContentLoaded', function () {
     initAdmin();
     initAnimations();
     initStudentSession();
+    initDynamicEventDates();
   
     const yearEl = document.getElementById("year");
       if (yearEl) {
           yearEl.textContent = new Date().getFullYear();
     }
 });
+
+/**
+ * Date Helper Functions
+ * Generates dynamic dates relative to today to keep events current.
+ */
+
+/**
+ * Gets a future date relative to today
+ * @param {number} daysFromNow - Number of days from today (positive for future)
+ * @returns {string} - Date in YYYY-MM-DD format
+ * 
+ * @example
+ * // Get a date 7 days from now
+ * const futureDate = getFutureDate(7); // "2026-01-24"
+ * 
+ * @example
+ * // Get today's date
+ * const today = getFutureDate(0); // "2026-01-17"
+ */
+function getFutureDate(daysFromNow) {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+}
+
+/**
+ * Gets the current month and year for calendar display
+ * @returns {Object} - Object with month and year properties
+ * 
+ * @example
+ * const current = getCurrentMonthYear();
+ * console.log(current.month); // 0-11 (January=0)
+ * console.log(current.year);  // 2026
+ */
+function getCurrentMonthYear() {
+    const date = new Date();
+    return {
+        month: date.getMonth(),
+        year: date.getFullYear()
+    };
+}
 
 /**
  * 1. Navigation & Scrolling Logic
@@ -312,10 +359,11 @@ function initForms() {
             // Check for conflicts if logged in
             const student = JSON.parse(localStorage.getItem('studentUser'));
             if (student && student.id === studentId) {
+                // Dynamic event dates - updated to use relative dates
                 const events = [
-                    { id: 1, name: "AI Workshop Series", date: "2023-11-15", time: "14:00" },
-                    { id: 2, name: "Digital Art Masterclass", date: "2023-11-20", time: "16:00" },
-                    { id: 3, name: "Public Speaking Workshop", date: "2023-11-22", time: "15:00" }
+                    { id: 1, name: "AI Workshop Series", date: getFutureDate(7), time: "14:00" },
+                    { id: 2, name: "Digital Art Masterclass", date: getFutureDate(14), time: "16:00" },
+                    { id: 3, name: "Public Speaking Workshop", date: getFutureDate(21), time: "15:00" }
                 ];
 
                 const currentEvent = events.find(ev => ev.name === eventName);
@@ -414,11 +462,11 @@ function initCalendar() {
     let currentYear = currentDate.getFullYear();
     let selectedEvent = null;
 
-    // Sample events data
+    // Sample events data - using dynamic dates for current/future events
     let events = [
-        { id: 1, name: "AI Workshop", club: "tech", date: "2023-11-15", time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
-        { id: 2, name: "Digital Art Masterclass", club: "arts", date: "2023-11-20", time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
-        { id: 3, name: "Public Speaking Workshop", club: "debate", date: "2023-11-22", time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." }
+        { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
+        { id: 2, name: "Digital Art Masterclass", club: "arts", date: getFutureDate(14), time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
+        { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." }
     ];
 
     // Helper: Get Club Name
@@ -1016,6 +1064,32 @@ function updateEnrollmentStatus() {
                 regBtn.style.background = 'var(--success-color)';
                 regBtn.style.cursor = 'default';
             }
+        }
+    });
+}
+
+/**
+ * Initialize Dynamic Event Dates
+ * Updates event cards with dynamic dates based on data-days-offset attribute
+ */
+function initDynamicEventDates() {
+    document.querySelectorAll('.event-card[data-days-offset]').forEach(card => {
+        const daysOffset = parseInt(card.getAttribute('data-days-offset'));
+        if (isNaN(daysOffset)) return;
+
+        // Calculate the future date
+        const futureDate = getFutureDate(daysOffset);
+        
+        // Update data-date attribute for filtering
+        card.setAttribute('data-date', futureDate);
+        
+        // Format and display the date
+        const dateElement = card.querySelector('.event-date');
+        if (dateElement) {
+            const date = new Date(futureDate);
+            const options = { month: 'short', day: 'numeric', year: 'numeric' };
+            const formattedDate = date.toLocaleDateString('en-US', options);
+            dateElement.textContent = formattedDate;
         }
     });
 }

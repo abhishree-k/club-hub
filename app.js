@@ -1086,7 +1086,14 @@ function initDynamicEventDates() {
         // Format and display the date
         const dateElement = card.querySelector('.event-date');
         if (dateElement) {
-            const date = new Date(futureDate);
+            let date;
+            // Avoid timezone issues when parsing plain "YYYY-MM-DD" dates
+            if (typeof futureDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(futureDate)) {
+                const [year, month, day] = futureDate.split('-').map(Number);
+                date = new Date(year, month - 1, day);
+            } else {
+                date = new Date(futureDate);
+            }
             const options = { month: 'short', day: 'numeric', year: 'numeric' };
             const formattedDate = date.toLocaleDateString('en-US', options);
             dateElement.textContent = formattedDate;

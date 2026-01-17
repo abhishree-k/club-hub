@@ -5,10 +5,11 @@ This directory contains unit tests for the Club Hub application using Jest and j
 ## Test Files
 
 - `setup.js` - Test environment configuration and global mocks
-- `navigation.test.js` - Tests for mobile menu toggle and smooth scrolling
-- `formValidation.test.js` - Tests for inline form validation helpers
-- `sanitizer.test.js` - Tests for HTML sanitization (XSS prevention)
+- `navigation.test.js` - Tests for mobile menu toggle and smooth scrolling (6 tests)
+- `formValidation.test.js` - Tests for inline form validation helpers (20 tests)
+- `sanitizer.test.js` - Tests for HTML sanitization (XSS prevention) (16 tests)
 
+In total, this suite currently contains 42 unit tests.
 ## Setup
 
 ### Install Dependencies

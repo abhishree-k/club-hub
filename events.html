@@ -45,6 +45,41 @@
     </header>
 
     <main class="events-main">
+        <div style="text-align:center; margin: 20px 0;">
+    <input 
+        type="text" 
+        id="eventSearch" 
+        placeholder="Search events or clubs..." 
+        style="
+            width:60%;
+            padding:10px;
+            border-radius:8px;
+            border:1px solid #ccc;
+        "
+    >
+</div>
+<div id="eventsList">
+
+    <div class="event-card">
+        <h3>Tech Talk</h3>
+        <p>Club: Tech Society</p>
+        <p>Date: 15 November 2025</p>
+    </div>
+
+    <div class="event-card">
+        <h3>AI Workshop</h3>
+        <p>Club: Tech Society</p>
+        <p>Date: 20 November 2025</p>
+    </div>
+
+    <div class="event-card">
+        <h3>Dance Fest</h3>
+        <p>Club: Dance Club</p>
+        <p>Date: 25 November 2025</p>
+    </div>
+
+</div>
+
         <section class="calendar-section">
             <div class="calendar-controls">
                 <button id="prev-month" class="calendar-nav"><i class="fas fa-chevron-left"></i></button>
@@ -227,6 +262,42 @@
     closeFeedback.onclick = () => feedbackModal.style.display = "none";
 </script>
     <script src="app.js"></script>
+    <script>
+const searchInput = document.getElementById("eventSearch");
+
+searchInput.addEventListener("keyup", function () {
+    const value = this.value.toLowerCase();
+    const events = document.querySelectorAll(".event-card");
+
+    events.forEach(event => {
+        const text = event.innerText.toLowerCase();
+        event.style.display = text.includes(value) ? "block" : "none";
+    });
+});
+</script>
+
+    <script>
+const searchInput = document.getElementById("eventSearch");
+
+
+searchInput.addEventListener("keyup", function () {
+    const value = this.value.toLowerCase();
+    const text = eventContainer.innerText.toLowerCase();
+
+    if (text.includes(value)) {
+        eventContainer.style.display = "block";
+    } else {
+        eventContainer.style.display = "none";
+    }
+});
+</script>
+
+    <script>
+document.getElementById("eventSearch").addEventListener("keyup", function () {
+    const value = this.value.toLowerCase();
+});
+</script>
+
 </body>
 
 </html>

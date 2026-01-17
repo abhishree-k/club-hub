@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Events | DSCEClubs</title>
-    <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
-      rel="stylesheet"
-    />
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | DSCE Clubs</title>
+    <link rel="stylesheet" href="style.css">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -20,24 +17,20 @@
     <div class="stars-background"></div>
 
     <nav class="cosmic-nav">
-      <div class="nav-logo">
-        <span class="logo-icon">🌌</span>
-        <span class="logo-text">DSCEClubs</span>
-      </div>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="events.html" class="active">Live & Upcoming Events</a></li>
-        <li><a href="past-events.html">Past Events</a></li>
-        <li><a href="registration.html">Registration</a></li>
-        <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
-        <li><a href="admin-login.html">Admin</a></li>
-        <li id="nav-login">
-          <a href="registration.html#student-login">Login</a>
-        </li>
-        <li id="nav-logout" class="hidden">
-          <a href="#" id="student-logout-btn">Logout</a>
-        </li>
-        <!-- button for switch themes -->
+        <div class="nav-logo">
+            <span class="logo-icon">🌌</span>
+            <span class="logo-text">DSCE Clubs</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html" class="active">Events</a></li>
+            <li><a href="past-events.html">Past Events</a></li>
+            <li><a href="registration.html">Registration</a></li>
+            <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
+            <li><a href="admin-login.html">Admin</a></li>
+            <li id="nav-login"><a href="registration.html#student-login">Login</a></li>
+            <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
+                    <!-- button for switch themes -->
         <button id="theme-switch">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -62,12 +55,12 @@
             />
           </svg>
         </button>
-      </ul>
-      <div class="nav-hamburger">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-      </div>
+        </ul>
+        <div class="nav-hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
     </nav>
 
     <header class="events-hero">
@@ -131,28 +124,79 @@
         </div>
       </section>
 
-      <section class="event-details-section">
-        <h2 class="section-title">
-          Event <span class="text-gradient">Details</span>
-        </h2>
-        <div id="event-details-container">
-          <div class="no-event-selected">
-            <i class="fas fa-calendar-alt"></i>
-            <p>Select an event from the calendar to view details</p>
-          </div>
-        </div>
-      </section>
+      <!-- scroll top button -->
+      <button id="scrollTopBtn" title="Back to Top">
+        <i class="fas fa-chevron-up"></i>
+      </button>
 
-      <section class="event-actions">
-        <a href="past-events.html" class="action-button">
-          <i class="fas fa-history"></i>
-          <span>Past Events</span>
-        </a>
-        <a href="feedback.html" class="action-button">
-          <i class="fas fa-comment-alt"></i>
-          <span>Event Feedback</span>
-        </a>
-      </section>
+      <!-- scroll translate top button -->
+      <button id="showTranslateBtn" title="Translate Page">
+        <i id="google_translate_element"></i>
+      </button>
+        <section class="event-actions">
+            <a href="past-events.html" class="action-button">
+                <i class="fas fa-history"></i>
+                <span>Past Events</span>
+            </a>
+            </a>
+                <a href="#" class="action-button" id="open-feedback">
+               <i class="fas fa-comment-alt"></i>
+             <span>Event Feedback</span>
+              </a>
+        </section>
+        <!-- ================= Event Feedback Modal ================= -->
+<div id="feedback-modal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.7);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+">
+    <div style="
+        background:#0f172a;
+        padding:25px;
+        width:420px;
+        border-radius:14px;
+        color:#fff;
+    ">
+        <span id="close-feedback" style="float:right;cursor:pointer;font-size:20px">&times;</span>
+
+        <h2 style="text-align:center;margin-bottom:15px;">💬 Event Feedback</h2>
+
+        <form>
+            <label>Your Name</label>
+            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+
+            <label>Event Name</label>
+            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+
+            <label>Rating</label>
+            <select required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+                <option value="">Select</option>
+                <option>⭐ Excellent</option>
+                <option>😊 Good</option>
+                <option>😐 Average</option>
+                <option>😕 Poor</option>
+            </select>
+
+            <label>Feedback</label>
+            <textarea required style="width:100%;height:80px;padding:8px;background:#1e293b;border:none;color:white;border-radius:6px"></textarea>
+
+            <button type="submit" style="
+                margin-top:12px;
+                width:100%;
+                padding:10px;
+                background:#6b7280;
+                border:none;
+                border-radius:8px;
+                color:white;
+                cursor:pointer;
+            ">Submit</button>
+        </form>
+    </div>
+</div>
 
       <!-- scroll top button -->
       <button id="scrollTopBtn" title="Back to Top">
@@ -218,6 +262,15 @@
         </form>
       </div>
     </div>
+
+    <script>
+    const openFeedback = document.getElementById("open-feedback");
+    const feedbackModal = document.getElementById("feedback-modal");
+    const closeFeedback = document.getElementById("close-feedback");
+
+    openFeedback.onclick = () => feedbackModal.style.display = "flex";
+    closeFeedback.onclick = () => feedbackModal.style.display = "none";
+</script>
     <script src="app.js"></script>
     <!-- script for swithc the themes -->
     <script>

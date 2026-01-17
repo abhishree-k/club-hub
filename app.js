@@ -19,88 +19,37 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /**
- * Form Validation Helper Functions
- * Displays inline error messages and visual indicators for invalid fields.
+ * Security: HTML Sanitization Utility
+ * Prevents XSS attacks by escaping HTML special characters.
  */
 
 /**
- * Displays an inline error message for a form field
- * @param {HTMLElement} field - The input field element
- * @param {string} message - The error message to display
+ * Escapes HTML special characters to prevent XSS attacks
+ * @param {string} unsafe - The untrusted string to sanitize
+ * @returns {string} - The sanitized string safe for DOM insertion
+ * 
+ * @example
+ * // Prevents XSS from user input
+ * const userInput = '<script>alert("XSS")</script>';
+ * const safe = escapeHtml(userInput);
+ * element.innerHTML = safe; // Renders as text, not executed
+ * 
+ * @example
+ * // Safe display of user names using innerHTML with sanitization
+ * const userName = localStorage.getItem('userName');
+ * document.getElementById('welcome').innerHTML = escapeHtml(userName);
  */
-function showFieldError(field, message) {
-    if (!field) return;
-    
-    // Remove any existing error state (class and message)
-    clearFieldError(field);
-    
-    // Add error class to field
-    field.classList.add('error');
-    
-    // Create and insert error message
-    const errorDiv = document.createElement('div');
-    errorDiv.classList.add('form-error');
-    errorDiv.textContent = message;
-    errorDiv.setAttribute('role', 'alert');
-    
-    // Insert after the field
-    field.parentNode.insertBefore(errorDiv, field.nextSibling);
-}
-
-/**
- * Clears the error state and message for a form field
- * @param {HTMLElement} field - The input field element
- */
-function clearFieldError(field) {
-    if (!field) return;
-    
-    // Remove error class
-    field.classList.remove('error');
-    
-    // Remove error message if it exists
-    const existingError = field.parentNode.querySelector('.form-error');
-    if (existingError) {
-        existingError.remove();
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') {
+        return unsafe;
     }
-}
-
-/**
- * Displays a success message for a form
- * @param {HTMLElement} form - The form element
- * @param {string} message - The success message to display
- */
-function showFormSuccess(form, message) {
-    if (!form) return;
     
-    // Remove any existing messages
-    const existingMsg = form.querySelector('.form-success');
-    if (existingMsg) existingMsg.remove();
-    
-    // Create and insert success message
-    const successDiv = document.createElement('div');
-    successDiv.classList.add('form-success');
-    successDiv.textContent = message;
-    successDiv.setAttribute('role', 'status');
-    
-    // Insert at the top of the form
-    form.insertBefore(successDiv, form.firstChild);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        successDiv.remove();
-    }, 5000);
-}
-
-/**
- * Clears all error messages from a form
- * @param {HTMLElement} form - The form element
- */
-function clearFormErrors(form) {
-    if (!form) return;
-    
-    form.querySelectorAll('.error').forEach(field => field.classList.remove('error'));
-    form.querySelectorAll('.form-error').forEach(error => error.remove());
-    form.querySelectorAll('.form-success').forEach(success => success.remove());
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 /**
@@ -152,6 +101,7 @@ function initMyHub() {
     }
 
     const welcomeMsg = document.getElementById('hub-welcome-msg');
+    // Sanitize user name to prevent XSS
     if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${student.name}!`;
 
     const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
@@ -173,7 +123,8 @@ function initMyHub() {
                     'sports': { name: 'Sports Club', icon: '⚽' },
                     'science': { name: 'Dance club- ABCD', icon: '💃' }
                 };
-                const club = clubs[clubId] || { name: clubId, icon: '🌟' };
+                // Sanitize clubId to prevent XSS if custom club name is added
+                const club = clubs[clubId] || { name: escapeHtml(clubId), icon: '🌟' };
 
                 const item = document.createElement('div');
                 item.classList.add('hub-item');
@@ -201,10 +152,11 @@ function initMyHub() {
             registeredEvents.forEach(event => {
                 const item = document.createElement('div');
                 item.classList.add('hub-item');
+                // Sanitize event data from localStorage
                 item.innerHTML = `
                     <div class="hub-item-info">
-                        <h4>${event.name}</h4>
-                        <p><i class="far fa-calendar-alt"></i> ${event.date} | <i class="far fa-clock"></i> ${event.time}</p>
+                        <h4>${escapeHtml(event.name)}</h4>
+                        <p><i class="far fa-calendar-alt"></i> ${escapeHtml(event.date)} | <i class="far fa-clock"></i> ${escapeHtml(event.time)}</p>
                     </div>
                 `;
                 eventsList.appendChild(item);
@@ -776,19 +728,20 @@ function initCalendar() {
         if (!eventDetailsContainer) return;
         selectedEvent = event;
 
+        // Sanitize all event data before rendering
         eventDetailsContainer.innerHTML = `
             <div class="event-details">
                 <div class="event-header">
-                    <span class="event-club-badge ${event.club}">${getClubName(event.club)}</span>
+                    <span class="event-club-badge ${escapeHtml(event.club)}">${escapeHtml(getClubName(event.club))}</span>
                     <button id="edit-event" class="action-button"><i class="fas fa-edit"></i> Edit</button>
                 </div>
-                <h2 class="event-title">${event.name}</h2>
+                <h2 class="event-title">${escapeHtml(event.name)}</h2>
                 <div class="event-date-time">
-                    <span><i class="far fa-calendar-alt"></i> ${formatDate(event.date)}</span>
-                    <span><i class="far fa-clock"></i> ${event.time}</span>
+                    <span><i class="far fa-calendar-alt"></i> ${escapeHtml(formatDate(event.date))}</span>
+                    <span><i class="far fa-clock"></i> ${escapeHtml(event.time)}</span>
                 </div>
-                <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</div>
-                <p class="event-description">${event.description}</p>
+                <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location)}</div>
+                <p class="event-description">${escapeHtml(event.description)}</p>
                 <div class="event-actions">
                     <button id="register-for-event" class="action-button"><i class="fas fa-user-plus"></i> Register</button>
                     <button id="share-event" class="action-button"><i class="fas fa-share-alt"></i> Share</button>

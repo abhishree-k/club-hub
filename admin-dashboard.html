@@ -11,6 +11,7 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -170,6 +171,22 @@
                             <div class="stat-trend up">
                                 <i class="fas fa-arrow-up"></i> 22%
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Section -->
+                    <div class="analytics-grid">
+                        <div class="chart-container">
+                            <h3>Event Participation</h3>
+                            <canvas id="eventParticipationChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Active Clubs Overview</h3>
+                            <canvas id="activeClubsChart"></canvas>
+                        </div>
+                        <div class="chart-container full-width">
+                            <h3>Monthly Engagement Analytics</h3>
+                            <canvas id="monthlyEngagementChart"></canvas>
                         </div>
                     </div>
 

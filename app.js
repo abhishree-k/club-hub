@@ -1021,8 +1021,7 @@ function initAdmin() {
                     }
                     setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 1000);
                 } else {
-                    // Show inline error instead of alert for failed login
-                    showFieldError(passwordField, 'Invalid credentials. Please try again.');
+                    alert('Invalid credentials. Please try again.');
                 }
             } else {
                 // SIGN UP LOGIC
@@ -1038,18 +1037,6 @@ function initAdmin() {
                     alert('Username already exists. Please choose another.');
                     return;
                 }
-
-                // Create new admin and sign in immediately
-                existingAdmins.push({ username: username, password: password });
-                localStorage.setItem('adminUsers', JSON.stringify(existingAdmins));
-                localStorage.setItem('adminLoggedIn', 'true');
-                localStorage.setItem('currentAdminUser', username);
-
-                if (loginButton) {
-                    loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Creating account...</span>';
-                    loginButton.disabled = true;
-                }
-                setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 1000);
             }
         });
     }
@@ -1172,8 +1159,7 @@ function initAdmin() {
             }, 2000);
         });
     }
-});
-    }
+}
 
 function loadAdminDashboard() {
     // Helper

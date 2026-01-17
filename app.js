@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initAdmin();
     initAnimations();
     initStudentSession();
+    initFeedbackSystem();
 
     const yearEl = document.getElementById("year");
     if (yearEl) {
@@ -43,7 +44,7 @@ function escapeHtml(unsafe) {
     if (typeof unsafe !== 'string') {
         return unsafe;
     }
-    
+
     return unsafe
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -316,7 +317,7 @@ function initForms() {
     if (clubRegistrationForm) {
         // Clear errors on input
         clubRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -332,7 +333,7 @@ function initForms() {
             const studentId = document.getElementById('club-student-id');
             const major = document.getElementById('club-major');
             const year = document.getElementById('club-year');
-            
+
             let isValid = true;
 
             if (!firstName.value.trim()) {
@@ -426,7 +427,7 @@ function initForms() {
     if (eventRegistrationForm) {
         // Clear errors on input
         eventRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -516,7 +517,7 @@ function initForms() {
     if (studentLoginForm) {
         // Clear errors on input
         studentLoginForm.querySelectorAll('input').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -549,13 +550,13 @@ function initForms() {
             const student = { name, id };
             localStorage.setItem('studentUser', JSON.stringify(student));
             updateUIForStudent();
-            
+
             const loginMessage = document.getElementById('login-message');
             if (loginMessage) {
                 loginMessage.textContent = 'Login successful! Redirecting...';
                 loginMessage.style.color = 'var(--success-color)';
             }
-            
+
             setTimeout(() => {
                 const clubTab = document.querySelector('[data-tab="club-registration"]');
                 if (clubTab) clubTab.click();
@@ -568,10 +569,10 @@ function initForms() {
     if (certificateForm) {
         // Clear errors on input/change
         certificateForm.querySelectorAll('input, select').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
-            field.addEventListener('change', function() {
+            field.addEventListener('change', function () {
                 clearFieldError(this);
             });
         });
@@ -728,6 +729,13 @@ function initCalendar() {
         if (!eventDetailsContainer) return;
         selectedEvent = event;
 
+        // Fetch Reviews
+        const allReviews = JSON.parse(localStorage.getItem('eventReviews')) || [];
+        const eventReviews = allReviews.filter(r => r.eventId === event.id && r.isVisible);
+        const avgRating = eventReviews.length ? (eventReviews.reduce((sum, r) => sum + r.rating, 0) / eventReviews.length).toFixed(1) : 'No Ratings';
+        const starCount = eventReviews.length ? Math.round(eventReviews.reduce((sum, r) => sum + r.rating, 0) / eventReviews.length) : 0;
+        const starStr = '⭐'.repeat(starCount);
+
         // Sanitize all event data before rendering
         eventDetailsContainer.innerHTML = `
             <div class="event-details">
@@ -736,6 +744,13 @@ function initCalendar() {
                     <button id="edit-event" class="action-button"><i class="fas fa-edit"></i> Edit</button>
                 </div>
                 <h2 class="event-title">${escapeHtml(event.name)}</h2>
+                
+                <div class="event-rating-summary" style="margin: 10px 0; color: #ffd700;">
+                    <span style="font-size: 1.2em; font-weight: bold;">${avgRating}</span>
+                    <span>${starStr}</span>
+                    <span style="color: #ccc; font-size: 0.9em;">(${eventReviews.length} reviews)</span>
+                </div>
+
                 <div class="event-date-time">
                     <span><i class="far fa-calendar-alt"></i> ${escapeHtml(formatDate(event.date))}</span>
                     <span><i class="far fa-clock"></i> ${escapeHtml(event.time)}</span>
@@ -745,14 +760,47 @@ function initCalendar() {
                 <div class="event-actions">
                     <button id="register-for-event" class="action-button"><i class="fas fa-user-plus"></i> Register</button>
                     <button id="share-event" class="action-button"><i class="fas fa-share-alt"></i> Share</button>
+                    <button id="rate-event" class="action-button" style="background: #e11d48;"><i class="fas fa-star"></i> Rate Event</button>
+                </div>
+
+                <!-- Reviews List -->
+                <div class="event-reviews-list" style="margin-top: 20px; border-top: 1px solid #334155; padding-top: 15px;">
+                    <h3 style="margin-bottom: 10px; font-size: 1.1em;">Recent Feedback</h3>
+                    ${eventReviews.length === 0 ? '<p style="color:#94a3b8; font-style:italic;">No reviews yet. Be the first!</p>' :
+                eventReviews.slice(0, 3).map(r => `
+                        <div class="review-item" style="background: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
+                                <strong style="color: #e2e8f0;">${escapeHtml(r.userName)}</strong>
+                                <span style="color: #ffd700;">${'⭐'.repeat(r.rating)}</span>
+                            </div>
+                            <p style="color: #cbd5e1; font-size: 0.9em; margin: 0;">${escapeHtml(r.comment)}</p>
+                        </div>
+                      `).join('')}
                 </div>
             </div>
         `;
 
         // Bind dynamic buttons
-        document.getElementById('edit-event').addEventListener('click', () => openEventModal(event));
-        document.getElementById('register-for-event').addEventListener('click', () => alert(`Registered for ${event.name}`));
-        document.getElementById('share-event').addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
+        const editBtn = document.getElementById('edit-event');
+        if (editBtn) editBtn.addEventListener('click', () => openEventModal(event));
+
+        const regBtn = document.getElementById('register-for-event');
+        if (regBtn) regBtn.addEventListener('click', () => alert(`Registered for ${event.name}`));
+
+        const shareBtn = document.getElementById('share-event');
+        if (shareBtn) shareBtn.addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
+
+        const rateBtn = document.getElementById('rate-event');
+        if (rateBtn) {
+            rateBtn.addEventListener('click', () => {
+                const modal = document.getElementById('feedback-modal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.getElementById('feedback-event-id').value = event.id;
+                    document.getElementById('feedback-event-name').value = event.name;
+                }
+            });
+        }
     }
 
     function openEventModal(event = null, date = null) {
@@ -886,8 +934,12 @@ function initCalendar() {
  */
 function initAdmin() {
     // 6a. Admin Login Logic
+    console.log("initAdmin called");
     const adminLoginForm = document.getElementById('admin-login-form');
+    if (!adminLoginForm) console.error("Admin login form not found!");
+
     const togglePassword = document.querySelector('.toggle-password');
+
     const passwordInput = document.getElementById('admin-password');
     const confirmPasswordGroup = document.getElementById('confirm-password-group');
     const confirmPasswordInput = document.getElementById('admin-confirm-password');
@@ -898,6 +950,39 @@ function initAdmin() {
     const footerText = document.getElementById('footer-text');
 
     let isLoginMode = true;
+
+    // Helper Functions for Form Validation
+    function showFieldError(input, message) {
+        console.warn("Field Error:", message);
+        const formGroup = input.closest('.form-group');
+        let error = formGroup.querySelector('.form-error');
+        if (!error) {
+            error = document.createElement('div');
+            error.classList.add('form-error');
+            error.style.color = '#ef4444';
+            error.style.fontSize = '0.85rem';
+            error.style.marginTop = '0.25rem';
+            formGroup.appendChild(error);
+        }
+        error.textContent = message;
+        input.classList.add('error');
+    }
+
+    function clearFieldError(input) {
+        const formGroup = input.closest('.form-group');
+        const error = formGroup.querySelector('.form-error');
+        if (error) error.remove();
+        input.classList.remove('error');
+    }
+
+    function clearFormErrors(form) {
+        form.querySelectorAll('.form-error').forEach(e => e.remove());
+        form.querySelectorAll('.error').forEach(i => i.classList.remove('error'));
+    }
+
+    function showFormSuccess(form, message) {
+        alert(message);
+    }
 
     function toggleMode(login) {
         isLoginMode = login;
@@ -953,13 +1038,14 @@ function initAdmin() {
 
         // Clear errors on input
         adminLoginForm.querySelectorAll('input').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
 
         adminLoginForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            console.log("Real Admin Form Submitted");
             clearFormErrors(this);
 
             const usernameField = document.getElementById('admin-username');
@@ -967,6 +1053,8 @@ function initAdmin() {
             const username = usernameField.value.trim();
             const password = passwordField.value.trim();
             const rememberMe = document.getElementById('remember-me')?.checked;
+
+            console.log("Submitting with:", { username, isLoginMode });
 
             let isValid = true;
 
@@ -981,15 +1069,18 @@ function initAdmin() {
             }
 
             if (!isValid) {
+                console.warn("Validation failed");
                 return;
             }
 
             if (isLoginMode) {
                 // LOGIN LOGIC
+                console.log("Attempting Login...");
                 // Check stored custom admins first, then hardcoded default
                 const result = checkAdminCredentials(username, password);
 
                 if (result.success) {
+                    console.log("Login Success");
                     if (rememberMe) {
                         localStorage.setItem('adminRemembered', 'true');
                         localStorage.setItem('adminUsername', username);
@@ -1007,10 +1098,12 @@ function initAdmin() {
                     }
                     setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 1000);
                 } else {
+                    console.warn("Login Failed");
                     alert('Invalid credentials. Please try again.');
                 }
             } else {
                 // SIGN UP LOGIC
+                console.log("Attempting Signup...");
                 const confirmPass = confirmPasswordInput.value;
                 if (password !== confirmPass) {
                     alert('Passwords do not match!');
@@ -1024,8 +1117,13 @@ function initAdmin() {
                     return;
                 }
 
-            } else {
-                showFieldError(passwordField, 'Invalid credentials. Please try again.');
+                // Save new admin
+                existingAdmins.push({ username, password });
+                localStorage.setItem('adminUsers', JSON.stringify(existingAdmins));
+                console.log("Signup Success, admin saved.");
+
+                alert('Account created successfully! Please login.');
+                toggleMode(true);
             }
         });
     }
@@ -1069,6 +1167,10 @@ function initAdmin() {
                         sections.forEach(sec => sec.style.display = 'none');
                         const targetSec = document.getElementById(targetId);
                         if (targetSec) targetSec.style.display = 'block';
+
+                        if (targetId === 'reviews') {
+                            renderReviewsTable();
+                        }
                     }
                 });
             });
@@ -1090,7 +1192,7 @@ function initAdmin() {
     if (adminEventForm) {
         // Clear errors on input
         adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -1148,60 +1250,58 @@ function initAdmin() {
             }, 2000);
         });
     }
-        });
-    }
+}
 
-    function loadAdminDashboard() {
-        // Helper
-        const getClubName = (id) => {
-            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
-            return map[id] || id;
-        };
+function loadAdminDashboard() {
+    // Helper
+    const getClubName = (id) => {
+        const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
+        return map[id] || id;
+    };
 
-        // Render Student Registrations
-        const registrationsTable = document.getElementById('registrations-table');
-        if (registrationsTable) {
-            registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const registrations = [
-                { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
-                { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
-            ];
-            registrations.forEach(reg => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+    // Render Student Registrations
+    const registrationsTable = document.getElementById('registrations-table');
+    if (registrationsTable) {
+        registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const registrations = [
+            { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
+        ];
+        registrations.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                     <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
                     <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
                     <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
                     <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
                         <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
                 `;
-                registrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
+            registrationsTable.querySelector('tbody').appendChild(row);
+        });
+    }
 
-        // Render Event Registrations
-        const eventRegistrationsTable = document.getElementById('event-registrations-table');
-        if (eventRegistrationsTable) {
-            eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const eventRegs = [
-                { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
-            ];
-            eventRegs.forEach(reg => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+    // Render Event Registrations
+    const eventRegistrationsTable = document.getElementById('event-registrations-table');
+    if (eventRegistrationsTable) {
+        eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const eventRegs = [
+            { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
+        ];
+        eventRegs.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                     <td>${reg.id}</td><td>Event ${reg.eventId}</td><td>${reg.name}</td><td>${reg.email}</td>
                     <td>${reg.studentId}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
                     <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
                         <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
                 `;
-                eventRegistrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
-
-        // Dashboard Button Actions
-        document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
-        document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
+            eventRegistrationsTable.querySelector('tbody').appendChild(row);
+        });
     }
+
+    // Dashboard Button Actions
+    document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
+    document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
 }
 
 /**
@@ -1531,4 +1631,109 @@ function initClubManagement() {
             }
         }
     });
+}
+
+/**
+ * 9. Feedback & Review System
+ * Handles submission and display of event reviews.
+ */
+function initFeedbackSystem() {
+    const feedbackForm = document.getElementById('feedback-form');
+    // Also handle the static feedback modal toggle logic here properly if not done elsewhere
+    const openFeedbackBtn = document.getElementById("open-feedback");
+    const feedbackModal = document.getElementById("feedback-modal");
+    const closeFeedback = document.getElementById("close-feedback");
+
+    if (openFeedbackBtn && feedbackModal) {
+        openFeedbackBtn.onclick = (e) => {
+            e.preventDefault();
+            feedbackModal.style.display = "flex";
+        };
+    }
+    if (closeFeedback && feedbackModal) {
+        closeFeedback.onclick = () => feedbackModal.style.display = "none";
+    }
+
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const eventId = document.getElementById('feedback-event-id').value;
+            const name = document.getElementById('feedback-name').value;
+            const rating = document.getElementById('feedback-rating').value;
+            const comment = document.getElementById('feedback-text').value;
+            const eventName = document.getElementById('feedback-event-name').value;
+
+            if (!eventId) {
+                alert('Please select an event to rate first!');
+                return;
+            }
+
+            const reviews = JSON.parse(localStorage.getItem('eventReviews')) || [];
+            const newReview = {
+                id: Date.now(),
+                eventId: parseInt(eventId),
+                eventName: eventName,
+                userName: name,
+                rating: parseInt(rating),
+                comment: comment,
+                date: new Date().toISOString(),
+                isVisible: true
+            };
+            reviews.push(newReview);
+            localStorage.setItem('eventReviews', JSON.stringify(reviews));
+
+            alert('Thank you for your feedback!');
+            if (feedbackModal) feedbackModal.style.display = 'none';
+            feedbackForm.reset();
+        });
+    }
+}
+
+function renderReviewsTable() {
+    const tbody = document.querySelector('#reviews-table tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    // Mock data if empty
+    let reviews = JSON.parse(localStorage.getItem('eventReviews')) || [];
+
+    reviews.forEach(r => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>#${r.id}</td>
+            <td>${escapeHtml(r.eventName || 'Event')}</td>
+            <td>${escapeHtml(r.userName)}</td>
+            <td>${'⭐'.repeat(r.rating)}</td>
+            <td>${escapeHtml(r.comment)}</td>
+            <td>${new Date(r.date).toLocaleDateString()}</td>
+            <td><span class="status-${r.isVisible ? 'active' : 'inactive'}">${r.isVisible ? 'Visible' : 'Hidden'}</span></td>
+            <td>
+                <button class="admin-action toggle-visibility" data-id="${r.id}"><i class="fas fa-${r.isVisible ? 'eye-slash' : 'eye'}"></i></button>
+                <button class="admin-action delete-review" data-id="${r.id}"><i class="fas fa-trash"></i></button>
+            </td>
+            `;
+        tbody.appendChild(row);
+    });
+
+    // Bind actions
+    tbody.querySelectorAll('.toggle-visibility').forEach(btn => btn.addEventListener('click', function () {
+        const id = this.dataset.id;
+        const revs = JSON.parse(localStorage.getItem('eventReviews')) || [];
+        const idx = revs.findIndex(x => x.id == id);
+        if (idx != -1) {
+            revs[idx].isVisible = !revs[idx].isVisible;
+            localStorage.setItem('eventReviews', JSON.stringify(revs));
+            renderReviewsTable();
+        }
+    }));
+
+    tbody.querySelectorAll('.delete-review').forEach(btn => btn.addEventListener('click', function () {
+        if (confirm('Delete review?')) {
+            const id = this.dataset.id;
+            let revs = JSON.parse(localStorage.getItem('eventReviews')) || [];
+            revs = revs.filter(x => x.id != id);
+            localStorage.setItem('eventReviews', JSON.stringify(revs));
+            renderReviewsTable();
+        }
+    }));
 }

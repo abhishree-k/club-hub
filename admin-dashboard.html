@@ -89,6 +89,12 @@
                             <span>Settings</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="#reviews">
+                            <i class="fas fa-star"></i>
+                            <span>Reviews</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
 
@@ -342,6 +348,33 @@
                                     <th>Student Name</th>
                                     <th>Student ID</th>
                                     <th>Club</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Reviews Management Section -->
+                <section id="reviews" class="admin-section admin-tab-content" style="display: none;">
+                    <div class="section-header">
+                        <h2>Event Reviews</h2>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="admin-table" id="reviews-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Event</th>
+                                    <th>User</th>
+                                    <th>Rating</th>
+                                    <th>Comment</th>
+                                    <th>Date</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>

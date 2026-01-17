@@ -108,13 +108,13 @@
                 <span>Past Events</span>
             </a>
             </a>
-                <a href="#" class="action-button" id="open-feedback">
-               <i class="fas fa-comment-alt"></i>
-             <span>Event Feedback</span>
-              </a>
+            <a href="#" class="action-button" id="open-feedback">
+                <i class="fas fa-comment-alt"></i>
+                <span>Event Feedback</span>
+            </a>
         </section>
         <!-- ================= Event Feedback Modal ================= -->
-<div id="feedback-modal" style="
+        <div id="feedback-modal" style="
     display:none;
     position:fixed;
     inset:0;
@@ -123,37 +123,43 @@
     align-items:center;
     justify-content:center;
 ">
-    <div style="
+            <div style="
         background:#0f172a;
         padding:25px;
         width:420px;
         border-radius:14px;
         color:#fff;
     ">
-        <span id="close-feedback" style="float:right;cursor:pointer;font-size:20px">&times;</span>
+                <span id="close-feedback" style="float:right;cursor:pointer;font-size:20px">&times;</span>
 
-        <h2 style="text-align:center;margin-bottom:15px;">💬 Event Feedback</h2>
+                <h2 style="text-align:center;margin-bottom:15px;">💬 Event Feedback</h2>
 
-        <form>
-            <label>Your Name</label>
-            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+                <form id="feedback-form">
+                    <input type="hidden" id="feedback-event-id">
+                    <label>Your Name</label>
+                    <input type="text" id="feedback-name" required
+                        style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
 
-            <label>Event Name</label>
-            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+                    <label>Event Name</label>
+                    <input type="text" id="feedback-event-name" readonly required
+                        style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px; cursor: not-allowed;">
 
-            <label>Rating</label>
-            <select required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
-                <option value="">Select</option>
-                <option>⭐ Excellent</option>
-                <option>😊 Good</option>
-                <option>😐 Average</option>
-                <option>😕 Poor</option>
-            </select>
+                    <label>Rating</label>
+                    <select id="feedback-rating" required
+                        style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+                        <option value="">Select</option>
+                        <option value="5">⭐ Excellent</option>
+                        <option value="4">😊 Good</option>
+                        <option value="3">😐 Average</option>
+                        <option value="2">😕 Poor</option>
+                        <option value="1">😖 Terrible</option>
+                    </select>
 
-            <label>Feedback</label>
-            <textarea required style="width:100%;height:80px;padding:8px;background:#1e293b;border:none;color:white;border-radius:6px"></textarea>
+                    <label>Feedback</label>
+                    <textarea id="feedback-text" required
+                        style="width:100%;height:80px;padding:8px;background:#1e293b;border:none;color:white;border-radius:6px"></textarea>
 
-            <button type="submit" style="
+                    <button type="submit" id="feedback-submit-btn" style="
                 margin-top:12px;
                 width:100%;
                 padding:10px;
@@ -163,9 +169,9 @@
                 color:white;
                 cursor:pointer;
             ">Submit</button>
-        </form>
-    </div>
-</div>
+                </form>
+            </div>
+        </div>
     </main>
 
     <footer class="cosmic-footer">
@@ -219,13 +225,13 @@
     </div>
 
     <script>
-    const openFeedback = document.getElementById("open-feedback");
-    const feedbackModal = document.getElementById("feedback-modal");
-    const closeFeedback = document.getElementById("close-feedback");
+        const openFeedback = document.getElementById("open-feedback");
+        const feedbackModal = document.getElementById("feedback-modal");
+        const closeFeedback = document.getElementById("close-feedback");
 
-    openFeedback.onclick = () => feedbackModal.style.display = "flex";
-    closeFeedback.onclick = () => feedbackModal.style.display = "none";
-</script>
+        openFeedback.onclick = () => feedbackModal.style.display = "flex";
+        closeFeedback.onclick = () => feedbackModal.style.display = "none";
+    </script>
     <script src="app.js"></script>
 </body>
 

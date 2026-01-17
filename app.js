@@ -420,11 +420,30 @@ function initForms() {
             const clubCheckboxContainer = this.querySelector('.club-checkboxes');
 
             if (selectedClubs.length === 0) {
-                const errorMsg = document.createElement('div');
-                errorMsg.classList.add('form-error');
-                errorMsg.textContent = 'Please select at least one club';
-                errorMsg.style.marginTop = '0.5rem';
-                clubCheckboxContainer.parentNode.appendChild(errorMsg);
+                // Avoid duplicating error elements
+                let existingClubError = clubCheckboxContainer.parentNode.querySelector('.form-error.club-error');
+                if (!existingClubError) {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.classList.add('form-error', 'club-error');
+                    errorMsg.textContent = 'Please select at least one club';
+                    errorMsg.style.marginTop = '0.5rem';
+                    clubCheckboxContainer.parentNode.appendChild(errorMsg);
+                }
+
+                // Attach change listeners once to clear the error when a club is selected
+                if (!clubCheckboxContainer.dataset.clubListenersAttached) {
+                    const clubCheckboxes = this.querySelectorAll('input[name="club"]');
+                    clubCheckboxes.forEach(cb => {
+                        cb.addEventListener('change', () => {
+                            const anyChecked = clubCheckboxContainer.querySelectorAll('input[name="club"]:checked').length > 0;
+                            const clubError = clubCheckboxContainer.parentNode.querySelector('.form-error.club-error');
+                            if (anyChecked && clubError) {
+                                clubError.remove();
+                            }
+                        });
+                    });
+                    clubCheckboxContainer.dataset.clubListenersAttached = 'true';
+                }
                 isValid = false;
             }
 

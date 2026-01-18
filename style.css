@@ -801,6 +801,66 @@ img {
     background: rgba(255, 255, 255, 0.15);
 }
 
+/* Form Validation Styles */
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+    border-color: var(--danger-color);
+    background: rgba(214, 48, 49, 0.1);
+}
+
+.form-group input.error:focus,
+.form-group select.error:focus,
+.form-group textarea.error:focus {
+    border-color: var(--danger-color);
+    box-shadow: 0 0 0 3px rgba(214, 48, 49, 0.2);
+}
+
+.form-error {
+    color: var(--danger-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.form-error::before {
+    content: '⚠';
+    font-size: 1rem;
+}
+
+.form-success {
+    background: rgba(0, 184, 148, 0.2);
+    border: 1px solid rgba(0, 184, 148, 0.5);
+    color: var(--success-color);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.form-success::before {
+    content: '✓';
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .form-row {
     display: flex;
     gap: 1rem;

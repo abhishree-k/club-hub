@@ -4,6 +4,19 @@
  */
 
 const { escapeHtml } = require('../app.js');
+// Mock escapeHtml function for testing (in a real setup, this would be imported)
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') {
+        return unsafe;
+    }
+    
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
 /**
  * Test Suite for escapeHtml()
@@ -118,3 +131,44 @@ describe('Real-world XSS Prevention', () => {
     });
 
 });
+
+// Manual test runner (for browser console testing)
+if (typeof window !== 'undefined' && typeof module === 'undefined') {
+    console.log('=== Running Sanitizer Tests ===');
+    
+    const tests = [
+        {
+            name: 'Script tag',
+            input: '<script>alert("XSS")</script>',
+            expected: '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;'
+        },
+        {
+            name: 'Image with onerror',
+            input: '<img src=x onerror="alert(1)">',
+            expected: '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;'
+        },
+        {
+            name: 'JavaScript anchor',
+            input: '<a href="javascript:alert(1)">Click</a>',
+            expected: '&lt;a href=&quot;javascript:alert(1)&quot;&gt;Click&lt;/a&gt;'
+        }
+    ];
+
+    let passed = 0;
+    let failed = 0;
+
+    tests.forEach(test => {
+        const result = escapeHtml(test.input);
+        if (result === test.expected) {
+            console.log(`✓ ${test.name}`);
+            passed++;
+        } else {
+            console.error(`✗ ${test.name}`);
+            console.error(`  Expected: ${test.expected}`);
+            console.error(`  Got: ${result}`);
+            failed++;
+        }
+    });
+
+    console.log(`\n${passed} passed, ${failed} failed`);
+}

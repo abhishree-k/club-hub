@@ -198,10 +198,8 @@ button:focus-visible,
 /* Mobile menu link focus */
 .nav-links a:focus-visible {
   background-color: rgba(0, 102, 204, 0.08);
-  padding: 0.4rem 0.5rem;
   border-radius: 6px;
 }
-
 /* Ensure primary CTAs also have strong focus */
 .hero-cta:focus-visible {
   outline: 3px solid #ffd166;

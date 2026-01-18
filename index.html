@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>College Club Hub</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <div class="stars-background"></div>
-    
+
     <nav class="cosmic-nav">
         <div class="nav-logo">
             <span class="logo-icon">🌌</span>
@@ -61,7 +65,7 @@
                         <span>Cyber</span>
                     </div>
                 </div>
-                
+
                 <div class="club-card" data-club="arts">
                     <div class="club-icon">🎨</div>
                     <h3>Creative Arts-AALEKA</h3>
@@ -73,7 +77,7 @@
                         <span>Competitionss</span>
                     </div>
                 </div>
-                
+
                 <div class="club-card" data-club="debate">
                     <div class="club-icon">💬</div>
                     <h3>Debate Club- LITSOC</h3>
@@ -84,7 +88,7 @@
                         <span>Model UN</span>
                     </div>
                 </div>
-                
+
                 <div class="club-card" data-club="music">
                     <div class="club-icon">🎵</div>
                     <h3>Music Society- </h3>
@@ -96,7 +100,7 @@
                         <span>Shayari</span>
                     </div>
                 </div>
-                
+
                 <div class="club-card" data-club="sports">
                     <div class="club-icon">⚽</div>
                     <h3>Sports Club</h3>
@@ -107,7 +111,7 @@
                         <span>Team Building</span>
                     </div>
                 </div>
-                
+
                 <div class="club-card" data-club="science">
                     <div class="club-icon">💃</div>
                     <h3>Dance club- ABCD </h3>
@@ -125,15 +129,18 @@
             <h2 class="section-title">Student <span class="text-gradient">Voices</span></h2>
             <div class="testimonial-carousel">
                 <div class="testimonial-slide active">
-                    <p>"Joining the Tech Society transformed my college experience. I've learned so much and made lifelong friends!"</p>
+                    <p>"Joining the Tech Society transformed my college experience. I've learned so much and made
+                        lifelong friends!"</p>
                     <div class="testimonial-author">-ABM, Computer Science</div>
                 </div>
                 <div class="testimonial-slide">
-                    <p>"The Creative Arts club gave me the confidence to showcase my work and connect with other artists."</p>
+                    <p>"The Creative Arts club gave me the confidence to showcase my work and connect with other
+                        artists."</p>
                     <div class="testimonial-author">- Jamie, Fine Arts</div>
                 </div>
                 <div class="testimonial-slide">
-                    <p>"Through Debate Club, I've improved my public speaking and critical thinking skills immensely."</p>
+                    <p>"Through Debate Club, I've improved my public speaking and critical thinking skills immensely."
+                    </p>
                     <div class="testimonial-author">- Taylor, Political Science</div>
                 </div>
             </div>
@@ -172,17 +179,72 @@
                     <h4>Connect</h4>
                     <ul>
                         <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
-                        <li><a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class="fa fa-twitter"></i> Twitter</a></li>
                         <li><a href="#"><i class='fab fa-discord'></i> Discord</a></li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; <span id="year"></span> ClubsDSCE. All rights reserved.</p>
+            <p>&copy; 2025 ClubsDSCE. All rights reserved.</p>
         </div>
     </footer>
 
+    <!-- Conflict Warning Modal (shared across pages) -->
+    <div id="conflict-modal" class="conflict-modal" style="display: none;">
+        <div class="modal-content conflict-modal-content">
+            <span class="close-modal close-conflict-modal">&times;</span>
+            <div class="conflict-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Scheduling Conflict Detected</h2>
+                <span id="conflict-type-badge" class="conflict-type-badge"></span>
+            </div>
+            <div class="conflict-body">
+                <p>You are attempting to register for <strong><span id="conflict-new-event-name"></span></strong>, which
+                    overlaps with an existing registration:</p>
+
+                <div class="conflict-details-box">
+                    <div class="conflict-event existing">
+                        <h4>Existing Event</h4>
+                        <div id="conflict-existing-details"></div>
+                    </div>
+                    <div class="conflict-separator">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="conflict-event new">
+                        <h4>New Event</h4>
+                        <div id="conflict-new-details"></div>
+                    </div>
+                </div>
+
+                <p id="conflict-overlap-text" class="conflict-overlap-text"></p>
+
+                <div class="conflict-timeline">
+                    <div class="conflict-timeline-track">
+                        <div id="conflict-timeline-existing" class="conflict-timeline-bar existing"></div>
+                        <div id="conflict-timeline-new" class="conflict-timeline-bar new"></div>
+                    </div>
+                    <div class="conflict-timeline-legend">
+                        <span><span class="legend existing"></span> Existing event</span>
+                        <span><span class="legend new"></span> New event</span>
+                    </div>
+                </div>
+
+                <div class="alternatives-section">
+                    <h3><i class="far fa-lightbulb"></i> Suggested Alternatives</h3>
+                    <div id="conflict-alternatives-list" class="alternatives-list">
+                        <!-- Alternatives injected here -->
+                    </div>
+                </div>
+            </div>
+            <div class="conflict-footer">
+                <button id="conflict-cancel-btn" class="action-button secondary">Keep Existing Event</button>
+                <button id="conflict-swap-btn" class="action-button">Swap to New Event</button>
+                <button id="conflict-proceed-btn" class="action-button secondary">Register Anyway</button>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
+
 </html>

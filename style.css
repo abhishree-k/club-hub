@@ -852,6 +852,66 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     background: rgba(255, 255, 255, 0.15);
 }
 
+/* Form Validation Styles */
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+    border-color: var(--danger-color);
+    background: rgba(214, 48, 49, 0.1);
+}
+
+.form-group input.error:focus,
+.form-group select.error:focus,
+.form-group textarea.error:focus {
+    border-color: var(--danger-color);
+    box-shadow: 0 0 0 3px rgba(214, 48, 49, 0.2);
+}
+
+.form-error {
+    color: var(--danger-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.form-error::before {
+    content: '⚠';
+    font-size: 1rem;
+}
+
+.form-success {
+    background: rgba(0, 184, 148, 0.2);
+    border: 1px solid rgba(0, 184, 148, 0.5);
+    color: var(--success-color);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.form-success::before {
+    content: '✓';
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .form-row {
     display: flex;
     gap: 1rem;
@@ -2320,3 +2380,75 @@ input[type="time"]::-webkit-calendar-picker-indicator {
         gap: 0.5rem;
     }
 }
+
+
+/* =====================================================
+   FIX: Add New Event Modal – Form Visibility & Contrast
+   Issue #35 | SWoC 2026
+   ===================================================== */
+
+/* Modal title visibility */
+#modal-title {
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+/* Form labels – brighter & clearer */
+.modal-content .form-group label {
+    color: #f5f5f5;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    opacity: 1;
+}
+
+/* Input, select & textarea text visibility */
+.modal-content .form-group input,
+.modal-content .form-group select,
+.modal-content .form-group textarea {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Placeholder styling (different from user text) */
+.modal-content .form-group input::placeholder,
+.modal-content .form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+}
+
+/* Focus state – strong visual feedback */
+.modal-content .form-group input:focus,
+.modal-content .form-group select:focus,
+.modal-content .form-group textarea:focus {
+    border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(253, 121, 168, 0.3);
+}
+
+/* Select dropdown arrow visibility (dark mode) */
+.modal-content select option {
+    background: #1a1a2e;
+    color: #ffffff;
+}
+
+/* Improve spacing between form elements */
+.modal-content .form-group {
+    margin-bottom: 1.8rem;
+}
+
+/* Buttons clarity */
+.modal-content .modal-button {
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+/* Delete button better contrast */
+.modal-content .modal-button.danger {
+    background: rgba(214, 48, 49, 0.25);
+    color: #ff7675;
+    border: 1px solid rgba(214, 48, 49, 0.6);
+}
+

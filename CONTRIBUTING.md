@@ -1,6 +1,6 @@
-# 🤝 Contributing to ClubHub
+# 🤝 Contributing to DSCE Clubs
 
-First of all, thank you for taking the time to contribute to **ClubHub** 🎉  
+First of all, thank you for taking the time to contribute to **DSCE Clubs** 🎉  
 Your contributions help improve the project’s quality, usability, and community impact.
 
 This document provides clear guidelines to ensure a smooth and effective contribution process for everyone.
@@ -9,7 +9,7 @@ This document provides clear guidelines to ensure a smooth and effective contrib
 
 ## 📌 About the Project
 
-**ClubHub** is a centralized platform designed to streamline club management, event coordination, and communication within educational institutions.
+**DSCE Clubs** is a centralized platform designed to streamline club management, event coordination, and communication within educational institutions.
 
 The project is actively developed under **Social Winter of Code (SWoC) 2026** and welcomes meaningful open-source contributions.
 
@@ -127,7 +127,7 @@ By contributing to this repository, you agree that your contributions will be li
 
 ---
 ## 🙌 Acknowledgements
-Thank you for contributing to ClubHub and supporting open-source development through SWoC 2026.
+Thank you for contributing to DSCE Clubs and supporting open-source development through SWoC 2026.
 Your efforts are truly appreciated!
 
 Happy Contributing 🚀

@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initAnimations();
     initStudentSession();
 
+
     const yearEl = document.getElementById("year");
     if (yearEl) {
         yearEl.textContent = new Date().getFullYear();
@@ -1023,9 +1024,6 @@ function initAdmin() {
                     alert('Username already exists. Please choose another.');
                     return;
                 }
-
-            } else {
-                showFieldError(passwordField, 'Invalid credentials. Please try again.');
             }
         });
     }
@@ -1148,8 +1146,7 @@ function initAdmin() {
             }, 2000);
         });
     }
-        });
-    }
+    
 
     function loadAdminDashboard() {
         // Helper
@@ -1532,3 +1529,5 @@ function initClubManagement() {
         }
     });
 }
+
+// document.addEventListener("DOMContentLoaded", initAdmin);

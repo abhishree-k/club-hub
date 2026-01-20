@@ -45,6 +45,21 @@
     </header>
 
     <main class="events-main">
+        <!-- 🔍 Event Search -->
+<div style="text-align:center; margin: 20px 0;">
+    <input 
+        type="text" 
+        id="eventSearch" 
+        placeholder="Search events or clubs..." 
+        style="
+            width:60%;
+            padding:10px;
+            border-radius:8px;
+            border:1px solid #ccc;
+        "
+    >
+</div>
+
         <section class="calendar-section">
             <div class="calendar-controls">
                 <button id="prev-month" class="calendar-nav"><i class="fas fa-chevron-left"></i></button>
@@ -227,6 +242,20 @@
     closeFeedback.onclick = () => feedbackModal.style.display = "none";
 </script>
     <script src="app.js"></script>
+    <script>
+document.getElementById("eventSearch").addEventListener("keyup", function () {
+    const value = this.value.toLowerCase();
+
+    // event details cards (loaded dynamically)
+    const events = document.querySelectorAll("#event-details-container > div");
+
+    events.forEach(event => {
+        const text = event.innerText.toLowerCase();
+        event.style.display = text.includes(value) ? "block" : "none";
+    });
+});
+</script>
+
 </body>
 
 </html>

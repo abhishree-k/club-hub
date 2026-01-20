@@ -243,17 +243,22 @@
 </script>
     <script src="app.js"></script>
     <script>
+// Event Search Functionality
 document.getElementById("eventSearch").addEventListener("keyup", function () {
-    const value = this.value.toLowerCase();
-
-    // event details cards (loaded dynamically)
-    const events = document.querySelectorAll("#event-details-container > div");
+    const searchValue = this.value.toLowerCase();
+    const events = document.querySelectorAll(".event-card");
 
     events.forEach(event => {
-        const text = event.innerText.toLowerCase();
-        event.style.display = text.includes(value) ? "block" : "none";
+        const eventText = event.innerText.toLowerCase();
+
+        if (eventText.includes(searchValue)) {
+            event.style.display = "block";
+        } else {
+            event.style.display = "none";
+        }
     });
 });
+
 </script>
 
 </body>

@@ -1653,3 +1653,52 @@ function initAnalytics() {
         }
     });
 }
+// FAQ Toggle
+document.querySelectorAll(".faq-question").forEach(q => {
+  q.addEventListener("click", () => {
+    const ans = q.nextElementSibling;
+    ans.style.display = ans.style.display === "block" ? "none" : "block";
+  });
+});
+
+// Chatbot Toggle
+function toggleChat() {
+  const chat = document.getElementById("chatbot");
+  chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+}
+
+// Chatbot Logic
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const chat = document.getElementById("chatBody");
+
+  if (input.value.trim() === "") return;
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "user";
+  userMsg.innerText = input.value;
+  chat.appendChild(userMsg);
+
+  let reply = "Please check the Events page for details.";
+
+  const text = input.value.toLowerCase();
+
+  if (text.includes("register"))
+    reply = "You can register from the Events page.";
+  else if (text.includes("event"))
+    reply = "All upcoming events are listed in the Events section.";
+  else if (text.includes("fee"))
+    reply = "Some events are free, some require payment.";
+  else if (text.includes("contact"))
+    reply = "You can contact organizers via Contact page.";
+  else if (text.includes("hello"))
+    reply = "Hello 👋 How can I help you?";
+
+  const botMsg = document.createElement("div");
+  botMsg.className = "bot";
+  botMsg.innerText = reply;
+
+  setTimeout(() => chat.appendChild(botMsg), 400);
+
+  input.value = "";
+}

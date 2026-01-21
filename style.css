@@ -2582,3 +2582,195 @@ img {
     color: #ff7675;
     border: 1px solid rgba(214, 48, 49, 0.6);
 }
+/* =========================
+   FAQ SECTION
+========================= */
+.faq-wrapper {
+  padding: 100px 20px;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.faq-wrapper h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.faq-subtitle {
+  color: #cbd5f5;
+  margin-bottom: 50px;
+}
+
+.faq-grid {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.faq-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.faq-card:hover {
+  transform: translateY(-5px);
+}
+
+.faq-card h3 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+.faq-answer {
+  display: none;
+  color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+/* ================= CHATBOT FIX ================= */
+
+.chatbot-icon {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: linear-gradient(135deg, #6c5ce7, #fd79a8);
+  color: white;
+  padding: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 99999;   /* 🔥 VERY IMPORTANT */
+  box-shadow: 0 0 15px rgba(253, 121, 168, 0.6);
+}
+
+/* Chatbox */
+.chatbot-box {
+  position: fixed;
+  bottom: 90px;
+  right: 25px;
+  width: 320px;
+  background: #0f172a;
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+  display: none;
+  flex-direction: column;
+  z-index: 99999; /* 🔥 FIX */
+  overflow: hidden;
+}
+
+/* Header */
+.chat-header {
+  background: linear-gradient(135deg, #6c5ce7, #fd79a8);
+  padding: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+}
+
+/* Body */
+.chat-body {
+  height: 220px;
+  overflow-y: auto;
+  padding: 10px;
+  color: white;
+}
+
+.chat-body .bot {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.chat-body .user {
+  background: #fd79a8;
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  text-align: right;
+}
+
+/* Input */
+.chat-input {
+  display: flex;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  outline: none;
+}
+
+.chat-input button {
+  background: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .faq-wrapper h1 {
+    font-size: 2.3rem;
+  }
+}
+/* ===========================
+   FAQ VISIBILITY FIX
+=========================== */
+
+.faq-wrapper {
+  background: transparent;
+  color: white;
+}
+
+.faq-wrapper h1 {
+  color: white;
+}
+
+.faq-subtitle {
+  color: #cbd5f5;
+}
+
+.faq-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  color: white;
+}
+
+.faq-card h3 {
+  color: white;
+}
+
+.faq-answer {
+  color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.12);
+}
+.navbar {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.nav-links a {
+  color: white !important;
+}
+
+.nav-links a.active {
+  border-bottom: 2px solid #fd79a8;
+}

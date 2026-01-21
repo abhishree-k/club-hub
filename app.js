@@ -1205,6 +1205,7 @@ function initAdmin() {
             }, 2000);
         });
     }
+    
 }
 
 function loadAdminDashboard() {

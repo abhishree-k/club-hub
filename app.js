@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
     initAdmin();
     initAnimations();
     initStudentSession();
-
+    initDynamicEventDates();
+  
     const yearEl = document.getElementById("year");
     if (yearEl) {
         yearEl.textContent = new Date().getFullYear();
@@ -19,37 +20,49 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /**
- * Security: HTML Sanitization Utility
- * Prevents XSS attacks by escaping HTML special characters.
+ * Date Helper Functions
+ * Generates dynamic dates relative to today to keep events current.
  */
 
 /**
- * Escapes HTML special characters to prevent XSS attacks
- * @param {string} unsafe - The untrusted string to sanitize
- * @returns {string} - The sanitized string safe for DOM insertion
+ * Gets a future date relative to today
+ * @param {number} daysFromNow - Number of days from today (positive for future)
+ * @returns {string} - Date in YYYY-MM-DD format
  * 
  * @example
- * // Prevents XSS from user input
- * const userInput = '<script>alert("XSS")</script>';
- * const safe = escapeHtml(userInput);
- * element.innerHTML = safe; // Renders as text, not executed
+ * // Get a date 7 days from now
+ * const futureDate = getFutureDate(7); // "2026-01-24"
  * 
  * @example
- * // Safe display of user names using innerHTML with sanitization
- * const userName = localStorage.getItem('userName');
- * document.getElementById('welcome').innerHTML = escapeHtml(userName);
+ * // Get today's date
+ * const today = getFutureDate(0); // "2026-01-17"
  */
-function escapeHtml(unsafe) {
-    if (typeof unsafe !== 'string') {
-        return unsafe;
-    }
+function getFutureDate(daysFromNow) {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
     
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+}
+
+/**
+ * Gets the current month and year for calendar display
+ * @returns {Object} - Object with month and year properties
+ * 
+ * @example
+ * const current = getCurrentMonthYear();
+ * console.log(current.month); // 0-11 (January=0)
+ * console.log(current.year);  // 2026
+ */
+function getCurrentMonthYear() {
+    const date = new Date();
+    return {
+        month: date.getMonth(),
+        year: date.getFullYear()
+    };
 }
 
 /**
@@ -316,7 +329,7 @@ function initForms() {
     if (clubRegistrationForm) {
         // Clear errors on input
         clubRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -332,7 +345,7 @@ function initForms() {
             const studentId = document.getElementById('club-student-id');
             const major = document.getElementById('club-major');
             const year = document.getElementById('club-year');
-            
+
             let isValid = true;
 
             if (!firstName.value.trim()) {
@@ -408,10 +421,32 @@ function initForms() {
                 const student = JSON.parse(localStorage.getItem('studentUser'));
                 if (student && student.id === studentId.value) {
                     const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${studentId.value}`)) || [];
+
+                    // Update Global Membership List (for Admin & Analytics)
+                    let allMemberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
+
                     selectedClubs.forEach(club => {
-                        if (!joinedClubs.includes(club)) joinedClubs.push(club);
+                        if (!joinedClubs.includes(club)) {
+                            joinedClubs.push(club);
+
+                            // Add to global list if not already there (simple check)
+                            // In a real app, this would be handled by backend relationships
+                            const existing = allMemberships.find(m => m.studentId === studentId.value && m.club === club);
+                            if (!existing) {
+                                const newId = allMemberships.length > 0 ? Math.max(...allMemberships.map(m => m.id)) + 1 : 1;
+                                allMemberships.push({
+                                    id: newId,
+                                    name: student.name,
+                                    studentId: studentId.value,
+                                    club: club,
+                                    status: 'Pending', // Default status
+                                    joinedAt: new Date().toISOString()
+                                });
+                            }
+                        }
                     });
                     localStorage.setItem(`clubs_${studentId.value}`, JSON.stringify(joinedClubs));
+                    localStorage.setItem('allClubMemberships', JSON.stringify(allMemberships));
                 }
             }
 
@@ -426,7 +461,7 @@ function initForms() {
     if (eventRegistrationForm) {
         // Clear errors on input
         eventRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -472,11 +507,12 @@ function initForms() {
 
             // Check for conflicts if logged in
             const student = JSON.parse(localStorage.getItem('studentUser'));
-            if (student && student.id === studentId.value) {
+            if (student && student.id === studentId) {
+                // Dynamic event dates - updated to use relative dates
                 const events = [
-                    { id: 1, name: "AI Workshop Series", date: "2023-11-15", time: "14:00" },
-                    { id: 2, name: "Digital Art Masterclass", date: "2023-11-20", time: "16:00" },
-                    { id: 3, name: "Public Speaking Workshop", date: "2023-11-22", time: "15:00" }
+                    { id: 1, name: "AI Workshop Series", date: getFutureDate(7), time: "14:00" },
+                    { id: 2, name: "Digital Art Masterclass", date: getFutureDate(14), time: "16:00" },
+                    { id: 3, name: "Public Speaking Workshop", date: getFutureDate(21), time: "15:00" }
                 ];
 
                 const currentEvent = events.find(ev => ev.name === eventName);
@@ -498,6 +534,17 @@ function initForms() {
 
                     studentEvents.push(currentEvent);
                     localStorage.setItem(`events_${studentId.value}`, JSON.stringify(studentEvents));
+
+                    // Update Global Event Registrations (for Admin & Analytics)
+                    let allEventRegs = JSON.parse(localStorage.getItem('allEventRegistrations')) || [];
+                    allEventRegs.push({
+                        eventName: currentEvent.name,
+                        eventId: currentEvent.id,
+                        studentId: student.id,
+                        studentName: student.name,
+                        date: new Date().toISOString()
+                    });
+                    localStorage.setItem('allEventRegistrations', JSON.stringify(allEventRegs));
                 }
             }
 
@@ -516,7 +563,7 @@ function initForms() {
     if (studentLoginForm) {
         // Clear errors on input
         studentLoginForm.querySelectorAll('input').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -549,13 +596,13 @@ function initForms() {
             const student = { name, id };
             localStorage.setItem('studentUser', JSON.stringify(student));
             updateUIForStudent();
-            
+
             const loginMessage = document.getElementById('login-message');
             if (loginMessage) {
                 loginMessage.textContent = 'Login successful! Redirecting...';
                 loginMessage.style.color = 'var(--success-color)';
             }
-            
+
             setTimeout(() => {
                 const clubTab = document.querySelector('[data-tab="club-registration"]');
                 if (clubTab) clubTab.click();
@@ -568,10 +615,10 @@ function initForms() {
     if (certificateForm) {
         // Clear errors on input/change
         certificateForm.querySelectorAll('input, select').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
-            field.addEventListener('change', function() {
+            field.addEventListener('change', function () {
                 clearFieldError(this);
             });
         });
@@ -643,12 +690,16 @@ function initCalendar() {
     let currentYear = currentDate.getFullYear();
     let selectedEvent = null;
 
-    // Sample events data
+    // Sample events data - using dynamic dates for current/future events
     let events = [
-        { id: 1, name: "AI Workshop", club: "tech", date: "2023-11-15", time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
-        { id: 2, name: "Digital Art Masterclass", club: "arts", date: "2023-11-20", time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
-        { id: 3, name: "Public Speaking Workshop", club: "debate", date: "2023-11-22", time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." }
+        { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
+        { id: 2, name: "Digital Art Masterclass", club: "arts", date: getFutureDate(14), time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
+        { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." }
     ];
+    // Ensure initial save if empty
+    if (!localStorage.getItem('allEvents')) {
+        localStorage.setItem('allEvents', JSON.stringify(events));
+    }
 
     // Helper: Get Club Name
     function getClubName(clubId) {
@@ -798,6 +849,8 @@ function initCalendar() {
                 events.push(eventData);
                 selectedEvent = eventData;
             }
+            // Save to LocalStorage
+            localStorage.setItem('allEvents', JSON.stringify(events));
             renderCalendar();
             showEventDetails(selectedEvent);
             eventModal.style.display = 'none';
@@ -809,6 +862,7 @@ function initCalendar() {
         deleteEventButton.addEventListener('click', function () {
             if (selectedEvent && confirm('Are you sure you want to delete this event?')) {
                 events = events.filter(e => e.id !== selectedEvent.id);
+                localStorage.setItem('allEvents', JSON.stringify(events));
                 renderCalendar();
                 eventDetailsContainer.innerHTML = `<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>`;
                 eventModal.style.display = 'none';
@@ -953,7 +1007,7 @@ function initAdmin() {
 
         // Clear errors on input
         adminLoginForm.querySelectorAll('input').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -1023,9 +1077,6 @@ function initAdmin() {
                     alert('Username already exists. Please choose another.');
                     return;
                 }
-
-            } else {
-                showFieldError(passwordField, 'Invalid credentials. Please try again.');
             }
         });
     }
@@ -1069,12 +1120,18 @@ function initAdmin() {
                         sections.forEach(sec => sec.style.display = 'none');
                         const targetSec = document.getElementById(targetId);
                         if (targetSec) targetSec.style.display = 'block';
+
+                        // Auto-refresh analytics when switching to dashboard
+                        if (targetId === 'dashboard') {
+                            setTimeout(initAnalytics, 100); // Small delay to ensure container is visible
+                        }
                     }
                 });
             });
 
             loadAdminDashboard();
             initClubManagement();
+            initAnalytics();
             const logoutButton = document.getElementById('admin-logout');
             if (logoutButton) {
                 logoutButton.addEventListener('click', function () {
@@ -1090,7 +1147,7 @@ function initAdmin() {
     if (adminEventForm) {
         // Clear errors on input
         adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
@@ -1148,60 +1205,59 @@ function initAdmin() {
             }, 2000);
         });
     }
-        });
-    }
+    
+}
 
-    function loadAdminDashboard() {
-        // Helper
-        const getClubName = (id) => {
-            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
-            return map[id] || id;
-        };
+function loadAdminDashboard() {
+    // Helper
+    const getClubName = (id) => {
+        const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
+        return map[id] || id;
+    };
 
-        // Render Student Registrations
-        const registrationsTable = document.getElementById('registrations-table');
-        if (registrationsTable) {
-            registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const registrations = [
-                { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
-                { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
-            ];
-            registrations.forEach(reg => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+    // Render Student Registrations
+    const registrationsTable = document.getElementById('registrations-table');
+    if (registrationsTable) {
+        registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const registrations = [
+            { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
+        ];
+        registrations.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                     <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
                     <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
                     <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
                     <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
                         <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
                 `;
-                registrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
+            registrationsTable.querySelector('tbody').appendChild(row);
+        });
+    }
 
-        // Render Event Registrations
-        const eventRegistrationsTable = document.getElementById('event-registrations-table');
-        if (eventRegistrationsTable) {
-            eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const eventRegs = [
-                { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
-            ];
-            eventRegs.forEach(reg => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+    // Render Event Registrations
+    const eventRegistrationsTable = document.getElementById('event-registrations-table');
+    if (eventRegistrationsTable) {
+        eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const eventRegs = [
+            { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
+        ];
+        eventRegs.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                     <td>${reg.id}</td><td>Event ${reg.eventId}</td><td>${reg.name}</td><td>${reg.email}</td>
                     <td>${reg.studentId}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
                     <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
                         <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
                 `;
-                eventRegistrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
-
-        // Dashboard Button Actions
-        document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
-        document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
+            eventRegistrationsTable.querySelector('tbody').appendChild(row);
+        });
     }
+
+    // Dashboard Button Actions
+    document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
+    document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
 }
 
 /**

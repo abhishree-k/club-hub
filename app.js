@@ -421,10 +421,32 @@ function initForms() {
                 const student = JSON.parse(localStorage.getItem('studentUser'));
                 if (student && student.id === studentId.value) {
                     const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${studentId.value}`)) || [];
+
+                    // Update Global Membership List (for Admin & Analytics)
+                    let allMemberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
+
                     selectedClubs.forEach(club => {
-                        if (!joinedClubs.includes(club)) joinedClubs.push(club);
+                        if (!joinedClubs.includes(club)) {
+                            joinedClubs.push(club);
+
+                            // Add to global list if not already there (simple check)
+                            // In a real app, this would be handled by backend relationships
+                            const existing = allMemberships.find(m => m.studentId === studentId.value && m.club === club);
+                            if (!existing) {
+                                const newId = allMemberships.length > 0 ? Math.max(...allMemberships.map(m => m.id)) + 1 : 1;
+                                allMemberships.push({
+                                    id: newId,
+                                    name: student.name,
+                                    studentId: studentId.value,
+                                    club: club,
+                                    status: 'Pending', // Default status
+                                    joinedAt: new Date().toISOString()
+                                });
+                            }
+                        }
                     });
                     localStorage.setItem(`clubs_${studentId.value}`, JSON.stringify(joinedClubs));
+                    localStorage.setItem('allClubMemberships', JSON.stringify(allMemberships));
                 }
             }
 
@@ -512,6 +534,17 @@ function initForms() {
 
                     studentEvents.push(currentEvent);
                     localStorage.setItem(`events_${studentId.value}`, JSON.stringify(studentEvents));
+
+                    // Update Global Event Registrations (for Admin & Analytics)
+                    let allEventRegs = JSON.parse(localStorage.getItem('allEventRegistrations')) || [];
+                    allEventRegs.push({
+                        eventName: currentEvent.name,
+                        eventId: currentEvent.id,
+                        studentId: student.id,
+                        studentName: student.name,
+                        date: new Date().toISOString()
+                    });
+                    localStorage.setItem('allEventRegistrations', JSON.stringify(allEventRegs));
                 }
             }
 
@@ -663,6 +696,10 @@ function initCalendar() {
         { id: 2, name: "Digital Art Masterclass", club: "arts", date: getFutureDate(14), time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
         { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." }
     ];
+    // Ensure initial save if empty
+    if (!localStorage.getItem('allEvents')) {
+        localStorage.setItem('allEvents', JSON.stringify(events));
+    }
 
     // Helper: Get Club Name
     function getClubName(clubId) {
@@ -812,6 +849,8 @@ function initCalendar() {
                 events.push(eventData);
                 selectedEvent = eventData;
             }
+            // Save to LocalStorage
+            localStorage.setItem('allEvents', JSON.stringify(events));
             renderCalendar();
             showEventDetails(selectedEvent);
             eventModal.style.display = 'none';
@@ -823,6 +862,7 @@ function initCalendar() {
         deleteEventButton.addEventListener('click', function () {
             if (selectedEvent && confirm('Are you sure you want to delete this event?')) {
                 events = events.filter(e => e.id !== selectedEvent.id);
+                localStorage.setItem('allEvents', JSON.stringify(events));
                 renderCalendar();
                 eventDetailsContainer.innerHTML = `<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>`;
                 eventModal.style.display = 'none';
@@ -1080,12 +1120,18 @@ function initAdmin() {
                         sections.forEach(sec => sec.style.display = 'none');
                         const targetSec = document.getElementById(targetId);
                         if (targetSec) targetSec.style.display = 'block';
+
+                        // Auto-refresh analytics when switching to dashboard
+                        if (targetId === 'dashboard') {
+                            setTimeout(initAnalytics, 100); // Small delay to ensure container is visible
+                        }
                     }
                 });
             });
 
             loadAdminDashboard();
             initClubManagement();
+            initAnalytics();
             const logoutButton = document.getElementById('admin-logout');
             if (logoutButton) {
                 logoutButton.addEventListener('click', function () {
@@ -1438,6 +1484,171 @@ function initDynamicEventDates() {
             const options = { month: 'short', day: 'numeric', year: 'numeric' };
             const formattedDate = date.toLocaleDateString('en-US', options);
             dateElement.textContent = formattedDate;
+        }
+    });
+}
+
+/**
+ * 9. Analytics Logic
+ * Renders charts using Chart.js for the Admin Dashboard.
+ */
+function initAnalytics() {
+    // Check if Chart.js is loaded
+    if (typeof Chart === 'undefined') return;
+
+    // Common Chart Options
+    Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+    // --- 1. Fetch Real Data from LocalStorage ---
+
+    // Event Data
+    const allEventRegs = JSON.parse(localStorage.getItem('allEventRegistrations')) || [
+        // Mock data fallback if empty (for demo)
+        { eventName: 'AI Workshop', date: '2023-11-15' },
+        { eventName: 'AI Workshop', date: '2023-11-15' },
+        { eventName: 'Digital Art Masterclass', date: '2023-11-20' },
+        { eventName: 'Public Speaking Workshop', date: '2023-11-22' },
+        { eventName: 'Public Speaking Workshop', date: '2023-11-22' },
+        { eventName: 'Public Speaking Workshop', date: '2023-11-22' }
+    ];
+
+    // Club Data
+    const allMemberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [
+        // Mock data fallback
+        { club: 'tech', status: 'Active', joinedAt: '2023-10-01' },
+        { club: 'tech', status: 'Active', joinedAt: '2023-10-05' },
+        { club: 'arts', status: 'Pending', joinedAt: '2023-10-10' },
+        { club: 'debate', status: 'Active', joinedAt: '2023-10-12' }
+    ];
+
+    // --- 2. Process Data ---
+
+    // Process Events: Count per Event Name
+    const eventCounts = {};
+    allEventRegs.forEach(reg => {
+        eventCounts[reg.eventName] = (eventCounts[reg.eventName] || 0) + 1;
+    });
+    const eventLabels = Object.keys(eventCounts);
+    const eventData = Object.values(eventCounts);
+
+    // Process Clubs: Count per Club Code
+    const clubCounts = {};
+    const clubNames = {
+        'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club',
+        'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD'
+    };
+    allMemberships.forEach(m => {
+        const name = clubNames[m.club] || m.club;
+        clubCounts[name] = (clubCounts[name] || 0) + 1;
+    });
+    const clubLabels = Object.keys(clubCounts);
+    const clubDataValues = Object.values(clubCounts);
+
+    // Process Engagement: Actions per Month
+    const monthlyActivity = {};
+    const processDate = (dateStr) => {
+        if (!dateStr) return;
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return;
+        const key = d.toLocaleString('default', { month: 'short' }); // e.g., "Nov"
+        monthlyActivity[key] = (monthlyActivity[key] || 0) + 1;
+    };
+
+    allEventRegs.forEach(r => processDate(r.date));
+    allMemberships.forEach(m => processDate(m.joinedAt));
+
+    // Sort Months (Naive approach for this year/fixed list)
+    const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const sortedMonths = Object.keys(monthlyActivity).sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
+    const engagementData = sortedMonths.map(m => monthlyActivity[m]);
+
+
+    // --- 3. Render Charts (Destroy existing first) ---
+
+    // Helper: Destroy and Create
+    const createChart = (canvasId, config) => {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+
+        const existingChart = Chart.getChart(canvas);
+        if (existingChart) existingChart.destroy();
+
+        new Chart(canvas, config);
+    };
+
+    // Render Event Participation Chart
+    createChart('eventParticipationChart', {
+        type: 'bar',
+        data: {
+            labels: eventLabels.length ? eventLabels : ['No Data'],
+            datasets: [{
+                label: 'Registrations',
+                data: eventData.length ? eventData : [0],
+                backgroundColor: 'rgba(108, 92, 231, 0.6)',
+                borderColor: 'rgba(108, 92, 231, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Render Active Clubs Chart
+    createChart('activeClubsChart', {
+        type: 'doughnut',
+        data: {
+            labels: clubLabels.length ? clubLabels : ['No Data'],
+            datasets: [{
+                data: clubDataValues.length ? clubDataValues : [1], // 1 for empty placeholder
+                backgroundColor: [
+                    'rgba(108, 92, 231, 0.8)', 'rgba(253, 121, 168, 0.8)',
+                    'rgba(0, 184, 148, 0.8)', 'rgba(9, 132, 227, 0.8)',
+                    'rgba(225, 112, 85, 0.8)', 'rgba(255, 234, 167, 0.8)'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right', labels: { boxWidth: 12, color: 'white' } }
+            }
+        }
+    });
+
+    // Render Monthly Engagement Chart
+    createChart('monthlyEngagementChart', {
+        type: 'line',
+        data: {
+            labels: sortedMonths.length ? sortedMonths : ['Nov'],
+            datasets: [{
+                label: 'Activity',
+                data: engagementData.length ? engagementData : [0],
+                borderColor: '#00cec9',
+                backgroundColor: 'rgba(0, 206, 201, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#00cec9'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+            }
         }
     });
 }

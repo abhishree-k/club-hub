@@ -11,9 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
     initAdmin();
     initAnimations();
     initStudentSession();
-    initMyHub();
-
-
+    initDynamicEventDates();
+  
     const yearEl = document.getElementById("year");
     if (yearEl) {
         yearEl.textContent = new Date().getFullYear();
@@ -21,37 +20,49 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /**
- * Security: HTML Sanitization Utility
- * Prevents XSS attacks by escaping HTML special characters.
+ * Date Helper Functions
+ * Generates dynamic dates relative to today to keep events current.
  */
 
 /**
- * Escapes HTML special characters to prevent XSS attacks
- * @param {string} unsafe - The untrusted string to sanitize
- * @returns {string} - The sanitized string safe for DOM insertion
+ * Gets a future date relative to today
+ * @param {number} daysFromNow - Number of days from today (positive for future)
+ * @returns {string} - Date in YYYY-MM-DD format
  * 
  * @example
- * // Prevents XSS from user input
- * const userInput = '<script>alert("XSS")</script>';
- * const safe = escapeHtml(userInput);
- * element.innerHTML = safe; // Renders as text, not executed
+ * // Get a date 7 days from now
+ * const futureDate = getFutureDate(7); // "2026-01-24"
  * 
  * @example
- * // Safe display of user names using innerHTML with sanitization
- * const userName = localStorage.getItem('userName');
- * document.getElementById('welcome').innerHTML = escapeHtml(userName);
+ * // Get today's date
+ * const today = getFutureDate(0); // "2026-01-17"
  */
-function escapeHtml(unsafe) {
-    if (typeof unsafe !== 'string') {
-        return unsafe;
-    }
+function getFutureDate(daysFromNow) {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+}
 
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+/**
+ * Gets the current month and year for calendar display
+ * @returns {Object} - Object with month and year properties
+ * 
+ * @example
+ * const current = getCurrentMonthYear();
+ * console.log(current.month); // 0-11 (January=0)
+ * console.log(current.year);  // 2026
+ */
+function getCurrentMonthYear() {
+    const date = new Date();
+    return {
+        month: date.getMonth(),
+        year: date.getFullYear()
+    };
 }
 
 /**
@@ -496,11 +507,12 @@ function initForms() {
 
             // Check for conflicts if logged in
             const student = JSON.parse(localStorage.getItem('studentUser'));
-            if (student && student.id === studentId.value) {
+            if (student && student.id === studentId) {
+                // Dynamic event dates - updated to use relative dates
                 const events = [
-                    { id: 1, name: "AI Workshop Series", date: "2023-11-15", time: "14:00" },
-                    { id: 2, name: "Digital Art Masterclass", date: "2023-11-20", time: "16:00" },
-                    { id: 3, name: "Public Speaking Workshop", date: "2023-11-22", time: "15:00" }
+                    { id: 1, name: "AI Workshop Series", date: getFutureDate(7), time: "14:00" },
+                    { id: 2, name: "Digital Art Masterclass", date: getFutureDate(14), time: "16:00" },
+                    { id: 3, name: "Public Speaking Workshop", date: getFutureDate(21), time: "15:00" }
                 ];
 
                 const currentEvent = events.find(ev => ev.name === eventName);
@@ -678,11 +690,11 @@ function initCalendar() {
     let currentYear = currentDate.getFullYear();
     let selectedEvent = null;
 
-    // Load events from localStorage or default
-    let events = JSON.parse(localStorage.getItem('allEvents')) || [
-        { id: 1, name: "AI Workshop", club: "tech", date: "2023-11-15", time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
-        { id: 2, name: "Digital Art Masterclass", club: "arts", date: "2023-11-20", time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
-        { id: 3, name: "Public Speaking Workshop", club: "debate", date: "2023-11-22", time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." }
+    // Sample events data - using dynamic dates for current/future events
+    let events = [
+        { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
+        { id: 2, name: "Digital Art Masterclass", club: "arts", date: getFutureDate(14), time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
+        { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." }
     ];
     // Ensure initial save if empty
     if (!localStorage.getItem('allEvents')) {
@@ -1194,81 +1206,58 @@ function initAdmin() {
         });
     }
     
+}
 
-    function loadAdminDashboard() {
-        // Helper
-        const getClubName = (id) => {
-            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
-            return map[id] || id;
-        };
+function loadAdminDashboard() {
+    // Helper
+    const getClubName = (id) => {
+        const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
+        return map[id] || id;
+    };
 
-        // Render Student Registrations
-        const registrationsTable = document.getElementById('registrations-table');
-        if (registrationsTable) {
-            registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
-
-            // Group by student for "Registrations" view
-            const students = {};
-            memberships.forEach(m => {
-                if (!students[m.studentId]) {
-                    students[m.studentId] = {
-                        id: m.id,
-                        name: m.name,
-                        email: `${m.name.toLowerCase().replace(/\s/g, '.')}@student.dsce.edu`,
-                        studentId: m.studentId,
-                        clubs: [],
-                        registeredAt: m.joinedAt
-                    };
-                }
-                students[m.studentId].clubs.push(m.club);
-            });
-
-            const registrations = Object.values(students);
-            if (registrations.length === 0) {
-                registrationsTable.querySelector('tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;">No registrations found.</td></tr>';
-            } else {
-                registrations.forEach(reg => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
-                        <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
-                        <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
-                        <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
-                            <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
-                    `;
-                    registrationsTable.querySelector('tbody').appendChild(row);
-                });
-            }
-        }
-
-        // Render Event Registrations
-        const eventRegistrationsTable = document.getElementById('event-registrations-table');
-        if (eventRegistrationsTable) {
-            eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const eventRegs = JSON.parse(localStorage.getItem('allEventRegistrations')) || [];
-
-            if (eventRegs.length === 0) {
-                eventRegistrationsTable.querySelector('tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;">No event registrations found.</td></tr>';
-            } else {
-                eventRegs.forEach((reg, idx) => {
-                    const row = document.createElement('tr');
-                    const id = reg.id || (idx + 1);
-                    row.innerHTML = `
-                        <td>${id}</td><td>${reg.eventName}</td><td>${reg.studentName}</td><td>${reg.studentName.toLowerCase().replace(/\s/g, '.')}@student.dsce.edu</td>
-                        <td>${reg.studentId}</td><td>${new Date(reg.date).toLocaleDateString()}</td>
-                        <td><button class="admin-action view" data-id="${id}"><i class="fas fa-eye"></i></button>
-                            <button class="admin-action delete" data-id="${id}"><i class="fas fa-trash"></i></button></td>
-                    `;
-                    eventRegistrationsTable.querySelector('tbody').appendChild(row);
-                });
-            }
-        }
-
-        // Dashboard Button Actions
-        document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
-        document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
+    // Render Student Registrations
+    const registrationsTable = document.getElementById('registrations-table');
+    if (registrationsTable) {
+        registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const registrations = [
+            { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
+        ];
+        registrations.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                    <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
+                    <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
+                    <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
+                    <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+                        <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
+                `;
+            registrationsTable.querySelector('tbody').appendChild(row);
+        });
     }
+
+    // Render Event Registrations
+    const eventRegistrationsTable = document.getElementById('event-registrations-table');
+    if (eventRegistrationsTable) {
+        eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const eventRegs = [
+            { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
+        ];
+        eventRegs.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                    <td>${reg.id}</td><td>Event ${reg.eventId}</td><td>${reg.name}</td><td>${reg.email}</td>
+                    <td>${reg.studentId}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
+                    <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+                        <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
+                `;
+            eventRegistrationsTable.querySelector('tbody').appendChild(row);
+        });
+    }
+
+    // Dashboard Button Actions
+    document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
+    document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
 }
 
 /**
@@ -1468,134 +1457,34 @@ function updateEnrollmentStatus() {
 }
 
 /**
- * 8. Club Management Logic
- * Handles CRUD operations for club memberships in the Admin Dashboard.
+ * Initialize Dynamic Event Dates
+ * Updates event cards with dynamic dates based on data-days-offset attribute
  */
-function initClubManagement() {
-    const tableBody = document.querySelector('#clubs-table tbody');
-    const addBtn = document.getElementById('add-club-member-btn');
-    const modal = document.getElementById('club-member-modal');
-    const form = document.getElementById('club-member-form');
-    const closeBtns = document.querySelectorAll('.close-club-modal');
+function initDynamicEventDates() {
+    document.querySelectorAll('.event-card[data-days-offset]').forEach(card => {
+        const daysOffset = parseInt(card.getAttribute('data-days-offset'));
+        if (isNaN(daysOffset)) return;
 
-    // Make sure we are on the admin dashboard
-    if (!tableBody) return;
-
-    // 1. Initial Data Load & Mocking
-    let memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
-    if (memberships.length === 0) {
-        memberships = [
-            { id: 1, name: 'Alice Walker', studentId: 'S1001', club: 'tech', status: 'Active' },
-            { id: 2, name: 'Bob Builder', studentId: 'S1002', club: 'arts', status: 'Pending' },
-            { id: 3, name: 'Charlie Day', studentId: 'S1003', club: 'debate', status: 'Active' }
-        ];
-        localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
-    }
-
-    // 2. Render Table
-    function renderTable() {
-        tableBody.innerHTML = '';
-        memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
-
-        const getClubName = (code) => {
-            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD' };
-            return map[code] || code;
-        };
-
-        memberships.forEach(m => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>#${m.id}</td>
-                <td>${m.name}</td>
-                <td>${m.studentId}</td>
-                <td>${getClubName(m.club)}</td>
-                <td><span class="status-${m.status.toLowerCase()}">${m.status}</span></td>
-                <td>
-                    <button class="admin-action edit-club" data-id="${m.id}"><i class="fas fa-edit"></i></button>
-                    <button class="admin-action delete-club" data-id="${m.id}"><i class="fas fa-trash"></i></button>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-    }
-
-    renderTable();
-
-    // 3. Modal Actions
-    function openModal(member = null) {
-        const title = document.getElementById('club-modal-title');
-        const idInput = document.getElementById('club-member-id');
-        const nameInput = document.getElementById('club-student-name');
-        const dbIdInput = document.getElementById('club-student-db-id');
-        const clubInput = document.getElementById('club-select');
-        const statusInput = document.getElementById('club-status');
-
-        if (member) {
-            title.textContent = 'Edit Club Member';
-            idInput.value = member.id;
-            nameInput.value = member.name;
-            dbIdInput.value = member.studentId;
-            clubInput.value = member.club;
-            statusInput.value = member.status;
-        } else {
-            title.textContent = 'Add Club Member';
-            form.reset();
-            idInput.value = '';
-        }
-        modal.style.display = 'block';
-    }
-
-    if (addBtn) addBtn.addEventListener('click', () => openModal());
-
-    closeBtns.forEach(btn => btn.addEventListener('click', () => {
-        modal.style.display = 'none';
-    }));
-
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) modal.style.display = 'none';
-    });
-
-    // 4. Form Submit
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const id = document.getElementById('club-member-id').value;
-        const name = document.getElementById('club-student-name').value;
-        const studentId = document.getElementById('club-student-db-id').value;
-        const club = document.getElementById('club-select').value;
-        const status = document.getElementById('club-status').value;
-
-        if (id) {
-            // Edit
-            const index = memberships.findIndex(m => m.id == id);
-            if (index !== -1) {
-                memberships[index] = { id: parseInt(id), name, studentId, club, status };
+        // Calculate the future date
+        const futureDate = getFutureDate(daysOffset);
+        
+        // Update data-date attribute for filtering
+        card.setAttribute('data-date', futureDate);
+        
+        // Format and display the date
+        const dateElement = card.querySelector('.event-date');
+        if (dateElement) {
+            let date;
+            // Avoid timezone issues when parsing plain "YYYY-MM-DD" dates
+            if (typeof futureDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(futureDate)) {
+                const [year, month, day] = futureDate.split('-').map(Number);
+                date = new Date(year, month - 1, day);
+            } else {
+                date = new Date(futureDate);
             }
-        } else {
-            // Add
-            const newId = memberships.length > 0 ? Math.max(...memberships.map(m => m.id)) + 1 : 1;
-            memberships.push({ id: newId, name, studentId, club, status });
-        }
-
-        localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
-        renderTable();
-        modal.style.display = 'none';
-    });
-
-    // 5. Table Actions (Edit/Delete)
-    tableBody.addEventListener('click', (e) => {
-        const btn = e.target.closest('.admin-action');
-        if (!btn) return;
-
-        const id = btn.getAttribute('data-id');
-        if (btn.classList.contains('edit-club')) {
-            const member = memberships.find(m => m.id == id);
-            openModal(member);
-        } else if (btn.classList.contains('delete-club')) {
-            if (confirm('Are you sure you want to remove this member?')) {
-                memberships = memberships.filter(m => m.id != id);
-                localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
-                renderTable();
-            }
+            const options = { month: 'short', day: 'numeric', year: 'numeric' };
+            const formattedDate = date.toLocaleDateString('en-US', options);
+            dateElement.textContent = formattedDate;
         }
     });
 }

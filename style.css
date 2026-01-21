@@ -1210,34 +1210,74 @@ img {
     margin: 0 auto;
 }
 
-.checkbox-container {
-    display: block;
-    position: relative;
-    padding-left: 30px;
-    margin-bottom: 0.8rem;
-    cursor: pointer;
-    user-select: none;
-    color: rgba(255, 255, 255, 0.8);
+/* Checkbox group layout */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
 }
 
-.checkbox-container input {
+/* Single checkbox row */
+.checkbox-item {
+    display: flex;
+    align-items: center;              
+    gap: 0.6rem;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    line-height: 1.2;
+    user-select: none;
+}
+
+/* Hide native checkbox */
+.checkbox-item input {
     position: absolute;
     opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
+    pointer-events: none;
 }
 
+/* Checkbox box */
 .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 20px;
-    width: 20px;
-    background: rgba(255, 255, 255, 0.1);
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
     border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    display: flex;                   
+    align-items: center;
+    justify-content: center;
+
+    transition: all 0.2s ease;
+}
+
+/* Tick */
+.checkmark::after {
+    content: "";
+    width: 5px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    display: none;
+}
+
+/* Checked state */
+.checkbox-item input:checked + .checkmark {
+    background: #fd79a8;
+    border-color: #fd79a8;
+}
+
+.checkbox-item input:checked + .checkmark::after {
+    display: block;
+}
+
+/* Label text */
+.checkbox-text {
+    display: flex;
+    align-items: center;              
 }
 
 .checkbox-container:hover input ~ .checkmark {

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initAdmin();
     initAnimations();
     initStudentSession();
+    initFavorites();
 
     const yearEl = document.getElementById("year");
     if (yearEl) {
@@ -68,6 +69,38 @@ function initMyHub() {
 
     const welcomeMsg = document.getElementById('hub-welcome-msg');
     if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${student.name}!`;
+
+    // Render Favorites in My Hub
+    const favoritesListEl = document.getElementById('favorites-list');
+    if (favoritesListEl) {
+        const favs = getFavoriteClubs();
+        if (favs.length === 0) {
+            favoritesListEl.innerHTML = '<div class="no-data"><p>You have no favorite clubs yet.</p><a href="index.html" class="action-button" style="display:inline-block; margin-top:1rem;">Discover Clubs</a></div>';
+        } else {
+            favoritesListEl.innerHTML = '';
+            const clubsMap = {
+                'tech': { name: 'Tech Society- POINT BLANK', icon: '💻' },
+                'arts': { name: 'Creative Arts-AALEKA', icon: '🎨' },
+                'debate': { name: 'Debate Club- LITSOC', icon: '💬' },
+                'music': { name: 'Music Society', icon: '🎵' },
+                'sports': { name: 'Sports Club', icon: '⚽' },
+                'science': { name: 'Dance club- ABCD', icon: '💃' }
+            };
+
+            favs.forEach(clubId => {
+                const club = clubsMap[clubId] || { name: clubId, icon: '🌟' };
+                const item = document.createElement('div');
+                item.classList.add('hub-item');
+                item.innerHTML = `
+                    <div class="hub-item-info">
+                        <h4>${club.icon} ${club.name}</h4>
+                        <p>Favorited</p>
+                    </div>
+                `;
+                favoritesListEl.appendChild(item);
+            });
+        }
+    }
 
     const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
     const registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
@@ -1095,6 +1128,66 @@ function updateEnrollmentStatus() {
             }
         }
     });
+}
+
+/* Favorites: simple localStorage-backed favorites for clubs */
+const FAVORITES_KEY = 'favoriteClubs';
+
+function getFavoriteClubs() {
+    return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+}
+
+function isClubFavorited(id) {
+    return getFavoriteClubs().includes(id);
+}
+
+function setClubFavorited(id, favorited) {
+    const favs = getFavoriteClubs();
+    if (favorited) {
+        if (!favs.includes(id)) favs.push(id);
+    } else {
+        const idx = favs.indexOf(id);
+        if (idx !== -1) favs.splice(idx, 1);
+    }
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
+}
+
+function updateFavoriteUI() {
+    document.querySelectorAll('.favorite-toggle').forEach(btn => {
+        const clubId = btn.getAttribute('data-club');
+        const icon = btn.querySelector('i');
+        const card = btn.closest('.club-card');
+        if (isClubFavorited(clubId)) {
+            btn.classList.add('active');
+            if (icon) { icon.classList.remove('far'); icon.classList.add('fas'); }
+            if (card) card.classList.add('favorited');
+            btn.setAttribute('aria-pressed', 'true');
+        } else {
+            btn.classList.remove('active');
+            if (icon) { icon.classList.remove('fas'); icon.classList.add('far'); }
+            if (card) card.classList.remove('favorited');
+            btn.setAttribute('aria-pressed', 'false');
+        }
+    });
+}
+
+function initFavorites() {
+    // Delegate clicks for favorite toggles
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest && e.target.closest('.favorite-toggle');
+        if (!btn) return;
+        const clubId = btn.getAttribute('data-club');
+        if (!clubId) return;
+        const currently = isClubFavorited(clubId);
+        setClubFavorited(clubId, !currently);
+        updateFavoriteUI();
+
+        // If on My Hub, re-run initMyHub to refresh favorites list
+        if (typeof initMyHub === 'function') initMyHub();
+    });
+
+    // Initial render
+    updateFavoriteUI();
 }
 
 /**

@@ -290,6 +290,52 @@ function formatDate(startDate, endDate) {
 }
 
 /**
+ * Date Helper Functions
+ * Generates dynamic dates relative to today to keep events current.
+ */
+
+/**
+ * Gets a future date relative to today
+ * @param {number} daysFromNow - Number of days from today (positive for future)
+ * @returns {string} - Date in YYYY-MM-DD format
+ * 
+ * @example
+ * // Get a date 7 days from now
+ * const futureDate = getFutureDate(7); // "2026-01-24"
+ * 
+ * @example
+ * // Get today's date
+ * const today = getFutureDate(0); // "2026-01-17"
+ */
+function getFutureDate(daysFromNow) {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
+/**
+ * Gets the current month and year for calendar display
+ * @returns {Object} - Object with month and year properties
+ * 
+ * @example
+ * const current = getCurrentMonthYear();
+ * console.log(current.month); // 0-11 (January=0)
+ * console.log(current.year);  // 2026
+ */
+function getCurrentMonthYear() {
+    const date = new Date();
+    return {
+        month: date.getMonth(),
+        year: date.getFullYear()
+    };
+}
+
+/**
  * 1. Navigation & Scrolling Logic
  * Handles mobile menu toggling and smooth scrolling.
  */

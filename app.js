@@ -327,7 +327,18 @@ function initForms() {
                 }
             }
 
-            alert('Club registration submitted successfully!');
+            // Show success message instead of alert
+            const successMessage = document.getElementById('club-success-message');
+            if (successMessage) {
+                successMessage.classList.remove('hidden');
+                // Scroll to the message
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Auto-hide the message after 5 seconds
+                setTimeout(() => {
+                    successMessage.classList.add('hidden');
+                }, 5000);
+            }
+
             this.reset();
             updateEnrollmentStatus();
         });

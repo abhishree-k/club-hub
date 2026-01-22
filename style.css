@@ -1398,7 +1398,42 @@ img {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
+}
+
+/* Success Message */
+.success-message {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    background: rgba(0, 184, 148, 0.1);
+    border: 2px solid var(--success-color);
+    border-radius: 10px;
+    color: var(--success-color);
+    font-weight: 500;
+    animation: slideIn 0.5s ease;
+}
+
+.success-message i {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.success-message p {
+    margin: 0;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Admin Login */

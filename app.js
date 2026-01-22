@@ -337,6 +337,75 @@ function getCurrentMonthYear() {
 }
 
 /**
+ * UI Helper: Form Error Handling
+ */
+function showFieldError(input, message) {
+    const formGroup = input.closest('.form-group') || input.parentElement;
+    let errorDisplay = formGroup.querySelector('.form-error-message');
+
+    if (!errorDisplay) {
+        errorDisplay = document.createElement('div');
+        errorDisplay.className = 'form-error-message';
+        errorDisplay.style.color = '#ff6b6b';
+        errorDisplay.style.fontSize = '0.85rem';
+        errorDisplay.style.marginTop = '0.25rem';
+        formGroup.appendChild(errorDisplay);
+    }
+
+    errorDisplay.textContent = message;
+    input.classList.add('input-error');
+    input.style.borderColor = '#ff6b6b';
+}
+
+function clearFieldError(input) {
+    const formGroup = input.closest('.form-group') || input.parentElement;
+    if (formGroup) {
+        const errorDisplay = formGroup.querySelector('.form-error-message');
+        if (errorDisplay) {
+            errorDisplay.remove();
+        }
+    }
+    input.classList.remove('input-error');
+    input.style.borderColor = '';
+}
+
+function clearFormErrors(form) {
+    const errors = form.querySelectorAll('.form-error-message');
+    errors.forEach(el => el.remove());
+
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(el => {
+        el.classList.remove('input-error');
+        el.style.borderColor = '';
+    });
+}
+
+function showFormSuccess(form, message) {
+    let successMsg = form.querySelector('.form-success-message');
+    if (!successMsg) {
+        successMsg = document.createElement('div');
+        successMsg.className = 'form-success-message';
+        successMsg.style.color = '#00b894';
+        successMsg.style.textAlign = 'center';
+        successMsg.style.marginTop = '1rem';
+        successMsg.style.fontWeight = 'bold';
+
+        const actions = form.querySelector('.form-actions') || form.querySelector('button[type="submit"]');
+        if (actions) {
+            form.insertBefore(successMsg, actions);
+        } else {
+            form.appendChild(successMsg);
+        }
+    }
+    successMsg.textContent = message;
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (successMsg.parentNode) successMsg.remove();
+    }, 5000);
+}
+
+/**
  * 1. Navigation & Scrolling Logic
  * Handles mobile menu toggling and smooth scrolling.
  */
@@ -378,6 +447,11 @@ function initNavigation() {
 }
 
 function initMyHub() {
+    // Only run on My Hub page
+    if (!window.location.pathname.includes('my-hub.html')) {
+        return;
+    }
+
     const student = JSON.parse(localStorage.getItem('studentUser'));
     if (!student) {
         window.location.href = 'registration.html#student-login';
@@ -1427,12 +1501,12 @@ function initAdmin() {
                     return;
                 }
 
-                // Create new admin
+                // Create new user
                 existingAdmins.push({ username, password });
                 localStorage.setItem('adminUsers', JSON.stringify(existingAdmins));
 
                 alert('Account created successfully! Please login.');
-                toggleMode(true); // Switch to login
+                toggleMode(true);
             }
         });
     }

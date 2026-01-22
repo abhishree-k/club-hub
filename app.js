@@ -5,6 +5,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     initNavigation();
     initTestimonialsAndSliders();
+    initViewClubNavigation();
     initTabsAndModals();
     initCalendar();
     initForms();
@@ -210,6 +211,33 @@ function initTestimonialsAndSliders() {
             }
         });
     }
+}
+
+// Ensure View Club listener registers regardless of other UI elements
+function initViewClubNavigation() {
+    document.body.addEventListener('click', function (e) {
+        const btn = e.target.closest && e.target.closest('.view-club-btn');
+        if (!btn) return;
+
+        const clubId = btn.dataset.club;
+        if (!clubId) return;
+
+        // Try to fetch clubs.json and store the selected club for the detail page to consume
+        fetch('clubs.json')
+            .then(resp => resp.json())
+            .then(data => {
+                const club = data.find(c => c.id === clubId);
+                if (club) {
+                    try { localStorage.setItem('selectedClubData', JSON.stringify(club)); } catch (err) { /* ignore storage errors */ }
+                }
+                // Navigate after attempting to store data
+                window.location.href = `club.html?club=${encodeURIComponent(clubId)}`;
+            })
+            .catch(() => {
+                // If fetch fails, still navigate and let club.html attempt to fetch or show error
+                window.location.href = `club.html?club=${encodeURIComponent(clubId)}`;
+            });
+    });
 }
 
 /**

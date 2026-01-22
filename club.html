@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Details | DSCE Clubs</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <nav class="cosmic-nav">
+        <div class="nav-logo">
+            <span class="logo-icon">🌌</span>
+            <span class="logo-text">DSCE CLUBS</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="registration.html">Registration</a></li>
+            <li><a href="admin-login.html">Admin</a></li>
+        </ul>
+    </nav>
+
+    <main class="club-detail-main" style="padding:4rem 5%;">
+        <div id="club-detail" class="club-detail-card">
+            <div class="loading">Loading club details...</div>
+        </div>
+    </main>
+
+    <script>
+        // Embedded club data directly in the page
+        const clubsData = [
+            {
+                "id": "tech",
+                "name": "Tech Society - POINT BLANK",
+                "icon": "💻",
+                "description": "Innovate, code, and build the future with fellow tech enthusiasts.",
+                "contact": "tech@dsce.edu",
+                "events": [
+                    { "title": "AI Workshop Series", "date": "2026-02-15" },
+                    { "title": "Hackathon Spring", "date": "2026-04-02" }
+                ]
+            },
+            {
+                "id": "arts",
+                "name": "Creative Arts - AALEKA",
+                "icon": "🎨",
+                "description": "Express yourself through painting, sculpture, and digital art.",
+                "contact": "arts@dsce.edu",
+                "events": [
+                    { "title": "Digital Art Masterclass", "date": "2026-03-10" }
+                ]
+            },
+            {
+                "id": "debate",
+                "name": "Debate Club - LITSOC",
+                "icon": "💬",
+                "description": "Sharpen your rhetoric and critical thinking skills.",
+                "contact": "debate@dsce.edu",
+                "events": [
+                    { "title": "Intercollege Debate", "date": "2026-05-20" }
+                ]
+            },
+            {
+                "id": "music",
+                "name": "Music Society",
+                "icon": "🎵",
+                "description": "Create, perform, and appreciate music in all its forms.",
+                "contact": "music@dsce.edu",
+                "events": [
+                    { "title": "Spring Concert", "date": "2026-04-25" }
+                ]
+            },
+            {
+                "id": "sports",
+                "name": "Sports Club",
+                "icon": "⚽",
+                "description": "Stay active and compete in various sports activities.",
+                "contact": "sports@dsce.edu",
+                "events": [
+                    { "title": "Inter-college Tournament", "date": "2026-03-15" },
+                    { "title": "Fitness Challenge", "date": "2026-04-10" }
+                ]
+            },
+            {
+                "id": "science",
+                "name": "Dance Club - ABCD",
+                "icon": "💃",
+                "description": "Let's move to the beat and make memories together!",
+                "contact": "dance@dsce.edu",
+                "events": [
+                    { "title": "Annual Dance Recital", "date": "2026-05-05" },
+                    { "title": "Workshop Series", "date": "2026-03-20" }
+                ]
+            }
+        ];
+
+        // Parse query param
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        const clubId = getQueryParam('club');
+        const detailEl = document.getElementById('club-detail');
+
+        // Helper to render a club object into the detail element
+        function renderClub(club) {
+            if (!club) {
+                detailEl.innerHTML = `
+                    <div class="club-details-container club-not-found">
+                        <div class="club-not-found-icon">❌</div>
+                        <h2>Club Not Found</h2>
+                        <p>Sorry, the club you're looking for doesn't exist.</p>
+                        <a href="index.html" class="back-button">← Back to Clubs</a>
+                    </div>
+                `;
+                return;
+            }
+
+            detailEl.innerHTML = `
+                <div class="club-details-container">
+                    <!-- Club Header -->
+                    <div class="club-details-header">
+                        <div class="club-icon-large">${club.icon}</div>
+                        <div class="club-header-info">
+                            <h1>${club.name}</h1>
+                            <p class="club-contact">📧 ${club.contact}</p>
+                        </div>
+                    </div>
+
+                    <!-- Club Description -->
+                    <div class="club-description-section">
+                        <h3 class="section-label">📝 About</h3>
+                        <div class="club-description">${club.description}</div>
+                    </div>
+
+                    <!-- Upcoming Events -->
+                    <div class="club-events-section">
+                        <h3 class="section-label">📅 Upcoming Events</h3>
+                        ${club.events && club.events.length > 0 ? `
+                            <div class="events-grid">
+                                ${club.events.map(ev => `
+                                    <div class="event-card-detail">
+                                        <div class="event-title-detail">${ev.title}</div>
+                                        <div class="event-date-detail">
+                                            <i class="far fa-calendar"></i>
+                                            <span>${ev.date}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <div class="no-events-message">
+                                <p>No upcoming events scheduled at the moment.</p>
+                            </div>
+                        `}
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="club-actions-section">
+                        <a href="registration.html" class="club-action-btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Join / Register
+                        </a>
+                        <a href="index.html" class="club-action-btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Clubs
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Try localStorage first, then use embedded data
+        window.addEventListener('load', function() {
+            try {
+                const stored = localStorage.getItem('selectedClubData');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (parsed && parsed.id === clubId) {
+                        renderClub(parsed);
+                        localStorage.removeItem('selectedClubData');
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('localStorage read failed:', err);
+            }
+
+            // Use embedded data
+            if (!clubId) {
+                detailEl.innerHTML = '<p style="color:var(--accent-color); text-align:center; font-size:1.1rem;">No club specified.</p>';
+            } else {
+                const club = clubsData.find(c => c.id === clubId);
+                renderClub(club);
+            }
+        });
+    </script>
+</body>
+</html>

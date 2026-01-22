@@ -90,6 +90,8 @@ Educational institutions often face:
 |--------|-------------|
 | Frontend | HTML5, CSS3 |
 | Scripting | Vanilla JavaScript |
+| Backend | Node.js, Express |
+| Database | SQLite, Sequelize |
 | Styling | Custom CSS |
 | Version Control | Git & GitHub |
 
@@ -123,11 +125,25 @@ club-hub/
 - No backend or database required
 
 ### Installation & Setup
-```bash
-- git clone https://github.com/<your-username>/club-hub.git
-- cd club-hub
-- open index.html
-```
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/<your-username>/club-hub.git
+   cd club-hub
+   ```
+
+2. **Setup Backend**
+   ```bash
+   cd backend
+   npm install
+   cp .env.example .env
+   # Edit .env if needed
+   node server.js
+   ```
+
+3. **Run Frontend**
+   - Open `index.html` in your browser
+   - (Optional) Use Live Server for better experience
 
 ---
 

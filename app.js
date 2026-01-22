@@ -2,20 +2,18 @@
  * Main Entry Point
  * All functionality is initialized here via modular functions.
  */
-document.addEventListener('DOMContentLoaded', function () {
-    // Initialize global events data
-    // Note: Using January 2026 dates (current date context) for easier testing
-    window.events = [
-        { id: 1, name: "AI Workshop Series", club: "tech", startDate: "2026-01-20", endDate: "2026-01-20", startTime: "14:00", endTime: "17:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning fundamentals and applications." },
-        { id: 2, name: "Digital Art Masterclass", club: "arts", startDate: "2026-01-22", endDate: "2026-01-22", startTime: "16:00", endTime: "18:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques in digital painting and illustration." },
-        { id: 3, name: "Public Speaking Workshop", club: "debate", startDate: "2026-01-24", endDate: "2026-01-24", startTime: "15:00", endTime: "17:00", location: "Humanities Building, Room 205", description: "Improve your public speaking and presentation skills." },
-        { id: 4, name: "Multi-Day Conference", club: "tech", startDate: "2026-02-01", endDate: "2026-02-03", startTime: "09:00", endTime: "17:00", location: "Main Auditorium", description: "Tech conference spanning multiple days." },
-        { id: 5, name: "Tech Seminar", club: "tech", startDate: "2026-01-20", endDate: "2026-01-20", startTime: "15:00", endTime: "17:00", location: "CS Building, Room 102", description: "Advanced tech topics discussion." },
-        { id: 6, name: "Music Jam Session", club: "music", startDate: "2026-01-20", endDate: "2026-01-20", startTime: "15:00", endTime: "17:00", location: "Music Hall, Studio A", description: "Live jam session with fellow musicians." },
-        { id: 7, name: "Web Development Bootcamp", club: "tech", startDate: "2026-01-25", endDate: "2026-01-25", startTime: "13:30", endTime: "15:30", location: "Lab Building, Room 305", description: "Intensive web development training." },
-        { id: 8, name: "Creative Writing Workshop", club: "arts", startDate: "2026-01-22", endDate: "2026-01-22", startTime: "17:00", endTime: "19:00", location: "Library Hall, Room 201", description: "Explore creative writing techniques and storytelling." },
-        { id: 9, name: "Debate Championship", club: "debate", startDate: "2026-01-28", endDate: "2026-01-28", startTime: "10:00", endTime: "15:00", location: "Auditorium, Main Hall", description: "Inter-club debate competition with prizes." }
-    ];
+document.addEventListener('DOMContentLoaded', async function () {
+    // Initialize global events data from API
+    try {
+        if (window.api) {
+            window.events = await window.api.getEvents();
+        } else {
+            window.events = [];
+        }
+    } catch (e) {
+        console.error("Error loading events", e);
+        window.events = [];
+    }
 
     initNavigation();
     initTestimonialsAndSliders();
@@ -82,7 +80,7 @@ function calculateOverlapMinutes(event1, event2) {
     return 0;
 }
 
-function registerForEvent(event) {
+async function registerForEvent(event) {
     const student = JSON.parse(localStorage.getItem('studentUser'));
     if (!student) {
         alert('Please login to register for events.');
@@ -99,6 +97,16 @@ function registerForEvent(event) {
         showConflictModal(event, conflicts, registeredEvents);
     } else {
         // No conflicts, register
+        try {
+            const token = localStorage.getItem('token');
+            if (token) {
+                await window.api.registerEvent(event.id, token);
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Note: Cloud sync failed. " + e.message);
+        }
+
         registeredEvents.push(event);
         localStorage.setItem(`events_${student.id}`, JSON.stringify(registeredEvents));
         alert(`Successfully registered for ${event.name}!`);
@@ -713,10 +721,11 @@ function initForms() {
     // Club Registration
     const clubRegistrationForm = document.getElementById('club-registration-form');
     if (clubRegistrationForm) {
-        clubRegistrationForm.addEventListener('submit', function (e) {
+        clubRegistrationForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const studentId = document.getElementById('club-student-id').value;
+            const password = document.getElementById('club-password').value;
             const selectedClubs = Array.from(this.querySelectorAll('input[name="club"]:checked')).map(cb => cb.value);
 
             if (selectedClubs.length === 0) {
@@ -724,44 +733,83 @@ function initForms() {
                 return;
             }
 
-            // Save student data
-            const studentData = {
-                firstName: document.getElementById('club-first-name').value,
-                lastName: document.getElementById('club-last-name').value,
-                email: document.getElementById('club-email').value,
-                studentId: studentId,
-                major: document.getElementById('club-major').value,
-                year: document.getElementById('club-year').value,
-                clubs: selectedClubs,
-                reason: document.getElementById('club-reason').value,
-                registeredAt: new Date().toISOString()
-            };
+            const firstName = document.getElementById('club-first-name').value;
+            const lastName = document.getElementById('club-last-name').value;
+            const email = document.getElementById('club-email').value;
+            const major = document.getElementById('club-major').value;
+            const year = document.getElementById('club-year').value;
+            const reason = document.getElementById('club-reason').value;
 
-            localStorage.setItem(`student_${studentId}`, JSON.stringify(studentData));
+            try {
+                // 1. Register User in Backend
+                await window.api.register({
+                    firstName, lastName, email, password, studentId, major, year, role: 'student'
+                });
 
-            // Save clubs
-            localStorage.setItem(`clubs_${studentId}`, JSON.stringify(selectedClubs));
+                // 2. Auto Login
+                const loginRes = await window.api.login(email, password);
+                localStorage.setItem('token', loginRes.token);
 
-            // If logged in, update the session
-            const student = JSON.parse(localStorage.getItem('studentUser'));
-            if (student && student.id === studentId) {
-                // Already handled
+                const student = loginRes.user;
+                student.name = `${firstName} ${lastName}`;
+                localStorage.setItem('studentUser', JSON.stringify(student));
+
+                // 3. Save Clubs (Local Logic for now, can be moved to backend later)
+                localStorage.setItem(`clubs_${student.id}`, JSON.stringify(selectedClubs));
+
+                // --- START ADMIN SYNC ---
+                // 1. Update 'Recent Registrations' (Admin -> Registrations)
+                const allRegistrations = JSON.parse(localStorage.getItem('allRegistrations')) || [];
+                allRegistrations.unshift({
+                    id: Math.floor(Math.random() * 10000) + 1000,
+                    name: `${firstName} ${lastName}`,
+                    email: email,
+                    studentId: studentId,
+                    clubs: selectedClubs,
+                    registeredAt: new Date().toISOString()
+                });
+                localStorage.setItem('allRegistrations', JSON.stringify(allRegistrations));
+
+                // 2. Update 'Club Memberships' (Admin -> Club Management)
+                let allMemberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
+                // If empty, initClubManagement usually seeds it, but we can append safely
+                const nextId = allMemberships.length > 0 ? Math.max(...allMemberships.map(m => m.id)) + 1 : 1;
+
+                selectedClubs.forEach((clubCode, index) => {
+                    allMemberships.push({
+                        id: nextId + index,
+                        name: `${firstName} ${lastName}`,
+                        studentId: studentId,
+                        club: clubCode,
+                        status: 'Active'
+                    });
+                });
+                localStorage.setItem('allClubMemberships', JSON.stringify(allMemberships));
+                // --- END ADMIN SYNC ---
+
+                // Save legacy student data structure
+                const studentData = {
+                    firstName, lastName, email, studentId, major, year, clubs: selectedClubs, reason,
+                    registeredAt: new Date().toISOString()
+                };
+                localStorage.setItem(`student_${studentId}`, JSON.stringify(studentData));
+
+                // 4. Success UI
+                const successMessage = document.getElementById('club-success-message');
+                if (successMessage) {
+                    successMessage.classList.remove('hidden');
+                    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => {
+                        successMessage.classList.add('hidden');
+                    }, 5000);
+                }
+
+                this.reset();
+                updateEnrollmentStatus();
+
+            } catch (err) {
+                alert('Registration failed: ' + err.message);
             }
-
-            // Show success message instead of alert
-            const successMessage = document.getElementById('club-success-message');
-            if (successMessage) {
-                successMessage.classList.remove('hidden');
-                // Scroll to the message
-                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Auto-hide the message after 5 seconds
-                setTimeout(() => {
-                    successMessage.classList.add('hidden');
-                }, 5000);
-            }
-
-            this.reset();
-            updateEnrollmentStatus();
         });
     }
 
@@ -851,6 +899,21 @@ function initForms() {
             studentEvents.push(registrationData);
             localStorage.setItem(`events_${studentId}`, JSON.stringify(studentEvents));
 
+            // --- START ADMIN SYNC ---
+            // Update 'Event Registrations' (Admin -> Dashboard / Registrations)
+            const allEventRegs = JSON.parse(localStorage.getItem('allEventRegistrations')) || [];
+            allEventRegs.unshift({
+                id: Math.floor(Math.random() * 10000) + 1000,
+                eventId: currentEvent.id || 999, // Fallback if mock event
+                eventName: currentEvent.name,
+                name: `${firstName} ${lastName}`,
+                email: email,
+                studentId: studentId,
+                registeredAt: new Date().toISOString()
+            });
+            localStorage.setItem('allEventRegistrations', JSON.stringify(allEventRegs));
+            // --- END ADMIN SYNC ---
+
             alert('Event registration submitted successfully!');
             this.reset();
             const container = document.getElementById('event-registration-form-container');
@@ -862,20 +925,105 @@ function initForms() {
     // Student Login
     const studentLoginForm = document.getElementById('student-login-form');
     if (studentLoginForm) {
-        studentLoginForm.addEventListener('submit', function (e) {
+        studentLoginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            const name = document.getElementById('login-student-name').value;
-            const id = document.getElementById('login-student-id').value;
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
 
-            if (name && id) {
-                const student = { name, id };
+            if (email && password) {
+                try {
+                    const res = await window.api.login(email, password);
+                    localStorage.setItem('token', res.token);
+
+                    const student = res.user;
+                    student.name = `${student.firstName} ${student.lastName}`; // Compatibility
+
+                    localStorage.setItem('studentUser', JSON.stringify(student));
+                    updateUIForStudent();
+
+                    const msg = document.getElementById('login-message');
+                    if (msg) {
+                        msg.textContent = 'Login successful!';
+                        msg.style.color = '#00b894';
+                    }
+
+                    setTimeout(() => {
+                        const clubTab = document.querySelector('[data-tab="club-registration"]');
+                        if (clubTab) clubTab.click();
+                    }, 1000);
+                } catch (err) {
+                    const msg = document.getElementById('login-message');
+                    if (msg) {
+                        msg.textContent = err.message;
+                        msg.style.color = '#ff6b6b';
+                    } else {
+                        alert(err.message);
+                    }
+                }
+            }
+        });
+    }
+
+    // Student Signup Toggle & Form
+    const toggleSignup = document.getElementById('toggle-to-signup');
+    const toggleLogin = document.getElementById('toggle-to-login');
+    const signupForm = document.getElementById('student-signup-form');
+
+    if (toggleSignup && toggleLogin && signupForm && studentLoginForm) {
+        toggleSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            studentLoginForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+        });
+
+        toggleLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupForm.classList.add('hidden');
+            studentLoginForm.classList.remove('hidden');
+        });
+    }
+
+    if (signupForm) {
+        signupForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const firstName = document.getElementById('signup-first-name').value;
+            const lastName = document.getElementById('signup-last-name').value;
+            const email = document.getElementById('signup-email').value;
+            const studentId = document.getElementById('signup-student-id').value;
+            const password = document.getElementById('signup-password').value;
+            const major = document.getElementById('signup-major').value;
+            const year = document.getElementById('signup-year').value;
+
+            try {
+                // Register
+                await window.api.register({
+                    firstName, lastName, email, password, studentId, major, year, role: 'student'
+                });
+
+                // Auto Login
+                const loginRes = await window.api.login(email, password);
+                localStorage.setItem('token', loginRes.token);
+
+                const student = loginRes.user;
+                student.name = `${firstName} ${lastName}`;
                 localStorage.setItem('studentUser', JSON.stringify(student));
-                updateUIForStudent();
-                document.getElementById('login-message').textContent = 'Login successful!';
-                setTimeout(() => {
-                    const clubTab = document.querySelector('[data-tab="club-registration"]');
-                    if (clubTab) clubTab.click();
-                }, 1000);
+
+                // Save basic local data (legacy compatibility)
+                const studentData = {
+                    firstName, lastName, email, studentId, major, year, clubs: [],
+                    registeredAt: new Date().toISOString()
+                };
+                localStorage.setItem(`student_${studentId}`, JSON.stringify(studentData));
+
+                alert('Account created successfully!');
+                updateUIForStudent(); // Update visibility of My Hub / Logout
+
+                // Redirect to Club Registration to encourage joining
+                const clubTab = document.querySelector('[data-tab="club-registration"]');
+                if (clubTab) clubTab.click();
+
+            } catch (err) {
+                alert('Registration failed: ' + err.message);
             }
         });
     }
@@ -954,7 +1102,7 @@ function initCalendar() {
         }
     }
 
-    function registerForEvent(event) {
+    async function registerForEvent(event) {
         const student = JSON.parse(localStorage.getItem('studentUser'));
         if (!student) {
             alert('Please login to register for events.');
@@ -971,6 +1119,16 @@ function initCalendar() {
             showConflictModal(event, conflicts, registeredEvents);
         } else {
             // No conflicts, register
+            try {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    await window.api.registerEvent(event.id, token);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Note: Cloud sync failed. " + e.message);
+            }
+
             registeredEvents.push(event);
             localStorage.setItem(`events_${student.id}`, JSON.stringify(registeredEvents));
             alert(`Successfully registered for ${event.name}!`);
@@ -1613,10 +1771,19 @@ function initAdmin() {
         const registrationsTable = document.getElementById('registrations-table');
         if (registrationsTable) {
             registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const registrations = [
-                { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
-                { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
-            ];
+
+            // LOAD FROM LOCAL STORAGE
+            let registrations = JSON.parse(localStorage.getItem('allRegistrations'));
+
+            // Fallback: Seed with mock data if empty (for demo purposes)
+            if (!registrations || registrations.length === 0) {
+                registrations = [
+                    { id: 1001, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-11-15' },
+                    { id: 1002, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-11-16' }
+                ];
+                localStorage.setItem('allRegistrations', JSON.stringify(registrations));
+            }
+
             registrations.forEach(reg => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -1634,24 +1801,32 @@ function initAdmin() {
         const eventRegistrationsTable = document.getElementById('event-registrations-table');
         if (eventRegistrationsTable) {
             eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const eventRegs = [
-                { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
-            ];
+            // LOAD FROM LOCAL STORAGE
+            let eventRegs = JSON.parse(localStorage.getItem('allEventRegistrations'));
+
+            // Fallback: Seed if empty
+            if (!eventRegs || eventRegs.length === 0) {
+                eventRegs = [
+                    { id: 1, eventName: 'AI Workshop Series', name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
+                ];
+                localStorage.setItem('allEventRegistrations', JSON.stringify(eventRegs));
+            }
+
             eventRegs.forEach(reg => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${reg.id}</td><td>Event ${reg.eventId}</td><td>${reg.name}</td><td>${reg.email}</td>
+                    <td>${reg.id}</td><td>${reg.eventName || 'Event ' + reg.eventId}</td><td>${reg.name}</td><td>${reg.email}</td>
                     <td>${reg.studentId}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
                     <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
                         <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
                 `;
                 eventRegistrationsTable.querySelector('tbody').appendChild(row);
             });
-        }
 
-        // Dashboard Button Actions
-        document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
-        document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
+            // Dashboard Button Actions
+            document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
+            document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
+        }
     }
 }
 
@@ -1815,14 +1990,32 @@ function updateUIForStudent() {
     const navLogin = document.getElementById('nav-login');
     const navLogout = document.getElementById('nav-logout');
 
+    // Registration Page Specific Elements
+    const studentLoginTabBtn = document.getElementById('student-login-tab-btn');
+    const clubRegistrationTabBtn = document.querySelector('[data-tab="club-registration"]');
+
     if (student) {
         if (navMyHub) navMyHub.classList.remove('hidden');
         if (navLogin) navLogin.classList.add('hidden');
         if (navLogout) navLogout.classList.remove('hidden');
+
+        // Hide Login Tab on Registration Page
+        if (studentLoginTabBtn) {
+            studentLoginTabBtn.style.display = 'none';
+            // If we are currently on the login tab, switch to club registration
+            if (studentLoginTabBtn.classList.contains('active') && clubRegistrationTabBtn) {
+                clubRegistrationTabBtn.click();
+            }
+        }
     } else {
         if (navMyHub) navMyHub.classList.add('hidden');
         if (navLogin) navLogin.classList.remove('hidden');
         if (navLogout) navLogout.classList.add('hidden');
+
+        // Show Login Tab on Registration Page
+        if (studentLoginTabBtn) {
+            studentLoginTabBtn.style.display = 'block'; // Restore display
+        }
     }
 
     // Update calendar if on events page
@@ -2064,50 +2257,50 @@ function initClubManagement() {
 }
 // FAQ Toggle
 document.querySelectorAll(".faq-question").forEach(q => {
-  q.addEventListener("click", () => {
-    const ans = q.nextElementSibling;
-    ans.style.display = ans.style.display === "block" ? "none" : "block";
-  });
+    q.addEventListener("click", () => {
+        const ans = q.nextElementSibling;
+        ans.style.display = ans.style.display === "block" ? "none" : "block";
+    });
 });
 
 // Chatbot Toggle
 function toggleChat() {
-  const chat = document.getElementById("chatbot");
-  chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+    const chat = document.getElementById("chatbot");
+    chat.style.display = chat.style.display === "flex" ? "none" : "flex";
 }
 
 // Chatbot Logic
 function sendMessage() {
-  const input = document.getElementById("userInput");
-  const chat = document.getElementById("chatBody");
+    const input = document.getElementById("userInput");
+    const chat = document.getElementById("chatBody");
 
-  if (input.value.trim() === "") return;
+    if (input.value.trim() === "") return;
 
-  const userMsg = document.createElement("div");
-  userMsg.className = "user";
-  userMsg.innerText = input.value;
-  chat.appendChild(userMsg);
+    const userMsg = document.createElement("div");
+    userMsg.className = "user";
+    userMsg.innerText = input.value;
+    chat.appendChild(userMsg);
 
-  let reply = "Please check the Events page for details.";
+    let reply = "Please check the Events page for details.";
 
-  const text = input.value.toLowerCase();
+    const text = input.value.toLowerCase();
 
-  if (text.includes("register"))
-    reply = "You can register from the Events page.";
-  else if (text.includes("event"))
-    reply = "All upcoming events are listed in the Events section.";
-  else if (text.includes("fee"))
-    reply = "Some events are free, some require payment.";
-  else if (text.includes("contact"))
-    reply = "You can contact organizers via Contact page.";
-  else if (text.includes("hello"))
-    reply = "Hello 👋 How can I help you?";
+    if (text.includes("register"))
+        reply = "You can register from the Events page.";
+    else if (text.includes("event"))
+        reply = "All upcoming events are listed in the Events section.";
+    else if (text.includes("fee"))
+        reply = "Some events are free, some require payment.";
+    else if (text.includes("contact"))
+        reply = "You can contact organizers via Contact page.";
+    else if (text.includes("hello"))
+        reply = "Hello 👋 How can I help you?";
 
-  const botMsg = document.createElement("div");
-  botMsg.className = "bot";
-  botMsg.innerText = reply;
+    const botMsg = document.createElement("div");
+    botMsg.className = "bot";
+    botMsg.innerText = reply;
 
-  setTimeout(() => chat.appendChild(botMsg), 400);
+    setTimeout(() => chat.appendChild(botMsg), 400);
 
-  input.value = "";
+    input.value = "";
 }

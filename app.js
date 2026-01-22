@@ -1388,8 +1388,9 @@ function initAdmin() {
     const adminLoginForm = document.getElementById('admin-login-form');
     const togglePassword = document.querySelector('.toggle-password');
     const passwordInput = document.getElementById('admin-password');
-    const confirmPasswordGroup = document.getElementById('confirm-password-group');
+    const toggleConfirmPassword = document.querySelector('.toggle-confirm-password');
     const confirmPasswordInput = document.getElementById('admin-confirm-password');
+    const confirmPasswordGroup = document.getElementById('confirm-password-group');
     const tabLogin = document.getElementById('tab-login');
     const tabSignup = document.getElementById('tab-signup');
     const toggleModeLink = document.getElementById('toggle-mode');
@@ -1432,11 +1433,24 @@ function initAdmin() {
     // Password Toggle
     if (togglePassword && passwordInput) {
         togglePassword.addEventListener('click', function () {
+
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+
             passwordInput.setAttribute('type', type);
+
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+
+        });
+    }
+    // Confirm 
+    if (toggleConfirmPassword && confirmPasswordInput) {
+        toggleConfirmPassword.addEventListener('click', function () {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
             this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
         });
     }
+
 
     // Login Submission
     if (adminLoginForm) {

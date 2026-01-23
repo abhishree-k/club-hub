@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events | DSCE Clubs </title>
+    <title>Events | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
@@ -45,11 +45,52 @@
     </header>
 
     <main class="events-main">
+        <!-- 🔍 Event Search -->
+<div style="text-align:center; margin: 20px 0;">
+    <input 
+        type="text" 
+        id="eventSearch" 
+        placeholder="Search events or clubs..." 
+        style="
+            width:60%;
+            padding:10px;
+            border-radius:8px;
+            border:1px solid #ccc;
+        "
+    >
+</div>
+
         <section class="calendar-section">
             <div class="calendar-controls">
                 <button id="prev-month" class="calendar-nav"><i class="fas fa-chevron-left"></i></button>
                 <h2 id="current-month" class="section-title">October 2025</h2>
                 <button id="next-month" class="calendar-nav"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <div class="calendar-jump-picker">
+                <label for="month-picker">Jump to Month:</label>
+                <select id="month-picker">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+
+                <label for="year-picker">Year:</label>
+                <select id="year-picker">
+                    <!-- Years will be populated by JavaScript -->
+                </select>
+
+                <button id="jump-to-date" class="calendar-jump-btn"><i class="fas fa-arrow-right"></i> Jump</button>
+                <button id="today-btn" class="calendar-jump-btn today"><i class="fas fa-calendar-today"></i> Today</button>
             </div>
 
             <div class="calendar-grid">
@@ -67,15 +108,15 @@
             <div class="calendar-legend">
                 <div class="legend-item">
                     <span class="legend-color tech"></span>
-                    <span>Tech Society- POINT BLANK</span>
+                    <span>Tech Society - POINT BLANK</span>
                 </div>
                 <div class="legend-item">
                     <span class="legend-color arts"></span>
-                    <span>Creative Arts- AALEKA</span>
+                    <span>Creative Arts - AALEKA</span>
                 </div>
                 <div class="legend-item">
                     <span class="legend-color debate"></span>
-                    <span>Debate Club- LITSOC</span>
+                    <span>Debate Club - LITSOC</span>
                 </div>
                 <div class="legend-item">
                     <span class="legend-color music"></span>
@@ -87,7 +128,7 @@
                 </div>
                 <div class="legend-item">
                     <span class="legend-color science"></span>
-                    <span>Dnace Club- ABCD</span>
+                    <span>Dance Club - ABCD</span>
                 </div>
             </div>
         </section>
@@ -136,13 +177,13 @@
 
         <form>
             <label>Your Name</label>
-            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
 
             <label>Event Name</label>
-            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
 
             <label>Rating</label>
-            <select required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+            <select required style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
                 <option value="">Select</option>
                 <option>⭐ Excellent</option>
                 <option>😊 Good</option>
@@ -151,13 +192,13 @@
             </select>
 
             <label>Feedback</label>
-            <textarea required style="width:100%;height:80px;padding:8px;background:#1e293b;border:none;color:white;border-radius:6px"></textarea>
+            <textarea required style="width:100%;height:80px;padding:8px;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px"></textarea>
 
             <button type="submit" style="
                 margin-top:12px;
                 width:100%;
                 padding:10px;
-                background:#6b7280;
+                background: linear-gradient(135deg, #6c5ce7, #fd79a8);
                 border:none;
                 border-radius:8px;
                 color:white;
@@ -195,12 +236,20 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="event-date">Date</label>
-                    <input type="date" id="event-date" required>
+                    <label for="event-start-date">Start Date</label>
+                    <input type="date" id="event-start-date" required>
                 </div>
                 <div class="form-group">
-                    <label for="event-time">Time</label>
-                    <input type="time" id="event-time" required>
+                    <label for="event-end-date">End Date</label>
+                    <input type="date" id="event-end-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-start-time">Start Time</label>
+                    <input type="time" id="event-start-time" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-end-time">End Time</label>
+                    <input type="time" id="event-end-time" required>
                 </div>
                 <div class="form-group">
                     <label for="event-location">Location</label>
@@ -218,6 +267,21 @@
         </div>
     </div>
 
+    <!-- Conflict Modal -->
+    <div id="conflict-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>⚠️ Event Conflict Detected</h2>
+            <div id="conflict-details"></div>
+            <div id="alternative-suggestions"></div>
+            <div class="conflict-actions">
+                <button id="cancel-registration" class="modal-button">Cancel</button>
+                <button id="force-register" class="modal-button danger">Register Anyway</button>
+                <button id="choose-alternative" class="modal-button" style="display:none;">Choose Alternative</button>
+            </div>
+        </div>
+    </div>
+
     <script>
     const openFeedback = document.getElementById("open-feedback");
     const feedbackModal = document.getElementById("feedback-modal");
@@ -227,6 +291,25 @@
     closeFeedback.onclick = () => feedbackModal.style.display = "none";
 </script>
     <script src="app.js"></script>
+    <script>
+// Event Search Functionality
+document.getElementById("eventSearch").addEventListener("keyup", function () {
+    const searchValue = this.value.toLowerCase();
+    const events = document.querySelectorAll(".event-card");
+
+    events.forEach(event => {
+        const eventText = event.innerText.toLowerCase();
+
+        if (eventText.includes(searchValue)) {
+            event.style.display = "block";
+        } else {
+            event.style.display = "none";
+        }
+    });
+});
+
+</script>
+
 </body>
 
 </html>

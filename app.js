@@ -3,6 +3,20 @@
  * All functionality is initialized here via modular functions.
  */
 document.addEventListener('DOMContentLoaded', function () {
+    // Initialize global events data
+    // Note: Using January 2026 dates (current date context) for easier testing
+    window.events = [
+        { id: 1, name: "AI Workshop Series", club: "tech", startDate: "2026-01-20", endDate: "2026-01-20", startTime: "14:00", endTime: "17:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning fundamentals and applications." },
+        { id: 2, name: "Digital Art Masterclass", club: "arts", startDate: "2026-01-22", endDate: "2026-01-22", startTime: "16:00", endTime: "18:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques in digital painting and illustration." },
+        { id: 3, name: "Public Speaking Workshop", club: "debate", startDate: "2026-01-24", endDate: "2026-01-24", startTime: "15:00", endTime: "17:00", location: "Humanities Building, Room 205", description: "Improve your public speaking and presentation skills." },
+        { id: 4, name: "Multi-Day Conference", club: "tech", startDate: "2026-02-01", endDate: "2026-02-03", startTime: "09:00", endTime: "17:00", location: "Main Auditorium", description: "Tech conference spanning multiple days." },
+        { id: 5, name: "Tech Seminar", club: "tech", startDate: "2026-01-20", endDate: "2026-01-20", startTime: "15:00", endTime: "17:00", location: "CS Building, Room 102", description: "Advanced tech topics discussion." },
+        { id: 6, name: "Music Jam Session", club: "music", startDate: "2026-01-20", endDate: "2026-01-20", startTime: "15:00", endTime: "17:00", location: "Music Hall, Studio A", description: "Live jam session with fellow musicians." },
+        { id: 7, name: "Web Development Bootcamp", club: "tech", startDate: "2026-01-25", endDate: "2026-01-25", startTime: "13:30", endTime: "15:30", location: "Lab Building, Room 305", description: "Intensive web development training." },
+        { id: 8, name: "Creative Writing Workshop", club: "arts", startDate: "2026-01-22", endDate: "2026-01-22", startTime: "17:00", endTime: "19:00", location: "Library Hall, Room 201", description: "Explore creative writing techniques and storytelling." },
+        { id: 9, name: "Debate Championship", club: "debate", startDate: "2026-01-28", endDate: "2026-01-28", startTime: "10:00", endTime: "15:00", location: "Auditorium, Main Hall", description: "Inter-club debate competition with prizes." }
+    ];
+
     initNavigation();
     initTestimonialsAndSliders();
     initViewClubNavigation();
@@ -19,6 +33,378 @@ document.addEventListener('DOMContentLoaded', function () {
         yearEl.textContent = new Date().getFullYear();
     }
 });
+
+// Global functions for conflict detection
+const BUFFER_TIME_MINUTES = 30; // Buffer time in minutes for near conflicts
+
+function eventsOverlap(event1, event2) {
+    const start1 = new Date(event1.startDate + 'T' + event1.startTime);
+    const end1 = new Date(event1.endDate + 'T' + event1.endTime);
+    const start2 = new Date(event2.startDate + 'T' + event2.startTime);
+    const end2 = new Date(event2.endDate + 'T' + event2.endTime);
+    return start1 < end2 && start2 < end1;
+}
+
+function getConflictType(event1, event2) {
+    const start1 = new Date(event1.startDate + 'T' + event1.startTime);
+    const end1 = new Date(event1.endDate + 'T' + event1.endTime);
+    const start2 = new Date(event2.startDate + 'T' + event2.startTime);
+    const end2 = new Date(event2.endDate + 'T' + event2.endTime);
+
+    // Direct conflict
+    if (start1 < end2 && start2 < end1) {
+        return 'direct';
+    }
+
+    // Near conflict (within buffer time)
+    const bufferMs = BUFFER_TIME_MINUTES * 60 * 1000;
+    const end1WithBuffer = new Date(end1.getTime() + bufferMs);
+    const end2WithBuffer = new Date(end2.getTime() + bufferMs);
+
+    if ((start2 <= end1WithBuffer && start2 >= end1) || (start1 <= end2WithBuffer && start1 >= end2)) {
+        return 'near';
+    }
+
+    return 'none';
+}
+
+function calculateOverlapMinutes(event1, event2) {
+    const start1 = new Date(event1.startDate + 'T' + event1.startTime);
+    const end1 = new Date(event1.endDate + 'T' + event1.endTime);
+    const start2 = new Date(event2.startDate + 'T' + event2.startTime);
+    const end2 = new Date(event2.endDate + 'T' + event2.endTime);
+
+    const overlapStart = Math.max(start1.getTime(), start2.getTime());
+    const overlapEnd = Math.min(end1.getTime(), end2.getTime());
+
+    if (overlapEnd > overlapStart) {
+        return Math.round((overlapEnd - overlapStart) / (1000 * 60));
+    }
+    return 0;
+}
+
+function registerForEvent(event) {
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (!student) {
+        alert('Please login to register for events.');
+        window.location.href = 'registration.html#student-login';
+        return;
+    }
+
+    const registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+
+    // Check for conflicts
+    const conflicts = registeredEvents.filter(regEvent => eventsOverlap(regEvent, event));
+
+    if (conflicts.length > 0) {
+        showConflictModal(event, conflicts, registeredEvents);
+    } else {
+        // No conflicts, register
+        registeredEvents.push(event);
+        localStorage.setItem(`events_${student.id}`, JSON.stringify(registeredEvents));
+        alert(`Successfully registered for ${event.name}!`);
+        updateUIForStudent();
+    }
+}
+
+function showConflictModal(event, conflicts, registeredEvents) {
+    const modal = document.getElementById('conflict-modal');
+    const details = document.getElementById('conflict-details');
+    const suggestions = document.getElementById('alternative-suggestions');
+
+    // Determine conflict type
+    const conflictType = conflicts.length > 0 ? getConflictType(conflicts[0], event) : 'direct';
+    const overlapMinutes = conflicts.length > 0 ? calculateOverlapMinutes(conflicts[0], event) : 0;
+    const conflictTypeLabel = conflictType === 'direct' ? 'Direct Conflict' : 'Near Conflict (Buffer Time)';
+    const conflictTypeBadgeClass = conflictType === 'direct' ? 'conflict-badge-direct' : 'conflict-badge-near';
+
+    // Build timeline visualization
+    const timelineHTML = buildConflictTimeline(conflicts[0], event);
+
+    details.innerHTML = `
+        <div class="conflict-header">
+            <div class="conflict-type-badge ${conflictTypeBadgeClass}">${conflictTypeLabel}</div>
+        </div>
+        <p class="conflict-message">You are trying to register for <strong>${event.name}</strong>, which overlaps with an existing registration:</p>
+        
+        <div class="conflict-comparison">
+            <div class="conflict-column existing">
+                <div class="column-header">📋 EXISTING EVENT</div>
+                <div class="conflict-event">
+                    <h4>${conflicts[0].name}</h4>
+                    <p><i class="fas fa-calendar-alt"></i> ${formatDate(conflicts[0].startDate, conflicts[0].endDate)}</p>
+                    <p><i class="fas fa-clock"></i> ${conflicts[0].startTime} - ${conflicts[0].endTime}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> ${conflicts[0].location}</p>
+                </div>
+            </div>
+            <div class="conflict-arrow">→</div>
+            <div class="conflict-column new">
+                <div class="column-header">✨ NEW EVENT</div>
+                <div class="conflict-event">
+                    <h4>${event.name}</h4>
+                    <p><i class="fas fa-calendar-alt"></i> ${formatDate(event.startDate, event.endDate)}</p>
+                    <p><i class="fas fa-clock"></i> ${event.startTime} - ${event.endTime}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="conflict-timeline">
+            ${timelineHTML}
+        </div>
+        
+        <div class="overlap-info">
+            <strong>⏱️ Approximate overlap: ${overlapMinutes} minutes.</strong>
+        </div>
+    `;
+
+    // Suggest alternatives
+    const alternatives = window.events.filter(e => {
+        if (e.club !== event.club || e.id === event.id) return false;
+        return registeredEvents.every(reg => {
+            const type = getConflictType(reg, e);
+            return type === 'none';
+        });
+    }).slice(0, 3);
+
+    if (alternatives.length > 0) {
+        suggestions.innerHTML = `
+            <div class="alternatives-section">
+                <h3>💡 Suggested Alternatives</h3>
+                ${alternatives.map(alt => `
+                    <div class="alternative-event" data-id="${alt.id}">
+                        <div class="alt-header">
+                            <h4>${alt.name}</h4>
+                        </div>
+                        <p><i class="fas fa-calendar-alt"></i> ${formatDate(alt.startDate, alt.endDate)}</p>
+                        <p><i class="fas fa-clock"></i> ${alt.startTime} - ${alt.endTime}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> ${alt.location}</p>
+                        <button class="swap-button" data-id="${alt.id}">🔄 Swap to This Event</button>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    } else {
+        suggestions.innerHTML = '<div class="no-alternatives"><p>ℹ️ No non-conflicting alternatives found.</p></div>';
+    }
+
+    modal.classList.add('active');
+
+    // Bind close
+    const closeBtn = document.querySelector('#conflict-modal .close-modal');
+    if (closeBtn) closeBtn.onclick = () => modal.classList.remove('active');
+
+    // Store current conflict context
+    modal.dataset.eventId = event.id;
+    modal.dataset.conflictEventId = conflicts[0].id;
+
+    // Bind buttons
+    const cancelBtn = document.getElementById('cancel-registration');
+    if (cancelBtn) {
+        cancelBtn.onclick = () => modal.classList.remove('active');
+    }
+
+    const forceBtn = document.getElementById('force-register');
+    if (forceBtn) {
+        forceBtn.onclick = () => {
+            const student = JSON.parse(localStorage.getItem('studentUser'));
+            const studentEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+            studentEvents.push(event);
+            localStorage.setItem(`events_${student.id}`, JSON.stringify(studentEvents));
+            alert(`✓ Registered for ${event.name} with conflict!`);
+            modal.classList.remove('active');
+            updateUIForStudent();
+            if (document.querySelector('.calendar-grid')) {
+                renderCalendar();
+            }
+        };
+    }
+
+    // Bind swap buttons
+    document.querySelectorAll('.swap-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const altId = parseInt(btn.dataset.id);
+            const altEvent = window.events.find(e => e.id === altId);
+            const student = JSON.parse(localStorage.getItem('studentUser'));
+            const studentEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+
+            // Remove conflicting event
+            const conflictEventId = parseInt(modal.dataset.conflictEventId);
+            const updatedEvents = studentEvents.filter(e => e.id !== conflictEventId);
+
+            // Add new event
+            updatedEvents.push(altEvent);
+            localStorage.setItem(`events_${student.id}`, JSON.stringify(updatedEvents));
+
+            alert(`✓ Swapped ${conflicts[0].name} with ${altEvent.name}!`);
+            modal.classList.remove('active');
+            updateUIForStudent();
+            if (document.querySelector('.calendar-grid')) {
+                renderCalendar();
+            }
+        });
+    });
+}
+
+function buildConflictTimeline(existingEvent, newEvent) {
+    const start1 = new Date(existingEvent.startDate + 'T' + existingEvent.startTime);
+    const end1 = new Date(existingEvent.endDate + 'T' + existingEvent.endTime);
+    const start2 = new Date(newEvent.startDate + 'T' + newEvent.startTime);
+    const end2 = new Date(newEvent.endDate + 'T' + newEvent.endTime);
+
+    const minTime = Math.min(start1.getTime(), start2.getTime());
+    const maxTime = Math.max(end1.getTime(), end2.getTime());
+    const totalDuration = maxTime - minTime;
+
+    const getPosition = (time) => ((time - minTime) / totalDuration) * 100;
+
+    const pos1Start = getPosition(start1.getTime());
+    const pos1End = getPosition(end1.getTime());
+    const pos2Start = getPosition(start2.getTime());
+    const pos2End = getPosition(end2.getTime());
+
+    return `
+        <div class="timeline-container">
+            <div class="timeline-track">
+                <div class="timeline-event existing" style="left: ${pos1Start}%; width: ${pos1End - pos1Start}%;">
+                    <span class="event-time">${existingEvent.startTime}</span>
+                </div>
+                <div class="timeline-event new" style="left: ${pos2Start}%; width: ${pos2End - pos2Start}%;">
+                    <span class="event-time">${newEvent.startTime}</span>
+                </div>
+            </div>
+            <div class="timeline-legend">
+                <div class="legend-item existing"><span class="legend-dot"></span> Existing event</div>
+                <div class="legend-item new"><span class="legend-dot"></span> New event</div>
+            </div>
+        </div>
+    `;
+}
+
+function formatDate(startDate, endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (startDate === endDate) {
+        return start.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    } else {
+        return `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+    }
+}
+
+/**
+ * Date Helper Functions
+ * Generates dynamic dates relative to today to keep events current.
+ */
+
+/**
+ * Gets a future date relative to today
+ * @param {number} daysFromNow - Number of days from today (positive for future)
+ * @returns {string} - Date in YYYY-MM-DD format
+ * 
+ * @example
+ * // Get a date 7 days from now
+ * const futureDate = getFutureDate(7); // "2026-01-24"
+ * 
+ * @example
+ * // Get today's date
+ * const today = getFutureDate(0); // "2026-01-17"
+ */
+function getFutureDate(daysFromNow) {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
+/**
+ * Gets the current month and year for calendar display
+ * @returns {Object} - Object with month and year properties
+ * 
+ * @example
+ * const current = getCurrentMonthYear();
+ * console.log(current.month); // 0-11 (January=0)
+ * console.log(current.year);  // 2026
+ */
+function getCurrentMonthYear() {
+    const date = new Date();
+    return {
+        month: date.getMonth(),
+        year: date.getFullYear()
+    };
+}
+
+/**
+ * UI Helper: Form Error Handling
+ */
+function showFieldError(input, message) {
+    const formGroup = input.closest('.form-group') || input.parentElement;
+    let errorDisplay = formGroup.querySelector('.form-error-message');
+
+    if (!errorDisplay) {
+        errorDisplay = document.createElement('div');
+        errorDisplay.className = 'form-error-message';
+        errorDisplay.style.color = '#ff6b6b';
+        errorDisplay.style.fontSize = '0.85rem';
+        errorDisplay.style.marginTop = '0.25rem';
+        formGroup.appendChild(errorDisplay);
+    }
+
+    errorDisplay.textContent = message;
+    input.classList.add('input-error');
+    input.style.borderColor = '#ff6b6b';
+}
+
+function clearFieldError(input) {
+    const formGroup = input.closest('.form-group') || input.parentElement;
+    if (formGroup) {
+        const errorDisplay = formGroup.querySelector('.form-error-message');
+        if (errorDisplay) {
+            errorDisplay.remove();
+        }
+    }
+    input.classList.remove('input-error');
+    input.style.borderColor = '';
+}
+
+function clearFormErrors(form) {
+    const errors = form.querySelectorAll('.form-error-message');
+    errors.forEach(el => el.remove());
+
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(el => {
+        el.classList.remove('input-error');
+        el.style.borderColor = '';
+    });
+}
+
+function showFormSuccess(form, message) {
+    let successMsg = form.querySelector('.form-success-message');
+    if (!successMsg) {
+        successMsg = document.createElement('div');
+        successMsg.className = 'form-success-message';
+        successMsg.style.color = '#00b894';
+        successMsg.style.textAlign = 'center';
+        successMsg.style.marginTop = '1rem';
+        successMsg.style.fontWeight = 'bold';
+
+        const actions = form.querySelector('.form-actions') || form.querySelector('button[type="submit"]');
+        if (actions) {
+            form.insertBefore(successMsg, actions);
+        } else {
+            form.appendChild(successMsg);
+        }
+    }
+    successMsg.textContent = message;
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (successMsg.parentNode) successMsg.remove();
+    }, 5000);
+}
 
 /**
  * 1. Navigation & Scrolling Logic
@@ -62,6 +448,11 @@ function initNavigation() {
 }
 
 function initMyHub() {
+    // Only run on My Hub page
+    if (!window.location.pathname.includes('my-hub.html')) {
+        return;
+    }
+
     const student = JSON.parse(localStorage.getItem('studentUser'));
     if (!student) {
         window.location.href = 'registration.html#student-login';
@@ -144,16 +535,26 @@ function initMyHub() {
             eventsList.innerHTML = '<div class="no-data"><p>You haven\'t registered for any events yet.</p><a href="events.html" class="action-button" style="display:inline-block; margin-top:1rem;">View Events</a></div>';
         } else {
             eventsList.innerHTML = '';
-            // Sort by date then time
-            registeredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+            // Sort by start date
+            registeredEvents.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
             registeredEvents.forEach(event => {
                 const item = document.createElement('div');
                 item.classList.add('hub-item');
+                // Format date properly
+                const startDate = new Date(event.startDate);
+                const formattedDate = startDate.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
                 item.innerHTML = `
                     <div class="hub-item-info">
                         <h4>${event.name}</h4>
-                        <p><i class="far fa-calendar-alt"></i> ${event.date} | <i class="far fa-clock"></i> ${event.time}</p>
+                        <p><i class="far fa-calendar-alt"></i> ${formattedDate} | <i class="far fa-clock"></i> ${event.startTime} - ${event.endTime}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> ${event.location || 'TBA'}</p>
                     </div>
                 `;
                 eventsList.appendChild(item);
@@ -298,6 +699,8 @@ function initTabsAndModals() {
                     const eventName = eventCard.querySelector('.event-title').textContent;
                     const nameDisplay = document.getElementById('selected-event-name');
                     if (nameDisplay) nameDisplay.textContent = eventName;
+                    const eventSelect = document.getElementById('event-select');
+                    if (eventSelect) eventSelect.value = eventName;
                 }
 
                 eventRegistrationFormContainer.classList.remove('hidden');
@@ -344,15 +747,33 @@ function initForms() {
             const studentId = document.getElementById('club-student-id').value;
             const selectedClubs = Array.from(this.querySelectorAll('input[name="club"]:checked')).map(cb => cb.value);
 
-            if (selectedClubs.length > 0) {
-                const student = JSON.parse(localStorage.getItem('studentUser'));
-                if (student && student.id === studentId) {
-                    const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${studentId}`)) || [];
-                    selectedClubs.forEach(club => {
-                        if (!joinedClubs.includes(club)) joinedClubs.push(club);
-                    });
-                    localStorage.setItem(`clubs_${studentId}`, JSON.stringify(joinedClubs));
-                }
+            if (selectedClubs.length === 0) {
+                alert('Please select at least one club.');
+                return;
+            }
+
+            // Save student data
+            const studentData = {
+                firstName: document.getElementById('club-first-name').value,
+                lastName: document.getElementById('club-last-name').value,
+                email: document.getElementById('club-email').value,
+                studentId: studentId,
+                major: document.getElementById('club-major').value,
+                year: document.getElementById('club-year').value,
+                clubs: selectedClubs,
+                reason: document.getElementById('club-reason').value,
+                registeredAt: new Date().toISOString()
+            };
+
+            localStorage.setItem(`student_${studentId}`, JSON.stringify(studentData));
+
+            // Save clubs
+            localStorage.setItem(`clubs_${studentId}`, JSON.stringify(selectedClubs));
+
+            // If logged in, update the session
+            const student = JSON.parse(localStorage.getItem('studentUser'));
+            if (student && student.id === studentId) {
+                // Already handled
             }
 
             // Show success message instead of alert
@@ -375,42 +796,88 @@ function initForms() {
     // Event Registration
     const eventRegistrationForm = document.getElementById('event-registration-form');
     if (eventRegistrationForm) {
+        // Populate event select
+        const eventSelect = document.getElementById('event-select');
+        if (eventSelect) {
+            eventSelect.innerHTML = '<option value="">Choose an event</option>'; // Clear existing options
+            window.events.forEach(event => {
+                const option = document.createElement('option');
+                option.value = event.name;
+                option.textContent = event.name;
+                eventSelect.appendChild(option);
+            });
+
+            // Update selected event name
+            eventSelect.addEventListener('change', function () {
+                document.getElementById('selected-event-name').textContent = this.value;
+            });
+        }
+
         eventRegistrationForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const eventName = document.getElementById('selected-event-name').textContent;
+            const eventName = document.getElementById('event-select').value;
             const studentId = document.getElementById('event-student-id').value;
+            const firstName = document.getElementById('event-first-name').value;
+            const lastName = document.getElementById('event-last-name').value;
+            const email = document.getElementById('event-email').value;
+            const dietary = document.getElementById('event-dietary').value;
+            const accessibility = document.getElementById('event-accessibility').value;
+
+            if (!eventName || !studentId || !firstName || !lastName || !email) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const currentEvent = window.events.find(ev => ev.name === eventName);
+            if (!currentEvent) {
+                alert('Event not found.');
+                return;
+            }
+
+            // Save student data if not exists
+            let studentData = JSON.parse(localStorage.getItem(`student_${studentId}`));
+            if (!studentData) {
+                studentData = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    studentId: studentId,
+                    registeredAt: new Date().toISOString()
+                };
+                localStorage.setItem(`student_${studentId}`, JSON.stringify(studentData));
+            }
 
             // Check for conflicts if logged in
             const student = JSON.parse(localStorage.getItem('studentUser'));
+            let studentEvents = JSON.parse(localStorage.getItem(`events_${studentId}`)) || [];
+
             if (student && student.id === studentId) {
-                const events = [
-                    { id: 1, name: "AI Workshop Series", date: "2023-11-15", time: "14:00" },
-                    { id: 2, name: "Digital Art Masterclass", date: "2023-11-20", time: "16:00" },
-                    { id: 3, name: "Public Speaking Workshop", date: "2023-11-22", time: "15:00" }
-                ];
+                // Conflict detection
+                const conflicts = studentEvents.filter(regEvent => eventsOverlap(regEvent, currentEvent));
 
-                const currentEvent = events.find(ev => ev.name === eventName);
-                if (currentEvent) {
-                    const studentEvents = JSON.parse(localStorage.getItem(`events_${studentId}`)) || [];
-
-                    // Conflict detection: Same day, overlapping time (mocking 2 hour duration)
-                    const conflict = studentEvents.find(se => {
-                        if (se.date !== currentEvent.date) return false;
-                        const seTime = parseInt(se.time.split(':')[0]);
-                        const ceTime = parseInt(currentEvent.time.split(':')[0]);
-                        return Math.abs(seTime - ceTime) < 2;
-                    });
-
-                    if (conflict) {
-                        alert(`Conflict Detected! You are already registered for "${conflict.name}" at ${conflict.time} on this day.`);
-                        return;
-                    }
-
-                    studentEvents.push(currentEvent);
-                    localStorage.setItem(`events_${studentId}`, JSON.stringify(studentEvents));
+                if (conflicts.length > 0) {
+                    showConflictModal(currentEvent, conflicts, studentEvents);
+                    return;
                 }
             }
+
+            // Save event registration
+            const registrationData = {
+                ...currentEvent,
+                registrationDetails: {
+                    firstName,
+                    lastName,
+                    email,
+                    studentId,
+                    dietary,
+                    accessibility,
+                    registeredAt: new Date().toISOString()
+                }
+            };
+
+            studentEvents.push(registrationData);
+            localStorage.setItem(`events_${studentId}`, JSON.stringify(studentEvents));
 
             alert('Event registration submitted successfully!');
             this.reset();
@@ -454,6 +921,18 @@ function initForms() {
                 alert('Please fill all fields and select a file');
                 return;
             }
+
+            // Save certificate request
+            const certificateRequests = JSON.parse(localStorage.getItem('certificateRequests')) || [];
+            certificateRequests.push({
+                studentId,
+                eventId,
+                fileName: certificateFile.name,
+                fileSize: certificateFile.size,
+                requestedAt: new Date().toISOString()
+            });
+            localStorage.setItem('certificateRequests', JSON.stringify(certificateRequests));
+
             alert(`Certificate for student ${studentId} for event ${eventId} uploaded successfully!`);
             this.reset();
         });
@@ -486,13 +965,6 @@ function initCalendar() {
     let currentYear = currentDate.getFullYear();
     let selectedEvent = null;
 
-    // Sample events data
-    let events = [
-        { id: 1, name: "AI Workshop", club: "tech", date: "2023-11-15", time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
-        { id: 2, name: "Digital Art Masterclass", club: "arts", date: "2023-11-20", time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
-        { id: 3, name: "Public Speaking Workshop", club: "debate", date: "2023-11-22", time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." }
-    ];
-
     // Helper: Get Club Name
     function getClubName(clubId) {
         const clubs = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Science Guild' };
@@ -500,9 +972,144 @@ function initCalendar() {
     }
 
     // Helper: Format Date
-    function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    function formatDate(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        if (startDate === endDate) {
+            return start.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        } else {
+            return `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+        }
+    }
+
+    function registerForEvent(event) {
+        const student = JSON.parse(localStorage.getItem('studentUser'));
+        if (!student) {
+            alert('Please login to register for events.');
+            window.location.href = 'registration.html#student-login';
+            return;
+        }
+
+        const registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+
+        // Check for conflicts
+        const conflicts = registeredEvents.filter(regEvent => eventsOverlap(regEvent, event));
+
+        if (conflicts.length > 0) {
+            showConflictModal(event, conflicts, registeredEvents);
+        } else {
+            // No conflicts, register
+            registeredEvents.push(event);
+            localStorage.setItem(`events_${student.id}`, JSON.stringify(registeredEvents));
+            alert(`Successfully registered for ${event.name}!`);
+            updateUIForStudent();
+            renderCalendar(); // Update calendar highlights
+        }
+    }
+
+    function showConflictModal(event, conflicts, registeredEvents) {
+        const modal = document.getElementById('conflict-modal');
+        const details = document.getElementById('conflict-details');
+        const suggestions = document.getElementById('alternative-suggestions');
+
+        details.innerHTML = `
+            <p>You are trying to register for:</p>
+            <div class="conflict-event">
+                <strong>${event.name}</strong><br>
+                ${formatDate(event.startDate, event.endDate)}<br>
+                ${event.startTime} - ${event.endTime}<br>
+                ${event.location}
+            </div>
+            <p>But you are already registered for:</p>
+            ${conflicts.map(c => `
+                <div class="conflict-event">
+                    <strong>${c.name}</strong><br>
+                    ${formatDate(c.startDate, c.endDate)}<br>
+                    ${c.startTime} - ${c.endTime}<br>
+                    ${c.location}
+                </div>
+            `).join('')}
+        `;
+
+        // Suggest alternatives
+        const alternatives = events.filter(e =>
+            e.club === event.club &&
+            e.id !== event.id &&
+            registeredEvents.every(reg => !eventsOverlap(reg, e))
+        ).slice(0, 3);
+
+        if (alternatives.length > 0) {
+            suggestions.innerHTML = `
+                <h3>Alternative Events:</h3>
+                ${alternatives.map(alt => `
+                    <div class="alternative-event" data-id="${alt.id}" style="cursor: pointer;">
+                        <strong>${alt.name}</strong><br>
+                        ${formatDate(alt.startDate, alt.endDate)} ${alt.startTime} - ${alt.endTime}<br>
+                        ${alt.location}
+                        <button class="swap-button" data-id="${alt.id}">Swap to This Event</button>
+                    </div>
+                `).join('')}
+            `;
+        } else {
+            suggestions.innerHTML = '<p class="no-alternatives">No alternative events available.</p>';
+        }
+
+        // Show modal with active class for proper centering
+        modal.classList.add('active');
+
+        // Bind close button
+        const closeBtn = document.querySelector('#conflict-modal .close-modal');
+        if (closeBtn) {
+            closeBtn.onclick = () => modal.classList.remove('active');
+        }
+
+        // Bind "Cancel" button (Keep Existing Event)
+        const cancelBtn = document.getElementById('cancel-registration');
+        if (cancelBtn) {
+            cancelBtn.onclick = () => {
+                modal.classList.remove('active');
+            };
+        }
+
+        // Bind "Register Anyway" button (Force Register)
+        const forceBtn = document.getElementById('force-register');
+        if (forceBtn) {
+            forceBtn.onclick = () => {
+                const student = JSON.parse(localStorage.getItem('studentUser'));
+                const registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+                registeredEvents.push(event);
+                localStorage.setItem(`events_${student.id}`, JSON.stringify(registeredEvents));
+                alert(`✅ Registered for ${event.name} despite conflict!`);
+                modal.classList.remove('active');
+                updateUIForStudent();
+                renderCalendar(); // Re-render to show conflicts
+            };
+        }
+
+        // Bind swap buttons for alternative events
+        document.querySelectorAll('.swap-button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const altId = parseInt(btn.dataset.id);
+                const altEvent = window.events.find(ev => ev.id === altId);
+                if (altEvent) {
+                    const student = JSON.parse(localStorage.getItem('studentUser'));
+                    let registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+
+                    // Remove the conflicting event(s)
+                    registeredEvents = registeredEvents.filter(e => !conflicts.some(c => c.id === e.id));
+
+                    // Add the new alternative event
+                    registeredEvents.push(altEvent);
+                    localStorage.setItem(`events_${student.id}`, JSON.stringify(registeredEvents));
+
+                    alert(`✅ Swapped to ${altEvent.name}!`);
+                    modal.classList.remove('active');
+                    updateUIForStudent();
+                    renderCalendar();
+                }
+            });
+        });
     }
 
     // Render Calendar Logic
@@ -513,6 +1120,10 @@ function initCalendar() {
 
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         if (currentMonthElement) currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+        // Update date pickers
+        if (monthPicker) monthPicker.value = currentMonth;
+        if (yearPicker) yearPicker.value = currentYear;
 
         const firstDay = new Date(currentYear, currentMonth, 1).getDay();
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -541,11 +1152,36 @@ function initCalendar() {
             const dayEvents = document.createElement('div');
             dayEvents.classList.add('day-events');
             const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-            const dayEventsData = events.filter(event => event.date === dateStr);
+            const dayEventsData = window.events.filter(event => {
+                const eventStart = new Date(event.startDate);
+                const eventEnd = new Date(event.endDate);
+                const currentDay = new Date(dateStr);
+                return currentDay >= eventStart && currentDay <= eventEnd;
+            });
 
             dayEventsData.forEach(event => {
                 const eventElement = document.createElement('div');
                 eventElement.classList.add('day-event', event.club);
+
+                // Check for conflicts
+                const student = JSON.parse(localStorage.getItem('studentUser'));
+                if (student) {
+                    const registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+                    const conflictEvent = registeredEvents.find(regEvent => {
+                        const type = getConflictType(regEvent, event);
+                        return type !== 'none';
+                    });
+
+                    if (conflictEvent) {
+                        const conflictType = getConflictType(conflictEvent, event);
+                        if (conflictType === 'direct') {
+                            eventElement.classList.add('conflict');
+                        } else if (conflictType === 'near') {
+                            eventElement.classList.add('near-conflict');
+                        }
+                    }
+                }
+
                 eventElement.textContent = event.name;
                 eventElement.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -579,8 +1215,8 @@ function initCalendar() {
                 </div>
                 <h2 class="event-title">${event.name}</h2>
                 <div class="event-date-time">
-                    <span><i class="far fa-calendar-alt"></i> ${formatDate(event.date)}</span>
-                    <span><i class="far fa-clock"></i> ${event.time}</span>
+                    <span><i class="far fa-calendar-alt"></i> ${formatDate(event.startDate, event.endDate)}</span>
+                    <span><i class="far fa-clock"></i> ${event.startTime} - ${event.endTime}</span>
                 </div>
                 <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</div>
                 <p class="event-description">${event.description}</p>
@@ -593,7 +1229,7 @@ function initCalendar() {
 
         // Bind dynamic buttons
         document.getElementById('edit-event').addEventListener('click', () => openEventModal(event));
-        document.getElementById('register-for-event').addEventListener('click', () => alert(`Registered for ${event.name}`));
+        document.getElementById('register-for-event').addEventListener('click', () => registerForEvent(event));
         document.getElementById('share-event').addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
     }
 
@@ -604,8 +1240,10 @@ function initCalendar() {
             document.getElementById('modal-title').textContent = 'Edit Event';
             document.getElementById('event-name').value = event.name;
             document.getElementById('event-club').value = event.club;
-            document.getElementById('event-date').value = event.date;
-            document.getElementById('event-time').value = event.time;
+            document.getElementById('event-start-date').value = event.startDate;
+            document.getElementById('event-end-date').value = event.endDate;
+            document.getElementById('event-start-time').value = event.startTime;
+            document.getElementById('event-end-time').value = event.endTime;
             document.getElementById('event-location').value = event.location;
             document.getElementById('event-description').value = event.description;
             if (deleteEventButton) deleteEventButton.style.display = 'block';
@@ -613,7 +1251,10 @@ function initCalendar() {
         } else {
             document.getElementById('modal-title').textContent = 'Add New Event';
             eventForm.reset();
-            if (date) document.getElementById('event-date').value = date;
+            if (date) {
+                document.getElementById('event-start-date').value = date;
+                document.getElementById('event-end-date').value = date;
+            }
             if (deleteEventButton) deleteEventButton.style.display = 'none';
             selectedEvent = null;
         }
@@ -627,8 +1268,10 @@ function initCalendar() {
             const eventData = {
                 name: document.getElementById('event-name').value,
                 club: document.getElementById('event-club').value,
-                date: document.getElementById('event-date').value,
-                time: document.getElementById('event-time').value,
+                startDate: document.getElementById('event-start-date').value,
+                endDate: document.getElementById('event-end-date').value,
+                startTime: document.getElementById('event-start-time').value,
+                endTime: document.getElementById('event-end-time').value,
                 location: document.getElementById('event-location').value,
                 description: document.getElementById('event-description').value
             };
@@ -673,6 +1316,59 @@ function initCalendar() {
             if (currentMonth > 11) { currentMonth = 0; currentYear++; }
             renderCalendar();
         });
+    }
+
+    // Date Picker Jump Functionality
+    const monthPicker = document.getElementById('month-picker');
+    const yearPicker = document.getElementById('year-picker');
+    const jumpToDateBtn = document.getElementById('jump-to-date');
+    const todayBtn = document.getElementById('today-btn');
+
+    // Populate year dropdown dynamically
+    if (yearPicker) {
+        const currentYear = new Date().getFullYear();
+        const startYear = 2020; // Start from 2020
+        const endYear = currentYear + 5; // Go 5 years into the future
+
+        for (let year = startYear; year <= endYear; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            if (year === currentYear) {
+                option.selected = true;
+            }
+            yearPicker.appendChild(option);
+        }
+    }
+
+    if (monthPicker && yearPicker && jumpToDateBtn) {
+        jumpToDateBtn.addEventListener('click', function () {
+            currentMonth = parseInt(monthPicker.value);
+            currentYear = parseInt(yearPicker.value);
+            renderCalendar();
+        });
+    }
+
+    if (todayBtn) {
+        todayBtn.addEventListener('click', function () {
+            const today = new Date();
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+
+            // Update pickers to reflect today
+            if (monthPicker) monthPicker.value = currentMonth;
+            if (yearPicker) yearPicker.value = currentYear;
+
+            renderCalendar();
+        });
+    }
+
+    // Update pickers when month/year changes
+    if (monthPicker && yearPicker) {
+        window.updateDatePickers = function () {
+            monthPicker.value = currentMonth;
+            yearPicker.value = currentYear;
+        };
     }
 
     // Filters (Club/Date)
@@ -731,8 +1427,9 @@ function initAdmin() {
     const adminLoginForm = document.getElementById('admin-login-form');
     const togglePassword = document.querySelector('.toggle-password');
     const passwordInput = document.getElementById('admin-password');
-    const confirmPasswordGroup = document.getElementById('confirm-password-group');
+    const toggleConfirmPassword = document.querySelector('.toggle-confirm-password');
     const confirmPasswordInput = document.getElementById('admin-confirm-password');
+    const confirmPasswordGroup = document.getElementById('confirm-password-group');
     const tabLogin = document.getElementById('tab-login');
     const tabSignup = document.getElementById('tab-signup');
     const toggleModeLink = document.getElementById('toggle-mode');
@@ -775,11 +1472,24 @@ function initAdmin() {
     // Password Toggle
     if (togglePassword && passwordInput) {
         togglePassword.addEventListener('click', function () {
+
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+
             passwordInput.setAttribute('type', type);
+
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+
+        });
+    }
+    // Confirm 
+    if (toggleConfirmPassword && confirmPasswordInput) {
+        toggleConfirmPassword.addEventListener('click', function () {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
             this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
         });
     }
+
 
     // Login Submission
     if (adminLoginForm) {
@@ -844,12 +1554,12 @@ function initAdmin() {
                     return;
                 }
 
-                // Create new admin
+                // Create new user
                 existingAdmins.push({ username, password });
                 localStorage.setItem('adminUsers', JSON.stringify(existingAdmins));
 
                 alert('Account created successfully! Please login.');
-                toggleMode(true); // Switch to login
+                toggleMode(true);
             }
         });
     }
@@ -1095,15 +1805,29 @@ function initStudentSession() {
     // Auto-fill forms if logged in
     const student = JSON.parse(localStorage.getItem('studentUser'));
     if (student) {
+        const studentData = JSON.parse(localStorage.getItem(`student_${student.id}`));
         const fillForm = (prefix) => {
-            const nameParts = student.name.split(' ');
-            const firstName = document.getElementById(`${prefix}-first-name`);
-            const lastName = document.getElementById(`${prefix}-last-name`);
-            const studentId = document.getElementById(`${prefix}-student-id`);
+            if (studentData) {
+                const firstName = document.getElementById(`${prefix}-first-name`);
+                const lastName = document.getElementById(`${prefix}-last-name`);
+                const email = document.getElementById(`${prefix}-email`);
+                const studentId = document.getElementById(`${prefix}-student-id`);
 
-            if (firstName) firstName.value = nameParts[0] || '';
-            if (lastName) lastName.value = nameParts.slice(1).join(' ') || '';
-            if (studentId) studentId.value = student.id;
+                if (firstName) firstName.value = studentData.firstName || '';
+                if (lastName) lastName.value = studentData.lastName || '';
+                if (email) email.value = studentData.email || '';
+                if (studentId) studentId.value = studentData.studentId || '';
+            } else {
+                // Fallback to name split
+                const nameParts = student.name.split(' ');
+                const firstName = document.getElementById(`${prefix}-first-name`);
+                const lastName = document.getElementById(`${prefix}-last-name`);
+                const studentId = document.getElementById(`${prefix}-student-id`);
+
+                if (firstName) firstName.value = nameParts[0] || '';
+                if (lastName) lastName.value = nameParts.slice(1).join(' ') || '';
+                if (studentId) studentId.value = student.id;
+            }
         };
 
         fillForm('club');
@@ -1127,6 +1851,11 @@ function updateUIForStudent() {
         if (navMyHub) navMyHub.classList.add('hidden');
         if (navLogin) navLogin.classList.remove('hidden');
         if (navLogout) navLogout.classList.add('hidden');
+    }
+
+    // Update calendar if on events page
+    if (document.querySelector('.calendar-grid')) {
+        renderCalendar();
     }
 }
 
@@ -1360,4 +2089,53 @@ function initClubManagement() {
             }
         }
     });
+}
+// FAQ Toggle
+document.querySelectorAll(".faq-question").forEach(q => {
+  q.addEventListener("click", () => {
+    const ans = q.nextElementSibling;
+    ans.style.display = ans.style.display === "block" ? "none" : "block";
+  });
+});
+
+// Chatbot Toggle
+function toggleChat() {
+  const chat = document.getElementById("chatbot");
+  chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+}
+
+// Chatbot Logic
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const chat = document.getElementById("chatBody");
+
+  if (input.value.trim() === "") return;
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "user";
+  userMsg.innerText = input.value;
+  chat.appendChild(userMsg);
+
+  let reply = "Please check the Events page for details.";
+
+  const text = input.value.toLowerCase();
+
+  if (text.includes("register"))
+    reply = "You can register from the Events page.";
+  else if (text.includes("event"))
+    reply = "All upcoming events are listed in the Events section.";
+  else if (text.includes("fee"))
+    reply = "Some events are free, some require payment.";
+  else if (text.includes("contact"))
+    reply = "You can contact organizers via Contact page.";
+  else if (text.includes("hello"))
+    reply = "Hello 👋 How can I help you?";
+
+  const botMsg = document.createElement("div");
+  botMsg.className = "bot";
+  botMsg.innerText = reply;
+
+  setTimeout(() => chat.appendChild(botMsg), 400);
+
+  input.value = "";
 }

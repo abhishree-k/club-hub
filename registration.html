@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration |DSCE Clubs</title>
+    <title>Registration | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
@@ -118,34 +118,44 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Select Clubs</label>
-                        <div class="club-checkboxes">
-                            <label class="checkbox-container">Tech Society
-                                <input type="checkbox" name="club" value="tech">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="checkbox-container">Creative Arts
-                                <input type="checkbox" name="club" value="arts">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="checkbox-container">Debate Club
-                                <input type="checkbox" name="club" value="debate">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="checkbox-container">Music Society
-                                <input type="checkbox" name="club" value="music">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="checkbox-container">Sports Club
-                                <input type="checkbox" name="club" value="sports">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="checkbox-container">Dance club
-                                <input type="checkbox" name="club" value="science">
-                                <span class="checkmark"></span>
-                            </label>
-                        </div>
+                    <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" >
+                        <span class="checkmark"></span>
+                        <span class="checkbox-text">Tech Society</span>
+                    </label>
+
+                    <label class="checkbox-item">
+                        <input type="checkbox" >
+                        <span class="checkmark"></span>
+                        <span class="checkbox-text">Creative Arts</span>
+                    </label>
+
+                    <label class="checkbox-item">
+                        <input type="checkbox" >
+                        <span class="checkmark"></span>
+                        <span class="checkbox-text">Debate Club</span>
+                    </label>
+
+                    <label class="checkbox-item">
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-text">Music Society</span>
+                    </label>
+
+                    <label class="checkbox-item">
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-text">Sports Club</span>
+                    </label>
+
+                    <label class="checkbox-item">
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-text">Dance Club</span>
+                    </label>
+                </div>
+
                     </div>
 
                     <div class="form-group">
@@ -187,10 +197,10 @@
                     </div>
 
                     <div class="event-list">
-                        <div class="event-card" data-club="tech" data-date="2023-11-15">
+                        <div class="event-card" data-club="tech" data-date="" data-days-offset="7">
                             <div class="event-card-header">
                                 <span class="event-club tech">Tech Society</span>
-                                <span class="event-date">Nov 15, 2023</span>
+                                <span class="event-date">Loading...</span>
                             </div>
                             <h3 class="event-title">AI Workshop Series</h3>
                             <p class="event-description">Hands-on sessions on machine learning fundamentals and
@@ -202,10 +212,10 @@
                             <button class="register-button">Register</button>
                         </div>
 
-                        <div class="event-card" data-club="arts" data-date="2023-11-20">
+                        <div class="event-card" data-club="arts" data-date="" data-days-offset="14">
                             <div class="event-card-header">
                                 <span class="event-club arts">Creative Arts</span>
-                                <span class="event-date">Nov 20, 2023</span>
+                                <span class="event-date">Loading...</span>
                             </div>
                             <h3 class="event-title">Digital Art Masterclass</h3>
                             <p class="event-description">Learn advanced techniques in digital painting and illustration.
@@ -217,16 +227,29 @@
                             <button class="register-button">Register</button>
                         </div>
 
-                        <div class="event-card" data-club="debate" data-date="2023-11-22">
+                        <div class="event-card" data-club="debate" data-date="" data-days-offset="21">
                             <div class="event-card-header">
                                 <span class="event-club debate">Debate Club</span>
-                                <span class="event-date">Nov 22, 2023</span>
+                                <span class="event-date">Loading...</span>
                             </div>
                             <h3 class="event-title">Public Speaking Workshop</h3>
                             <p class="event-description">Improve your public speaking and presentation skills.</p>
                             <div class="event-details">
                                 <span><i class="fas fa-clock"></i> 3:00 PM - 6:00 PM</span>
                                 <span><i class="fas fa-map-marker-alt"></i> Humanities Building, Room 205</span>
+                            </div>
+                            <button class="register-button">Register</button>
+                        </div>
+                        <div class="event-card" data-club="music" data-date="2023-11-15">
+                            <div class="event-card-header">
+                                <span class="event-club music">Music Society</span>
+                                <span class="event-date">Nov 15, 2023</span>
+                            </div>
+                            <h3 class="event-title">Music Jam Session</h3>
+                            <p class="event-description">Open mic and jam session.</p>
+                            <div class="event-details">
+                                <span><i class="fas fa-clock"></i> 3:00 PM - 5:00 PM</span>
+                                <span><i class="fas fa-map-marker-alt"></i> Auditorium</span>
                             </div>
                             <button class="register-button">Register</button>
                         </div>
@@ -308,9 +331,63 @@
 
     <footer class="cosmic-footer">
         <div class="footer-bottom">
-            <p>&copy; <span id="year"></span> ClubsDSCE. All rights reserved.</p>
+            <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Conflict Warning Modal (same structure as index for consistency) -->
+    <div id="conflict-modal" class="conflict-modal" style="display: none;">
+        <div class="modal-content conflict-modal-content">
+            <span class="close-modal close-conflict-modal">&times;</span>
+            <div class="conflict-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Scheduling Conflict Detected</h2>
+                <span id="conflict-type-badge" class="conflict-type-badge"></span>
+            </div>
+            <div class="conflict-body">
+                <p>You are attempting to register for <strong><span id="conflict-new-event-name"></span></strong>, which
+                    overlaps with an existing registration:</p>
+
+                <div class="conflict-details-box">
+                    <div class="conflict-event existing">
+                        <h4>Existing Event</h4>
+                        <div id="conflict-existing-details"></div>
+                    </div>
+                    <div class="conflict-separator">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="conflict-event new">
+                        <h4>New Event</h4>
+                        <div id="conflict-new-details"></div>
+                    </div>
+                </div>
+
+                <p id="conflict-overlap-text" class="conflict-overlap-text"></p>
+
+                <div class="conflict-timeline">
+                    <div class="conflict-timeline-track">
+                        <div id="conflict-timeline-existing" class="conflict-timeline-bar existing"></div>
+                        <div id="conflict-timeline-new" class="conflict-timeline-bar new"></div>
+                    </div>
+                    <div class="conflict-timeline-legend">
+                        <span><span class="legend existing"></span> Existing event</span>
+                        <span><span class="legend new"></span> New event</span>
+                    </div>
+                </div>
+
+                <div class="alternatives-section">
+                    <h4><i class="far fa-lightbulb"></i> Suggested Alternatives</h4>
+                    <div id="conflict-alternatives-list" class="alternatives-list">
+                        <!-- Alternatives injected here -->
+                    </div>
+                </div>
+            </div>
+            <div class="conflict-footer">
+                <button id="conflict-cancel-btn" class="action-button secondary">Keep Existing Event</button>
+                <button id="conflict-swap-btn" class="action-button">Swap to New Event</button>
+                <button id="conflict-proceed-btn" class="action-button secondary">Register Anyway</button>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>

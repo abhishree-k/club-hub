@@ -2955,7 +2955,7 @@ select option {
     min-height: calc(100vh - 80px);
     padding: 4rem 5%;
     margin-top: 80px;
-    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(45, 52, 54, 0.8) 100%);
+    background: linear-gradient(to bottom, #1a1a2e, #16213e);
 }
 
 .club-detail-card {
@@ -3357,8 +3357,6 @@ select option {
         padding: 0.8rem 1.5rem;
         font-size: 0.95rem;
     }
-}
-    box-shadow: 0 0 0 2px rgba(253, 121, 168, 0.3);
 }
 
 /* Select dropdown arrow visibility (dark mode) */

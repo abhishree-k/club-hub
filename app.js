@@ -2,7 +2,151 @@
  * Main Entry Point
  * All functionality is initialized here via modular functions.
  */
+// Initialize global events data
 document.addEventListener('DOMContentLoaded', function () {
+    // --- RBAC & AUTH SYSTEM START ---
+    const ROLES = {
+        ADMIN: 'admin',
+        LEADER: 'leader',
+        STUDENT: 'student'
+    };
+
+    const PERMISSIONS = {
+        admin: ['*'],
+        leader: [
+            'events:view', 'event:details:view', 'registrations:view:own', 'registrations:create:own', 'registrations:cancel:own', 'certificates:view:own', 'feedback:submit', 'profile:update:own',
+            'events:create', 'events:edit', 'events:delete', 'members:view', 'members:manage', 'attendance:view', 'attendance:export', 'announcements:send', 'club:update', 'club:analytics:view'
+        ],
+        student: [
+            'events:view', 'event:details:view', 'registrations:view:own', 'registrations:create:own', 'registrations:cancel:own', 'certificates:view:own', 'feedback:submit', 'profile:update:own'
+        ]
+    };
+
+    window.AuthService = {
+        login: function (username, password) {
+            // Admin Master Login
+            if (username === 'admin' && password === 'admin123') {
+                const user = { username, role: ROLES.ADMIN, name: 'Super Admin' };
+                this.setCurrentUser(user);
+                return { success: true, user };
+            }
+            // Check dynamic users store (admin/leader)
+            try {
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const found = users.find(u => u.username === username && u.password === password);
+                if (found && (found.role === ROLES.ADMIN || found.role === ROLES.LEADER)) {
+                    const user = { username: found.username, role: found.role, name: found.name || found.username, club: found.club };
+                    this.setCurrentUser(user);
+                    return { success: true, user };
+                }
+            } catch (e) { }
+            // Leader: leader_tech / tech123
+            if (username.startsWith('leader_')) {
+                const club = username.split('_')[1];
+                if (password === `${club}123`) {
+                    const user = { username, role: ROLES.LEADER, club: club, name: `${club.charAt(0).toUpperCase() + club.slice(1)} Leader` };
+                    this.setCurrentUser(user);
+                    return { success: true, user };
+                }
+            }
+            return { success: false, message: 'Invalid credentials' };
+        },
+        logout: function () {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminUsername');
+            window.location.replace('index.html'); // Redirect to home with replace
+        },
+        setCurrentUser: function (user) {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            if (user.role !== ROLES.STUDENT) {
+                localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('currentAdminUser', user.username);
+            }
+            localStorage.setItem('loginTime', Date.now().toString());
+            this.logActivity(`User ${user.username} logged in`);
+        },
+        getCurrentUser: function () {
+            return JSON.parse(localStorage.getItem('currentUser'));
+        },
+        can: function (permission) {
+            const user = this.getCurrentUser();
+            if (!user) return false;
+            if (user.role === ROLES.ADMIN) return true;
+            const list = PERMISSIONS[user.role] || [];
+            if (list.includes('*')) return true;
+            return list.includes(permission);
+        },
+        logActivity: function (action) {
+            const logs = JSON.parse(localStorage.getItem('activityLogs')) || [];
+            logs.unshift({ timestamp: new Date().toISOString(), action });
+            localStorage.setItem('activityLogs', JSON.stringify(logs.slice(0, 50))); // Keep last 50
+        },
+        guardRoute: function () {
+            const fullPath = window.location.pathname;
+            const fileName = fullPath.split('/').pop() || 'index.html';
+            const user = this.getCurrentUser();
+
+            // Session Timeout (30 mins)
+            const loginTime = localStorage.getItem('loginTime');
+            if (user && loginTime && (Date.now() - parseInt(loginTime) > 30 * 60 * 1000)) {
+                alert('Session expired. Please login again.');
+                this.logout();
+                return false;
+            }
+
+            // Admin Dashboard Protection
+            if (fileName === 'admin-dashboard.html') {
+                if (!user || (user.role !== ROLES.ADMIN && user.role !== ROLES.LEADER)) {
+                    window.location.replace('admin-login.html');
+                    return false;
+                }
+
+                // UI Customization based on Role
+                this.customizeDashboard(user);
+            }
+
+            // Admin Login Page
+            if (fileName === 'admin-login.html' && user && (user.role === ROLES.ADMIN || user.role === ROLES.LEADER)) {
+                window.location.replace('admin-dashboard.html');
+                return false;
+            }
+
+            // Student-only My Hub
+            if (fileName === 'my-hub.html') {
+                const student = JSON.parse(localStorage.getItem('studentUser'));
+                if (!student) {
+                    window.location.replace('registration.html#student-login');
+                    return false;
+                }
+            }
+            return true;
+        },
+        customizeDashboard: function (user) {
+            // Hide elements not for valid role
+            if (user.role === ROLES.LEADER) {
+                // Hide Settings, maybe Reports if sensitive
+                const settingsLink = document.querySelector('a[href="#settings"]');
+                if (settingsLink) settingsLink.parentElement.style.display = 'none';
+
+                // Update Profile Info
+                const profileName = document.querySelector('.profile-info h3');
+                const profileRole = document.querySelector('.profile-info p');
+                if (profileName) profileName.textContent = user.name;
+                if (profileRole) profileRole.textContent = `Club Leader - ${user.club.toUpperCase()}`;
+            } else if (user.role === ROLES.ADMIN) {
+                const profileName = document.querySelector('.profile-info h3');
+                const profileRole = document.querySelector('.profile-info p');
+                if (profileName) profileName.textContent = user.name || user.username || 'Admin';
+                if (profileRole) profileRole.textContent = 'Administrator';
+            }
+        }
+    };
+
+    // Run Guard
+    window.AuthService.guardRoute();
+    // --- RBAC & AUTH SYSTEM END ---
+
     // Initialize global events data
     // Note: Using January 2026 dates (current date context) for easier testing
     window.events = [
@@ -653,6 +797,12 @@ function initMyHub() {
                 item.classList.add('hub-item');
                 // Format date properly
                 const startDate = new Date(event.startDate);
+                const endDate = new Date(event.endDate || event.startDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const isPast = endDate < today;
+
                 const formattedDate = startDate.toLocaleDateString('en-US', {
                     weekday: 'short',
                     year: 'numeric',
@@ -666,8 +816,45 @@ function initMyHub() {
                         <p><i class="far fa-calendar-alt"></i> ${formattedDate} | <i class="far fa-clock"></i> ${event.startTime} - ${event.endTime}</p>
                         <p><i class="fas fa-map-marker-alt"></i> ${event.location || 'TBA'}</p>
                     </div>
+                    <div class="hub-item-actions">
+                        ${isPast
+                        ? `<button class="action-button small certificate-btn" data-id="${event.id}"><i class="fas fa-certificate"></i> Certificate</button>
+                               <button class="action-button small feedback-btn" data-id="${event.id}"><i class="fas fa-comment"></i> Feedback</button>`
+                        : `<button class="cancel-button small cancel-reg-btn" data-id="${event.id}"><i class="fas fa-times"></i> Cancel</button>`
+                    }
+                    </div>
                 `;
                 eventsList.appendChild(item);
+            });
+
+            // Bind Actions
+            eventsList.querySelectorAll('.cancel-reg-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.id);
+                    if (confirm('Are you sure you want to cancel this registration?')) {
+                        const updated = registeredEvents.filter(e => e.id !== id);
+                        localStorage.setItem(`events_${student.id}`, JSON.stringify(updated));
+                        initMyHub();
+                        alert('Registration cancelled.');
+                    }
+                });
+            });
+
+            eventsList.querySelectorAll('.certificate-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    alert('Generating your E-Certificate... Check your downloads in a moment.');
+                    // In a real app, this would trigger a PDF download
+                });
+            });
+
+            eventsList.querySelectorAll('.feedback-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const feedback = prompt('Please share your thoughts on this event:');
+                    if (feedback) {
+                        alert('Thank you for your feedback! It has been submitted to the organizers.');
+                        window.AuthService.logActivity(`Feedback submitted for event ${btn.dataset.id}`);
+                    }
+                });
             });
         }
     }
@@ -1278,6 +1465,11 @@ function initCalendar() {
             // Click day to add event
             dayElement.addEventListener('click', function (e) {
                 if (e.target === this || e.target.classList.contains('day-number')) {
+                    const currentUser = window.AuthService.getCurrentUser();
+                    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'leader')) {
+                        alert('Only Admins and Club Leaders can create events.');
+                        return;
+                    }
                     openEventModal(null, dateStr);
                 }
             });
@@ -1290,11 +1482,16 @@ function initCalendar() {
         if (!eventDetailsContainer) return;
         selectedEvent = event;
 
+        const currentUser = window.AuthService.getCurrentUser();
+        const canEdit = !!currentUser && (
+            currentUser.role === 'admin' || (currentUser.role === 'leader' && currentUser.club === event.club)
+        );
+
         eventDetailsContainer.innerHTML = `
             <div class="event-details">
                 <div class="event-header">
                     <span class="event-club-badge ${event.club}">${getClubName(event.club)}</span>
-                    <button id="edit-event" class="action-button"><i class="fas fa-edit"></i> Edit</button>
+                    ${canEdit ? '<button id="edit-event" class="action-button"><i class="fas fa-edit"></i> Edit</button>' : ''}
                 </div>
                 <h2 class="event-title">${event.name}</h2>
                 <div class="event-date-time">
@@ -1311,15 +1508,26 @@ function initCalendar() {
         `;
 
         // Bind dynamic buttons
-        document.getElementById('edit-event').addEventListener('click', () => openEventModal(event));
+        const editBtn = document.getElementById('edit-event');
+        if (editBtn) editBtn.addEventListener('click', () => openEventModal(event));
         document.getElementById('register-for-event').addEventListener('click', () => registerForEvent(event));
         document.getElementById('share-event').addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
     }
 
     function openEventModal(event = null, date = null) {
         if (!eventModal) return;
+        const currentUser = window.AuthService.getCurrentUser();
+        // Permission checks
+        if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'leader')) {
+            alert('You are not authorized to manage events.');
+            return;
+        }
 
         if (event) {
+            if (currentUser.role === 'leader' && event.club !== currentUser.club) {
+                alert('Leaders can only manage events of their own club.');
+                return;
+            }
             document.getElementById('modal-title').textContent = 'Edit Event';
             document.getElementById('event-name').value = event.name;
             document.getElementById('event-club').value = event.club;
@@ -1340,6 +1548,14 @@ function initCalendar() {
             }
             if (deleteEventButton) deleteEventButton.style.display = 'none';
             selectedEvent = null;
+            // Leader scoping: lock club selector
+            const clubSelect = document.getElementById('event-club');
+            if (currentUser.role === 'leader' && clubSelect) {
+                clubSelect.value = currentUser.club;
+                clubSelect.disabled = true;
+            } else if (clubSelect) {
+                clubSelect.disabled = false;
+            }
         }
         eventModal.style.display = 'flex';
     }
@@ -1358,13 +1574,23 @@ function initCalendar() {
                 location: document.getElementById('event-location').value,
                 description: document.getElementById('event-description').value
             };
-
+            const currentUser = window.AuthService.getCurrentUser();
+            if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'leader')) {
+                alert('You are not authorized to save events.');
+                return;
+            }
+            if (currentUser.role === 'leader' && eventData.club !== currentUser.club) {
+                alert('Leaders can only manage events of their own club.');
+                return;
+            }
             if (selectedEvent) {
                 Object.assign(selectedEvent, eventData);
+                window.AuthService.logActivity(`Event updated: ${selectedEvent.name} (${selectedEvent.club})`);
             } else {
                 eventData.id = events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1;
                 events.push(eventData);
                 selectedEvent = eventData;
+                window.AuthService.logActivity(`Event created: ${selectedEvent.name} (${selectedEvent.club})`);
             }
             renderCalendar();
             showEventDetails(selectedEvent);
@@ -1376,7 +1602,13 @@ function initCalendar() {
     if (deleteEventButton) {
         deleteEventButton.addEventListener('click', function () {
             if (selectedEvent && confirm('Are you sure you want to delete this event?')) {
+                const currentUser = window.AuthService.getCurrentUser();
+                if (!currentUser || (currentUser.role !== 'admin' && !(currentUser.role === 'leader' && currentUser.club === selectedEvent.club))) {
+                    alert('You are not authorized to delete this event.');
+                    return;
+                }
                 events = events.filter(e => e.id !== selectedEvent.id);
+                window.AuthService.logActivity(`Event deleted: ${selectedEvent.name} (${selectedEvent.club})`);
                 renderCalendar();
                 eventDetailsContainer.innerHTML = `<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>`;
                 eventModal.style.display = 'none';
@@ -1600,7 +1832,8 @@ function initAdmin() {
             if (isLoginMode) {
                 // LOGIN LOGIC
                 // Check stored custom admins first, then hardcoded default
-                const result = checkAdminCredentials(username, password);
+                // const result = checkAdminCredentials(username, password);
+                const result = window.AuthService.login(username, password);
 
                 if (result.success) {
                     if (rememberMe) {
@@ -1618,7 +1851,8 @@ function initAdmin() {
                         loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Logging in...</span>';
                         loginButton.disabled = true;
                     }
-                    setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 1000);
+                    // Immediate redirect instead of timeout to reduce "flicker/fluctuation"
+                    window.location.replace('admin-dashboard.html');
                 } else {
                     alert('Invalid credentials. Please try again.');
                 }
@@ -1630,16 +1864,16 @@ function initAdmin() {
                     return;
                 }
 
-                // Check if user exists
-                const existingAdmins = JSON.parse(localStorage.getItem('adminUsers')) || [];
-                if (username === 'admin' || existingAdmins.some(u => u.username === username)) {
+                // Check if user exists (unified users store)
+                const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+                if (username === 'admin' || existingUsers.some(u => u.username === username)) {
                     alert('Username already exists. Please choose another.');
                     return;
                 }
 
                 // Create new user
-                existingAdmins.push({ username, password });
-                localStorage.setItem('adminUsers', JSON.stringify(existingAdmins));
+                existingUsers.push({ username, password, role: 'admin' });
+                localStorage.setItem('users', JSON.stringify(existingUsers));
 
                 alert('Account created successfully! Please login.');
                 toggleMode(true);
@@ -1663,10 +1897,10 @@ function initAdmin() {
     // 6b. Admin Dashboard Logic
     const adminDashboard = document.getElementById('admin-dashboard');
     if (adminDashboard) {
-        const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-        if (!isLoggedIn) {
-            window.location.href = 'admin-login.html';
-        } else {
+        // Redundant check removed. guardRoute handles this globally.
+        // const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+        // if (!isLoggedIn) { ... }
+        if (true) {
             // Init Sidebar Navigation
             const sidebarLinks = document.querySelectorAll('.admin-menu a');
             const sections = document.querySelectorAll('.admin-tab-content');
@@ -1692,11 +1926,12 @@ function initAdmin() {
 
             loadAdminDashboard();
             initClubManagement();
+            initUserManagement();
             const logoutButton = document.getElementById('admin-logout');
             if (logoutButton) {
                 logoutButton.addEventListener('click', function () {
-                    localStorage.removeItem('adminLoggedIn');
-                    window.location.href = 'admin-login.html';
+                    // Update: use AuthService.logout() for consistency
+                    window.AuthService.logout();
                 });
             }
         }
@@ -1714,9 +1949,13 @@ function initAdmin() {
     }
 
     function loadAdminDashboard() {
+        const currentUser = window.AuthService.getCurrentUser();
+        const isLeader = currentUser && currentUser.role === 'leader';
+        const userClub = isLeader ? currentUser.club : null;
+
         // Helper
         const getClubName = (id) => {
-            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
+            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD' };
             return map[id] || id;
         };
 
@@ -1726,43 +1965,149 @@ function initAdmin() {
             registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
             const registrations = [
                 { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
-                { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
+                { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' },
+                { id: 3, name: 'Alex Johnson', email: 'alex@example.com', studentId: 'S1003', clubs: ['sports'], registeredAt: '2023-11-14' }
             ];
-            registrations.forEach(reg => {
+
+            // Filter for Leader
+            const filteredRegs = isLeader
+                ? registrations.filter(r => r.clubs.includes(userClub))
+                : registrations;
+
+            filteredRegs.forEach(reg => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
+                    <td>#${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
                     <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
                     <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
                     <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
-                        <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
+                        ${!isLeader ? `<button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button>` : ''}</td>
                 `;
                 registrationsTable.querySelector('tbody').appendChild(row);
             });
         }
 
         // Render Event Registrations
-        const eventRegistrationsTable = document.getElementById('event-registrations-table');
-        if (eventRegistrationsTable) {
-            eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const eventRegs = [
-                { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
-            ];
-            eventRegs.forEach(reg => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${reg.id}</td><td>Event ${reg.eventId}</td><td>${reg.name}</td><td>${reg.email}</td>
-                    <td>${reg.studentId}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
-                    <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
-                        <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
-                `;
-                eventRegistrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
+        // Mock data usually comes from localStorage but here it is hardcoded in original. 
+        // Initialize Charts
+        initDashboardCharts(isLeader, userClub);
+    }
+}
 
-        // Dashboard Button Actions
-        document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
-        document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
+function initDashboardCharts(isLeader, userClub) {
+    // 1. Event Participation Chart
+    const ctx1 = document.getElementById('eventParticipationChart')?.getContext('2d');
+    if (ctx1) {
+        // Destroy existing if any (simple cheat: replace canvas to prevent overlay issues or just assume fresh load)
+        // For simplicity in this vanilla JS, we'll create a new Chart each time or let Chart.js handle it.
+        // Ideally we track instances, but this is a quick fix.
+
+        const data = isLeader
+            ? [15, 25, 40, 10] // Mock data for specific club events
+            : [65, 59, 80, 81, 56, 55]; // Mock data for all
+
+        const labels = isLeader
+            ? ['Workshop', 'Meetup', 'Hackathon', 'Webinar']
+            : ['Tech', 'Arts', 'Debate', 'Music', 'Sports', 'Dance'];
+
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '# of Participants',
+                    data: data,
+                    backgroundColor: 'rgba(253, 121, 168, 0.5)',
+                    borderColor: 'rgba(253, 121, 168, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { labels: { color: 'white' } } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } },
+                    x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } }
+                }
+            }
+        });
+    }
+
+    // 2. Active Clubs Overview (Pie Chart)
+    const ctx2 = document.getElementById('activeClubsChart')?.getContext('2d');
+    if (ctx2 && !isLeader) {
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Tech', 'Arts', 'Sports', 'Music', 'Debate'],
+                datasets: [{
+                    data: [12, 19, 3, 5, 2],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { labels: { color: 'white' } } }
+            }
+        });
+    } else if (ctx2 && isLeader) {
+        // For leader, maybe show member status distribution
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active', 'Pending', 'Inactive'],
+                datasets: [{
+                    data: [85, 10, 5],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(255, 99, 132, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: 'white' } },
+                    title: { display: true, text: 'Member Status', color: 'white' }
+                }
+            }
+        });
+    }
+
+    // 3. Monthly Engagement (Line Chart)
+    const ctx3 = document.getElementById('monthlyEngagementChart')?.getContext('2d');
+    if (ctx3) {
+        new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Engagement Level',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { labels: { color: 'white' } } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } },
+                    x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } }
+                }
+            }
+        });
     }
 }
 
@@ -1880,6 +2225,10 @@ function initStudentSession() {
         logoutBtn.addEventListener('click', function (e) {
             e.preventDefault();
             localStorage.removeItem('studentUser');
+            const cu = window.AuthService.getCurrentUser();
+            if (cu && cu.role === 'student') {
+                localStorage.removeItem('currentUser');
+            }
             updateUIForStudent();
             window.location.href = 'index.html';
         });
@@ -1919,6 +2268,21 @@ function initStudentSession() {
 
     updateEnrollmentStatus();
 }
+
+// Ensure student login sets currentUser role for unified RBAC
+(function attachStudentLoginHook() {
+    const studentLoginForm = document.getElementById('student-login-form');
+    if (studentLoginForm) {
+        studentLoginForm.addEventListener('submit', function () {
+            const name = document.getElementById('login-student-name')?.value;
+            const id = document.getElementById('login-student-id')?.value;
+            if (name && id) {
+                const stuUser = { username: id, role: 'student', name };
+                window.AuthService.setCurrentUser(stuUser);
+            }
+        });
+    }
+})();
 
 function updateUIForStudent() {
     const student = JSON.parse(localStorage.getItem('studentUser'));
@@ -2071,12 +2435,21 @@ function initClubManagement() {
         tableBody.innerHTML = '';
         memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
 
+        const currentUser = window.AuthService.getCurrentUser();
+        const isLeader = currentUser && currentUser.role === 'leader';
+        const userClub = isLeader ? currentUser.club : null;
+
         const getClubName = (code) => {
             const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD' };
             return map[code] || code;
         };
 
-        memberships.forEach(m => {
+        // Filter for Leader
+        const filteredMemberships = isLeader
+            ? memberships.filter(m => m.club === userClub)
+            : memberships;
+
+        filteredMemberships.forEach(m => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>#${m.id}</td>
@@ -2103,6 +2476,7 @@ function initClubManagement() {
         const dbIdInput = document.getElementById('club-student-db-id');
         const clubInput = document.getElementById('club-select');
         const statusInput = document.getElementById('club-status');
+        const currentUser = window.AuthService.getCurrentUser();
 
         if (member) {
             title.textContent = 'Edit Club Member';
@@ -2115,6 +2489,12 @@ function initClubManagement() {
             title.textContent = 'Add Club Member';
             form.reset();
             idInput.value = '';
+        }
+        if (currentUser && currentUser.role === 'leader') {
+            clubInput.value = currentUser.club;
+            clubInput.disabled = true;
+        } else {
+            clubInput.disabled = false;
         }
         modal.style.display = 'block';
     }
@@ -2132,11 +2512,16 @@ function initClubManagement() {
     // 4. Form Submit
     form.addEventListener('submit', (e) => {
         e.preventDefault();
+        const currentUser = window.AuthService.getCurrentUser();
         const id = document.getElementById('club-member-id').value;
         const name = document.getElementById('club-student-name').value;
         const studentId = document.getElementById('club-student-db-id').value;
-        const club = document.getElementById('club-select').value;
+        let club = document.getElementById('club-select').value;
         const status = document.getElementById('club-status').value;
+
+        if (currentUser && currentUser.role === 'leader') {
+            club = currentUser.club;
+        }
 
         if (id) {
             // Edit
@@ -2163,8 +2548,19 @@ function initClubManagement() {
         const id = btn.getAttribute('data-id');
         if (btn.classList.contains('edit-club')) {
             const member = memberships.find(m => m.id == id);
+            const currentUser = window.AuthService.getCurrentUser();
+            if (currentUser && currentUser.role === 'leader' && member.club !== currentUser.club) {
+                alert('You are not authorized to edit members of other clubs.');
+                return;
+            }
             openModal(member);
         } else if (btn.classList.contains('delete-club')) {
+            const member = memberships.find(m => m.id == id);
+            const currentUser = window.AuthService.getCurrentUser();
+            if (currentUser && currentUser.role === 'leader' && member && member.club !== currentUser.club) {
+                alert('You are not authorized to delete members of other clubs.');
+                return;
+            }
             if (confirm('Are you sure you want to remove this member?')) {
                 memberships = memberships.filter(m => m.id != id);
                 localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
@@ -2173,52 +2569,181 @@ function initClubManagement() {
         }
     });
 }
+
+// Admin-only: User & Role Management
+function initUserManagement() {
+    const settingsSection = document.getElementById('settings');
+    if (!settingsSection) return;
+
+    const currentUser = window.AuthService.getCurrentUser();
+    if (!currentUser || currentUser.role !== 'admin') {
+        // Hide entire section if not admin
+        settingsSection.style.display = 'none';
+        return;
+    }
+
+    // Elements
+    const addBtn = document.getElementById('add-user-btn');
+    const tableBody = document.querySelector('#users-table tbody');
+    const modal = document.getElementById('user-modal');
+    const form = document.getElementById('user-form');
+    const closeBtns = document.querySelectorAll('.close-user-modal');
+
+    if (!addBtn || !tableBody || !modal || !form) return;
+
+    function loadUsers() {
+        return JSON.parse(localStorage.getItem('users')) || [];
+    }
+    function saveUsers(users) {
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+    function renderTable() {
+        tableBody.innerHTML = '';
+        loadUsers().forEach((u, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${u.username}</td>
+                <td>${u.role}</td>
+                <td>${u.role === 'leader' ? (u.club || '-') : '-'}</td>
+                <td>
+                    <button class="admin-action edit-user" data-index="${idx}"><i class="fas fa-edit"></i></button>
+                    <button class="admin-action delete-user" data-index="${idx}"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    function openModal(user = null, index = null) {
+        modal.style.display = 'block';
+        document.getElementById('modal-user-index').value = index != null ? String(index) : '';
+        document.getElementById('user-username').value = user?.username || '';
+        document.getElementById('user-password').value = '';
+        document.getElementById('user-role').value = user?.role || 'leader';
+        document.getElementById('user-club').value = user?.club || '';
+        toggleClubField();
+    }
+
+    function closeModal() { modal.style.display = 'none'; }
+
+    function toggleClubField() {
+        const role = document.getElementById('user-role').value;
+        const clubField = document.getElementById('user-club-group');
+        if (clubField) clubField.style.display = role === 'leader' ? 'block' : 'none';
+    }
+
+    renderTable();
+    addBtn.addEventListener('click', () => openModal());
+    closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
+    window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.getElementById('user-role')?.addEventListener('change', toggleClubField);
+
+    tableBody.addEventListener('click', (e) => {
+        const btn = e.target.closest('.admin-action');
+        if (!btn) return;
+        const idx = parseInt(btn.getAttribute('data-index'));
+        const users = loadUsers();
+        if (btn.classList.contains('edit-user')) {
+            openModal(users[idx], idx);
+        } else if (btn.classList.contains('delete-user')) {
+            const toDelete = users[idx];
+            if (toDelete && toDelete.username === 'admin') {
+                alert('Cannot delete default admin.');
+                return;
+            }
+            if (confirm('Delete this user?')) {
+                users.splice(idx, 1);
+                saveUsers(users);
+                renderTable();
+                window.AuthService.logActivity(`User deleted: ${toDelete?.username}`);
+            }
+        }
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const idxStr = document.getElementById('modal-user-index').value;
+        const username = document.getElementById('user-username').value.trim();
+        const password = document.getElementById('user-password').value;
+        const role = document.getElementById('user-role').value;
+        const club = document.getElementById('user-club').value.trim();
+        if (!username || (!idxStr && !password)) {
+            alert('Username and password are required.');
+            return;
+        }
+        if (role === 'leader' && !club) {
+            alert('Leader must have a club.');
+            return;
+        }
+        const users = loadUsers();
+        const existingIndex = users.findIndex(u => u.username === username);
+        const editing = idxStr !== '';
+        const idx = editing ? parseInt(idxStr) : -1;
+        if ((!editing && existingIndex !== -1) || (editing && existingIndex !== -1 && existingIndex !== idx)) {
+            alert('Username already exists.');
+            return;
+        }
+        const newUser = { username, role, club: role === 'leader' ? club : undefined };
+        if (password) newUser.password = password;
+        if (editing) {
+            users[idx] = { ...users[idx], ...newUser };
+            saveUsers(users);
+            window.AuthService.logActivity(`User updated: ${username} (${role})`);
+        } else {
+            users.push(newUser);
+            saveUsers(users);
+            window.AuthService.logActivity(`User created: ${username} (${role})`);
+        }
+        renderTable();
+        closeModal();
+    });
+}
 // FAQ Toggle
 document.querySelectorAll(".faq-question").forEach(q => {
-  q.addEventListener("click", () => {
-    const ans = q.nextElementSibling;
-    ans.style.display = ans.style.display === "block" ? "none" : "block";
-  });
+    q.addEventListener("click", () => {
+        const ans = q.nextElementSibling;
+        ans.style.display = ans.style.display === "block" ? "none" : "block";
+    });
 });
 
 // Chatbot Toggle
 function toggleChat() {
-  const chat = document.getElementById("chatbot");
-  chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+    const chat = document.getElementById("chatbot");
+    chat.style.display = chat.style.display === "flex" ? "none" : "flex";
 }
 
 // Chatbot Logic
 function sendMessage() {
-  const input = document.getElementById("userInput");
-  const chat = document.getElementById("chatBody");
+    const input = document.getElementById("userInput");
+    const chat = document.getElementById("chatBody");
 
-  if (input.value.trim() === "") return;
+    if (input.value.trim() === "") return;
 
-  const userMsg = document.createElement("div");
-  userMsg.className = "user";
-  userMsg.innerText = input.value;
-  chat.appendChild(userMsg);
+    const userMsg = document.createElement("div");
+    userMsg.className = "user";
+    userMsg.innerText = input.value;
+    chat.appendChild(userMsg);
 
-  let reply = "Please check the Events page for details.";
+    let reply = "Please check the Events page for details.";
 
-  const text = input.value.toLowerCase();
+    const text = input.value.toLowerCase();
 
-  if (text.includes("register"))
-    reply = "You can register from the Events page.";
-  else if (text.includes("event"))
-    reply = "All upcoming events are listed in the Events section.";
-  else if (text.includes("fee"))
-    reply = "Some events are free, some require payment.";
-  else if (text.includes("contact"))
-    reply = "You can contact organizers via Contact page.";
-  else if (text.includes("hello"))
-    reply = "Hello 👋 How can I help you?";
+    if (text.includes("register"))
+        reply = "You can register from the Events page.";
+    else if (text.includes("event"))
+        reply = "All upcoming events are listed in the Events section.";
+    else if (text.includes("fee"))
+        reply = "Some events are free, some require payment.";
+    else if (text.includes("contact"))
+        reply = "You can contact organizers via Contact page.";
+    else if (text.includes("hello"))
+        reply = "Hello 👋 How can I help you?";
 
-  const botMsg = document.createElement("div");
-  botMsg.className = "bot";
-  botMsg.innerText = reply;
+    const botMsg = document.createElement("div");
+    botMsg.className = "bot";
+    botMsg.innerText = reply;
 
-  setTimeout(() => chat.appendChild(botMsg), 400);
+    setTimeout(() => chat.appendChild(botMsg), 400);
 
-  input.value = "";
+    input.value = "";
 }

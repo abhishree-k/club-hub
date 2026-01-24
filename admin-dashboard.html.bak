@@ -368,31 +368,7 @@
                             </tbody>
                         </table>
                     </div>
-                </section>    <!-- Settings: User & Role Management (Admin only) -->
-    <section id="settings" class="admin-section admin-tab-content" style="display: none;">
-        <div class="section-header">
-            <h2>User & Role Management</h2>
-            <button class="action-btn" id="add-user-btn">
-                <i class="fas fa-user-plus"></i> Add User
-            </button>
-        </div>
-        <div class="table-container">
-            <table class="admin-table" id="users-table">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Club</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Populated by JS -->
-                </tbody>
-            </table>
-        </div>
-    </section>
-
+                </section>
             </div>
         </main>
     </div>
@@ -473,42 +449,7 @@
         </div>
     </div>
 
-        <!-- User Management Modal (Admin only) -->
-    <div id="user-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Manage User</h2>
-                <span class="close-modal close-user-modal">&times;</span>
-            </div>
-            <form id="user-form">
-                <input type="hidden" id="modal-user-index" />
-                <div class="form-group">
-                    <label for="user-username">Username</label>
-                    <input type="text" id="user-username" required />
-                </div>
-                <div class="form-group">
-                    <label for="user-password">Password</label>
-                    <input type="password" id="user-password" placeholder="Leave blank to keep unchanged" />
-                </div>
-                <div class="form-group">
-                    <label for="user-role">Role</label>
-                    <select id="user-role" required>
-                        <option value="leader">Club Leader</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
-                <div class="form-group" id="user-club-group" style="display:none;">
-                    <label for="user-club">Club (for Leaders)</label>
-                    <input type="text" id="user-club" placeholder="e.g., tech, arts, debate" />
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel close-user-modal">Cancel</button>
-                    <button type="submit" class="btn-save">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-<script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>

@@ -2,6 +2,9 @@
  * Main Entry Point
  * All functionality is initialized here via modular functions.
  */
+const CHAT_STORAGE_KEY = 'clubhub_chat_history';
+const TICKET_STORAGE_KEY = 'clubhub_tickets';
+
 document.addEventListener('DOMContentLoaded', function () {
     // Initialize global events data
     // Note: Using January 2026 dates (current date context) for easier testing
@@ -1508,6 +1511,8 @@ function initCalendar() {
 function initAdmin() {
     // 6a. Admin Login Logic
     const adminLoginForm = document.getElementById('admin-login-form');
+    if (!adminLoginForm) return; // Exit if not on login page
+
     const togglePassword = document.querySelector('.toggle-password');
     const passwordInput = document.getElementById('admin-password');
     const toggleConfirmPassword = document.querySelector('.toggle-confirm-password');
@@ -1596,8 +1601,8 @@ function initAdmin() {
 
         adminLoginForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            const username = document.getElementById('admin-username').value;
-            const password = document.getElementById('admin-password').value;
+            const username = document.getElementById('admin-username').value.trim();
+            const password = document.getElementById('admin-password').value.trim();
             const rememberMe = document.getElementById('remember-me')?.checked;
 
             if (!username || !password) {
@@ -1697,6 +1702,7 @@ function initAdmin() {
             loadAdminDashboard();
             initClubManagement();
             initAnalytics();
+            initAdminTickets();
 
             const logoutButton = document.getElementById('admin-logout');
             if (logoutButton) {
@@ -1720,68 +1726,86 @@ function initAdmin() {
         adminEventForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const name = document.getElementById('admin-event-name').value;
-
-        adminEventForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const name = document.getElementById('admin-event-name').value;
             alert(`Event "${name}" saved successfully!`);
             this.reset();
         });
     }
+}
+
+
+// 6c. Dedicated Admin Tickets Page Logic
+const adminTicketsPage = document.getElementById('admin-tickets-page');
+if (adminTicketsPage) {
+    const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+    if (!isLoggedIn) {
+        window.location.href = 'admin-login.html';
+    } else {
+        // Logout Logic
+        const logoutButton = document.getElementById('admin-logout-btn');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                localStorage.removeItem('adminLoggedIn');
+                window.location.href = 'admin-login.html';
+            });
+        }
+
+        // Init Tickets
+        initAdminTickets();
     }
+}
 
-    function loadAdminDashboard() {
-        // Helper
-        const getClubName = (id) => {
-            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
-            return map[id] || id;
-        };
+function loadAdminDashboard() {
+    // Helper
+    const getClubName = (id) => {
+        const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
+        return map[id] || id;
+    };
 
 
-        // Render Student Registrations
-        const registrationsTable = document.getElementById('registrations-table');
-        if (registrationsTable) {
-            registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const registrations = [
-                { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
-                { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
-            ];
-            registrations.forEach(reg => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+    // Render Student Registrations
+    const registrationsTable = document.getElementById('registrations-table');
+    if (registrationsTable) {
+        registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const registrations = [
+            { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
+        ];
+        registrations.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                     <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
                     <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
                     <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
                     <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
                         <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
                 `;
-                registrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
+            registrationsTable.querySelector('tbody').appendChild(row);
+        });
+    }
 
-        // Render Event Registrations
-        const eventRegistrationsTable = document.getElementById('event-registrations-table');
-        if (eventRegistrationsTable) {
-            eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            const eventRegs = [
-                { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
-            ];
-            eventRegs.forEach(reg => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+    // Render Event Registrations
+    const eventRegistrationsTable = document.getElementById('event-registrations-table');
+    if (eventRegistrationsTable) {
+        eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const eventRegs = [
+            { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
+        ];
+        eventRegs.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                     <td>${reg.id}</td><td>Event ${reg.eventId}</td><td>${reg.name}</td><td>${reg.email}</td>
                     <td>${reg.studentId}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
                     <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
                         <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
                 `;
-                eventRegistrationsTable.querySelector('tbody').appendChild(row);
-            });
-        }
-
-        // Dashboard Button Actions
-        document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
-        document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
+            eventRegistrationsTable.querySelector('tbody').appendChild(row);
+        });
     }
+
+    // Dashboard Button Actions
+    document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
+    document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
 }
 
 /**
@@ -2033,50 +2057,585 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 // FAQ Toggle
 document.querySelectorAll(".faq-question").forEach(q => {
-  q.addEventListener("click", () => {
-    const ans = q.nextElementSibling;
-    ans.style.display = ans.style.display === "block" ? "none" : "block";
-  });
+    q.addEventListener("click", () => {
+        const ans = q.nextElementSibling;
+        ans.style.display = ans.style.display === "block" ? "none" : "block";
+    });
 });
 
-// Chatbot Toggle
+// ================= CHATBOT & TICKET SYSTEM LOGIC =================
+
+function initChatWidget() {
+    // 0. Disable on Admin Pages
+    if (window.location.pathname.includes('admin-dashboard.html') || window.location.pathname.includes('admin-tickets.html')) return;
+
+    // 1. Inject HTML if not present
+    if (!document.getElementById('chatbot-widget-container')) {
+        const widgetHTML = `
+            <div id="chatbot-widget-container">
+                <div class="chatbot-icon" onclick="toggleChat()">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+                <div class="chatbot-box" id="chatbot">
+                    <div class="widget-container">
+                        <!-- Sidebar -->
+                        <div class="widget-sidebar">
+                            <div class="sidebar-item active" onclick="switchWidgetTab('chat')" title="Chat Bot">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="sidebar-item" onclick="switchWidgetTab('tickets')" title="My Tickets">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                        </div>
+
+                        <!-- Main Content -->
+                        <div class="widget-content">
+                            <!-- Tab: Chat Bot -->
+                            <div class="widget-tab active" id="tab-chat">
+                                <div class="chat-header">
+                                    <div class="chat-header-title">
+                                        <i class="fas fa-robot"></i> Club Hub Assistant
+                                    </div>
+                                    <div class="chat-header-actions" onclick="toggleChat()">
+                                        <i class="fas fa-times"></i>
+                                    </div>
+                                </div>
+                                <div class="chat-body" id="chatBody">
+                                    <div class="message bot">
+                                        Hello! 👋 I'm the Club Hub Assistant.<br>
+                                        How can I help you today?
+                                        <span class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                    </div>
+                                </div>
+                                <div class="chat-input" id="chatInputArea">
+                                    <input type="text" id="userInput" placeholder="Ask about events..." onkeypress="handleKeyPress(event)" />
+                                    <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Tab: Tickets -->
+                            <div class="widget-tab" id="tab-tickets">
+                                <div class="chat-header">
+                                    <div class="chat-header-title">
+                                        <i class="fas fa-life-ring"></i> Support Tickets
+                                    </div>
+                                    <div class="chat-header-actions" onclick="toggleChat()">
+                                        <i class="fas fa-times"></i>
+                                    </div>
+                                </div>
+                                <div class="tickets-list-container" id="ticketsList">
+                                    <!-- Ticket Items -->
+                                    <div style="text-align: center; color: rgba(255,255,255,0.5); margin-top: 2rem;">
+                                        No tickets yet.
+                                    </div>
+                                </div>
+                                <div class="new-ticket-container" id="newTicketBtnContainer">
+                                    <button class="new-ticket-btn" onclick="showNewTicketForm()">
+                                        <i class="fas fa-plus"></i> Create New Ticket
+                                    </button>
+                                </div>
+                                
+                                <!-- User Ticket Detail View (Hidden by default) -->
+                                <div class="ticket-detail-view" id="userTicketDetail" style="display: none; flex-direction: column; height: 100%; background: #1a1a2e; position: absolute; top: 0; left: 0; width: 100%; z-index: 5;">
+                                    <div class="chat-header" style="background: rgba(255,255,255,0.05);">
+                                        <div class="chat-header-actions" onclick="closeUserTicketDetail()" style="margin-right: 10px;">
+                                            <i class="fas fa-arrow-left"></i>
+                                        </div>
+                                        <div class="chat-header-title" id="userTicketTitle" style="font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            Ticket Details
+                                        </div>
+                                    </div>
+                                    <div class="chat-body" id="userTicketChatBody" style="background: transparent;">
+                                        <!-- Messages go here -->
+                                    </div>
+                                    <div class="chat-input">
+                                        <input type="text" id="userTicketReplyInput" placeholder="Type a reply..." />
+                                        <button onclick="sendUserTicketReply()"><i class="fas fa-paper-plane"></i></button>
+                                    </div>
+                                </div>
+
+                                <!-- New Ticket Form Overlay (Hidden by default) -->
+                                <div class="ticket-form-container" id="newTicketForm" style="display: none; padding: 1.5rem; height: 100%; position: absolute; top: 0; left: 0; background: #1a1a2e; z-index: 10; width: 100%;">
+                                    <h3 style="color: white; margin-bottom: 1rem;"><i class="fas fa-pen"></i> New Ticket</h3>
+                                    <input type="text" id="ticketSubject" placeholder="Subject (e.g., Login Issue)" style="margin-bottom: 1rem;" />
+                                    <textarea id="ticketDescription" rows="5" placeholder="Describe your issue..." style="margin-bottom: 1rem;"></textarea>
+                                    <div class="ticket-actions">
+                                        <button class="ticket-btn cancel" onclick="hideNewTicketForm()">Cancel</button>
+                                        <button class="ticket-btn submit" onclick="submitTicket()">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', widgetHTML);
+    }
+
+    // 2. Load History
+    loadChatHistory();
+
+    // 3. Poll for new messages/tickets
+    setInterval(() => {
+        loadChatHistory();
+        loadUserTickets();
+    }, 2000);
+}
+
+function switchWidgetTab(tabName) {
+    // UI Update
+    document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+    document.querySelectorAll('.widget-tab').forEach(tab => tab.classList.remove('active'));
+
+    // Find index based on tab name to highlight correct icon
+    const iconIndex = tabName === 'chat' ? 0 : 1;
+    document.querySelectorAll('.sidebar-item')[iconIndex].classList.add('active');
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+
+    if (tabName === 'tickets') {
+        loadUserTickets();
+    }
+}
+
 function toggleChat() {
-  const chat = document.getElementById("chatbot");
-  chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+    const chat = document.getElementById("chatbot");
+    const isVisible = chat.style.display === "flex";
+
+    if (isVisible) {
+        chat.style.display = "none";
+    } else {
+        chat.style.display = "flex";
+        // Default to chat tab
+        switchWidgetTab('chat');
+        loadChatHistory();
+    }
 }
 
-// Chatbot Logic
+function handleKeyPress(event) {
+    if (event.key === "Enter") sendMessage();
+}
+
+function loadChatHistory() {
+    const history = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY)) || [];
+    const chatBody = document.getElementById("chatBody");
+
+    // Optimization: Don't re-render if nothing changed
+    const storedString = JSON.stringify(history);
+    if (chatBody.dataset.lastHistory === storedString) return;
+
+    // Clear default welcome if we have history
+    if (history.length > 0) {
+        chatBody.innerHTML = '';
+        history.forEach(msg => appendMessageToUI(msg.sender, msg.text, msg.timestamp, false));
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    chatBody.dataset.lastHistory = storedString;
+}
+
 function sendMessage() {
-  const input = document.getElementById("userInput");
-  const chat = document.getElementById("chatBody");
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+    if (!text) return;
 
-  if (input.value.trim() === "") return;
+    // 1. Add User Message
+    addMessage('user', text);
+    input.value = "";
 
-  const userMsg = document.createElement("div");
-  userMsg.className = "user";
-  userMsg.innerText = input.value;
-  chat.appendChild(userMsg);
+    // 2. Simulate Bot Thinking
+    showTypingIndicator();
 
-  let reply = "Please check the Events page for details.";
-
-  const text = input.value.toLowerCase();
-
-  if (text.includes("register"))
-    reply = "You can register from the Events page.";
-  else if (text.includes("event"))
-    reply = "All upcoming events are listed in the Events section.";
-  else if (text.includes("fee"))
-    reply = "Some events are free, some require payment.";
-  else if (text.includes("contact"))
-    reply = "You can contact organizers via Contact page.";
-  else if (text.includes("hello"))
-    reply = "Hello 👋 How can I help you?";
-
-  const botMsg = document.createElement("div");
-  botMsg.className = "bot";
-  botMsg.innerText = reply;
-
-  setTimeout(() => chat.appendChild(botMsg), 400);
-
-  input.value = "";
+    // 3. Process Response
+    setTimeout(() => {
+        removeTypingIndicator();
+        processBotResponse(text);
+    }, 1000);
 }
+
+function addMessage(sender, text) {
+    const timestamp = new Date().toISOString();
+
+    // UI
+    appendMessageToUI(sender, text, timestamp, true);
+
+    // Storage
+    const history = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY)) || [];
+    history.push({ sender, text, timestamp });
+    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(history));
+}
+
+function appendMessageToUI(sender, text, timestamp, scroll) {
+    const chatBody = document.getElementById("chatBody");
+    const timeStr = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `message ${sender}`;
+    msgDiv.innerHTML = `${text} <span class="message-time">${timeStr}</span>`;
+
+    chatBody.appendChild(msgDiv);
+
+    if (scroll) chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function showTypingIndicator() {
+    const chatBody = document.getElementById("chatBody");
+    const indicator = document.createElement("div");
+    indicator.id = "typing-indicator";
+    indicator.className = "typing-indicator message bot";
+    indicator.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+    `;
+    chatBody.appendChild(indicator);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const indicator = document.getElementById("typing-indicator");
+    if (indicator) indicator.remove();
+}
+
+function processBotResponse(text) {
+    const lowerText = text.toLowerCase();
+    let reply = "";
+    let showTicketOption = false;
+
+    if (lowerText.includes("hello") || lowerText.includes("hi")) {
+        reply = "Hello! 👋 I'm here to help with events, clubs, and registration.";
+    } else if (lowerText.includes("event") || lowerText.includes("calendar")) {
+        reply = "You can view all upcoming events on the <b>Events</b> page. Check the calendar for dates!";
+    } else if (lowerText.includes("register") || lowerText.includes("signup")) {
+        reply = "To register for an event, go to the <b>Events</b> page and click 'Register' on the event card.";
+    } else if (lowerText.includes("club") || lowerText.includes("join")) {
+        reply = "We have many clubs! Tech, Arts, Music, Debate... Visit the <b>Home</b> page to explore them.";
+    } else if (lowerText.includes("admin") || lowerText.includes("login")) {
+        reply = "Admin login is located in the footer links. For students, use the 'Student Login' link.";
+    } else if (lowerText.includes("ticket") || lowerText.includes("support")) {
+        reply = "Sure! You can create a support ticket below.";
+        showTicketOption = true;
+    } else {
+        reply = "I'm not sure about that. Would you like to create a support ticket for a human admin?";
+        showTicketOption = true;
+    }
+
+    addMessage('bot', reply);
+
+    if (showTicketOption) {
+        setTimeout(() => {
+            const btnHtml = `
+                <button class="action-button" onclick="showNewTicketForm()" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+                    <i class="fas fa-ticket-alt"></i> Create Support Ticket
+                </button>
+            `;
+            addMessage('bot', btnHtml);
+        }, 500);
+    }
+}
+
+// Removed disconnected addTicketPrompt function as it's now inline and persistent
+
+
+// User Ticket Functions
+function loadUserTickets() {
+    const tickets = JSON.parse(localStorage.getItem(TICKET_STORAGE_KEY)) || [];
+    const listContainer = document.getElementById('ticketsList');
+
+    if (!listContainer) return;
+
+    if (tickets.length === 0) {
+        if (listContainer.innerHTML.trim() === '' || !listContainer.textContent.includes('No tickets yet')) {
+            listContainer.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5); margin-top: 2rem;">No tickets yet.</div>';
+        }
+        return;
+    }
+
+    const storedString = JSON.stringify(tickets);
+    if (listContainer.dataset.lastTickets === storedString) return;
+
+    listContainer.innerHTML = '';
+    tickets.forEach(ticket => {
+        const item = document.createElement('div');
+        item.className = 'ticket-item-card';
+        item.innerHTML = `
+            <div class="ticket-card-header">
+                <span class="ticket-status ${ticket.status.toLowerCase()}">${ticket.status}</span>
+                <span style="font-size: 0.7rem; opacity: 0.6;">${new Date(ticket.userDate).toLocaleDateString()}</span>
+            </div>
+            <div style="font-weight: bold; margin-bottom: 0.5rem;">${ticket.subject}</div>
+            <div style="font-size: 0.85rem; opacity: 0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${ticket.description}</div>
+            ${ticket.messages && ticket.messages.length > 0 ? `<div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--accent-color);"><i class="fas fa-reply"></i> ${ticket.messages.length} replies</div>` : ''}
+        `;
+        item.onclick = () => openUserTicketDetail(ticket.id);
+        listContainer.appendChild(item);
+    });
+
+    listContainer.dataset.lastTickets = storedString;
+
+    // If we are currently viewing a ticket, refresh its chat just in case
+    const detailView = document.getElementById('userTicketDetail');
+    if (detailView && detailView.style.display === 'flex') {
+        const titleEl = document.getElementById('userTicketTitle');
+        if (titleEl.dataset.ticketId) {
+            const ticketId = titleEl.dataset.ticketId;
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (ticket) renderUserTicketChat(ticket);
+        }
+    }
+}
+
+
+function openUserTicketDetail(ticketId) {
+    const tickets = JSON.parse(localStorage.getItem(TICKET_STORAGE_KEY)) || [];
+    const ticket = tickets.find(t => t.id === ticketId);
+    if (!ticket) return;
+
+    document.getElementById('userTicketDetail').style.display = 'flex';
+    document.getElementById('userTicketTitle').textContent = ticket.subject;
+    document.getElementById('userTicketTitle').dataset.ticketId = ticketId;
+
+    renderUserTicketChat(ticket);
+}
+
+function closeUserTicketDetail() {
+    document.getElementById('userTicketDetail').style.display = 'none';
+    document.getElementById('userTicketTitle').dataset.ticketId = '';
+}
+
+function renderUserTicketChat(ticket) {
+    const chatBody = document.getElementById('userTicketChatBody');
+
+    // Always render description first
+    let html = `<div class="message user" style="width: 90%; background: rgba(255,255,255,0.1);">
+        <small style="opacity: 0.7; display: block; margin-bottom: 4px;">Original Request:</small>
+        ${ticket.description}
+        <span class="message-time">${new Date(ticket.userDate).toLocaleTimeString()}</span>
+    </div>`;
+
+    if (ticket.messages) {
+        ticket.messages.forEach(msg => {
+            const isAdmin = msg.sender === 'admin';
+            const className = isAdmin ? 'bot' : 'user';
+
+            html += `<div class="message ${className}">
+                ${msg.text}
+                <span class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</span>
+            </div>`;
+        });
+    }
+
+    if (chatBody.innerHTML !== html) {
+        chatBody.innerHTML = html;
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+}
+
+function sendUserTicketReply() {
+    const input = document.getElementById('userTicketReplyInput');
+    const text = input.value.trim();
+    const ticketId = document.getElementById('userTicketTitle').dataset.ticketId;
+
+    if (!text || !ticketId) return;
+
+    const tickets = JSON.parse(localStorage.getItem(TICKET_STORAGE_KEY)) || [];
+    const index = tickets.findIndex(t => t.id === ticketId);
+
+    if (index !== -1) {
+        if (!tickets[index].messages) tickets[index].messages = [];
+
+        tickets[index].messages.push({
+            sender: 'user',
+            text: text,
+            timestamp: new Date().toISOString()
+        });
+
+        localStorage.setItem(TICKET_STORAGE_KEY, JSON.stringify(tickets));
+        input.value = '';
+        renderUserTicketChat(tickets[index]);
+    }
+}
+
+
+
+function showNewTicketForm() {
+    switchWidgetTab('tickets');
+    document.getElementById('newTicketForm').style.display = 'block';
+}
+
+function hideNewTicketForm() {
+    document.getElementById('newTicketForm').style.display = 'none';
+}
+
+function submitTicket() {
+    const subject = document.getElementById("ticketSubject").value.trim();
+    const description = document.getElementById("ticketDescription").value.trim();
+
+    if (!subject || !description) {
+        alert("Please fill in both subject and description.");
+        return;
+    }
+
+    // Create Ticket Object
+    const ticket = {
+        id: 'TICKET-' + Date.now(),
+        userId: 'guest', // In a real app, this would be the logged-in user ID
+        userDate: new Date().toISOString(),
+        subject: subject,
+        description: description,
+        status: 'Open',
+        messages: [] // For admin-user chat within the ticket
+    };
+
+    // Save to LocalStorage
+    const tickets = JSON.parse(localStorage.getItem(TICKET_STORAGE_KEY)) || [];
+    tickets.push(ticket);
+    localStorage.setItem(TICKET_STORAGE_KEY, JSON.stringify(tickets));
+
+    // Reset UI
+    document.getElementById("ticketSubject").value = "";
+    document.getElementById("ticketDescription").value = "";
+    hideNewTicketForm();
+    loadUserTickets(); // Refresh list immediately
+
+    // Switch to tickets tab if not already (though we are there)
+    // Optional: Show success message in list?
+    // For now, loadUserTickets handles the list view.
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', initChatWidget);
+
+function initAdminTickets() {
+    // 1. Elements
+    const ticketList = document.getElementById('admin-ticket-list');
+    const ticketChat = document.getElementById('admin-ticket-chat');
+    const replyInput = document.getElementById('admin-ticket-reply');
+    const sendBtn = document.getElementById('admin-send-reply');
+    const statusFilter = document.getElementById('ticket-status-filter');
+    const detailView = document.getElementById('admin-ticket-detail');
+
+    if (!ticketList) return;
+
+    let currentTicketId = null;
+
+    // 2. Load Tickets
+    function loadTickets() {
+        // Don't reload if user is typing? No, just reload list.
+        let tickets = JSON.parse(localStorage.getItem(TICKET_STORAGE_KEY)) || [];
+
+        // DEBUG: Seed a ticket if empty so admin can see something
+        if (tickets.length === 0) {
+            const dummy = {
+                id: 'TICKET-DEMO-' + Date.now(),
+                userId: 'demo_user',
+                userDate: new Date().toISOString(),
+                subject: 'Demo Ticket: Login Help',
+                description: 'This is a test ticket to verify the admin dashboard.',
+                status: 'Open',
+                messages: []
+            };
+            tickets.push(dummy);
+            localStorage.setItem(TICKET_STORAGE_KEY, JSON.stringify(tickets));
+            console.log('Seeded dummy ticket:', dummy);
+        }
+
+        const filter = statusFilter.value;
+
+        // Save scroll position or selection? 
+        // For simplicity, just re-render list.
+        ticketList.innerHTML = '';
+
+        const filtered = tickets.filter(t => filter === 'all' || t.status === filter);
+
+        if (filtered.length === 0) {
+            ticketList.innerHTML = '<div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.5);">No tickets found.</div>';
+            return;
+        }
+
+        filtered.forEach(ticket => {
+            const el = document.createElement('div');
+            el.className = 'ticket-item';
+            el.innerHTML = `
+                <div style="font-weight: bold; color: white;">${ticket.subject}</div>
+                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">${ticket.id}</div> 
+                <div style="font-size: 0.8rem; color: ${ticket.status === 'Open' ? '#fab1a0' : '#81ecec'}; margin-top: 4px;">${ticket.status}</div>
+            `;
+            el.style.cssText = "padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: background 0.2s;";
+            if (currentTicketId === ticket.id) el.style.background = 'rgba(255,255,255,0.1)';
+
+            el.onclick = () => selectTicket(ticket.id);
+            ticketList.appendChild(el);
+        });
+    }
+
+    // 3. Select Ticket
+    function selectTicket(id) {
+        currentTicketId = id;
+        loadTickets(); // Highlight selection
+
+        const tickets = JSON.parse(localStorage.getItem(TICKET_STORAGE_KEY)) || [];
+        const ticket = tickets.find(t => t.id === id);
+        if (!ticket) return;
+
+        // Header
+        detailView.querySelector('.ticket-detail-header h3').textContent = `${ticket.subject} (${ticket.status})`;
+
+        // Chat
+        renderChat(ticket);
+    }
+
+    function renderChat(ticket) {
+        ticketChat.innerHTML = '';
+
+        // Original Description
+        const descDiv = document.createElement('div');
+        descDiv.className = 'message user';
+        descDiv.innerHTML = `<b>${ticket.userId}:</b> ${ticket.description}<br><span class="message-time">${new Date(ticket.userDate).toLocaleString()}</span>`;
+        ticketChat.appendChild(descDiv);
+
+        // Messages
+        if (ticket.messages) {
+            ticket.messages.forEach(msg => {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${msg.sender}`; // 'admin' or 'user'
+                msgDiv.innerHTML = `${msg.text} <span class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</span>`;
+                ticketChat.appendChild(msgDiv);
+            });
+        }
+
+        ticketChat.scrollTop = ticketChat.scrollHeight;
+    }
+
+    // 4. Send Reply
+    sendBtn.onclick = () => {
+        if (!currentTicketId) return;
+        const text = replyInput.value.trim();
+        if (!text) return;
+
+        const tickets = JSON.parse(localStorage.getItem(TICKET_STORAGE_KEY)) || [];
+        const index = tickets.findIndex(t => t.id === currentTicketId);
+        if (index === -1) return;
+
+        const msg = {
+            sender: 'admin',
+            text: text,
+            timestamp: new Date().toISOString()
+        };
+
+        if (!tickets[index].messages) tickets[index].messages = [];
+        tickets[index].messages.push(msg);
+
+        localStorage.setItem(TICKET_STORAGE_KEY, JSON.stringify(tickets));
+
+        replyInput.value = '';
+        selectTicket(currentTicketId); // Re-render
+    };
+
+    // 5. Filter
+    statusFilter.onchange = loadTickets;
+
+    // Initial Load
+    loadTickets();
+}
+

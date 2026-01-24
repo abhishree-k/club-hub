@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Tickets | Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="stars-background"></div>
+
+    <nav class="cosmic-nav">
+        <div class="nav-logo">
+            <span class="logo-icon">🌌</span>
+            <span class="logo-text">DSCE Clubs</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="admin-dashboard.html" class="active">Admin Dashboard</a></li>
+            <li id="nav-logout"><a href="#" id="admin-logout-btn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="admin-container" id="admin-tickets-page"> <!-- Dedicated ID for tickets page -->
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-profile">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="profile-info">
+                    <h3>Admin User</h3>
+                    <p>Super Administrator</p>
+                </div>
+            </div>
+
+            <nav class="admin-menu">
+                <ul>
+                    <li>
+                        <a href="admin-dashboard.html#dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-dashboard.html#events">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Manage Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-dashboard.html#registrations">
+                            <i class="fas fa-users"></i>
+                            <span>Registrations</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-dashboard.html#certificates">
+                            <i class="fas fa-certificate"></i>
+                            <span>E-Certificates</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-dashboard.html#clubs">
+                            <i class="fas fa-chess-rook"></i>
+                            <span>Club Management</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="admin-tickets.html">
+                            <i class="fas fa-headset"></i>
+                            <span>Support Tickets</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Support Tickets Section -->
+            <section id="tickets" class="admin-section" style="display: block;">
+                <div class="section-header">
+                    <h2>Support Tickets</h2>
+                    <div class="filter-controls">
+                        <select id="ticket-status-filter"
+                            style="padding: 0.5rem; border-radius: 6px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                            <option value="all">All Status</option>
+                            <option value="Open">Open</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="tickets-container"
+                    style="display: grid; grid-template-columns: 350px 1fr; gap: 20px; height: 600px;">
+                    <!-- Ticket List -->
+                    <div class="ticket-list" id="admin-ticket-list"
+                        style="background: rgba(255,255,255,0.05); border-radius: 12px; overflow-y: auto; padding: 10px;">
+                        <!-- Items populated by JS -->
+                        <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.5);">No tickets found.
+                        </div>
+                    </div>
+
+                    <!-- Ticket Detail & Chat -->
+                    <div class="ticket-detail" id="admin-ticket-detail"
+                        style="background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;">
+                        <div class="ticket-detail-header"
+                            style="padding: 15px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <h3 style="margin: 0; font-size: 1.1rem;">Select a ticket</h3>
+                        </div>
+                        <div class="ticket-chat-area" id="admin-ticket-chat"
+                            style="flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                            <!-- Chat messages -->
+                            <div style="text-align: center; margin-top: 50px; color: rgba(255,255,255,0.3);">
+                                <i class="fas fa-comments" style="font-size: 3rem; margin-bottom: 10px;"></i>
+                                <p>Conversation history will appear here.</p>
+                            </div>
+                        </div>
+                        <div class="ticket-reply-area"
+                            style="padding: 15px; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px;">
+                            <input type="text" id="admin-ticket-reply" placeholder="Type a reply..."
+                                style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white;">
+                            <button id="admin-send-reply"
+                                style="padding: 0 20px; background: var(--gradient); border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: bold;">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Inline logout script for this specific page
+        document.getElementById('admin-logout-btn')?.addEventListener('click', function (e) {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'admin-login.html';
+        });
+    </script>
+</body>
+
+</html>

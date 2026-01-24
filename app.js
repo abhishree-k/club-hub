@@ -2,6 +2,9 @@
  * Main Entry Point
  * All functionality is initialized here via modular functions.
  */
+const CHAT_STORAGE_KEY = 'clubhub_chat_history';
+const TICKET_STORAGE_KEY = 'clubhub_tickets';
+
 document.addEventListener('DOMContentLoaded', function () {
     // Initialize global events data
     // Note: Using January 2026 dates (current date context) for easier testing
@@ -1729,6 +1732,29 @@ function initAdmin() {
     }
 }
 
+
+// 6c. Dedicated Admin Tickets Page Logic
+const adminTicketsPage = document.getElementById('admin-tickets-page');
+if (adminTicketsPage) {
+    const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+    if (!isLoggedIn) {
+        window.location.href = 'admin-login.html';
+    } else {
+        // Logout Logic
+        const logoutButton = document.getElementById('admin-logout-btn');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                localStorage.removeItem('adminLoggedIn');
+                window.location.href = 'admin-login.html';
+            });
+        }
+
+        // Init Tickets
+        initAdminTickets();
+    }
+}
+
 function loadAdminDashboard() {
     // Helper
     const getClubName = (id) => {
@@ -2198,12 +2224,10 @@ document.querySelectorAll(".faq-question").forEach(q => {
 });
 
 // ================= CHATBOT & TICKET SYSTEM LOGIC =================
-const CHAT_STORAGE_KEY = 'clubhub_chat_history';
-const TICKET_STORAGE_KEY = 'clubhub_tickets';
 
 function initChatWidget() {
-    // 0. Disable on Admin Dashboard
-    if (window.location.pathname.includes('admin-dashboard.html')) return;
+    // 0. Disable on Admin Pages
+    if (window.location.pathname.includes('admin-dashboard.html') || window.location.pathname.includes('admin-tickets.html')) return;
 
     // 1. Inject HTML if not present
     if (!document.getElementById('chatbot-widget-container')) {
@@ -2658,7 +2682,24 @@ function initAdminTickets() {
     // 2. Load Tickets
     function loadTickets() {
         // Don't reload if user is typing? No, just reload list.
-        const tickets = JSON.parse(localStorage.getItem(TICKET_STORAGE_KEY)) || [];
+        let tickets = JSON.parse(localStorage.getItem(TICKET_STORAGE_KEY)) || [];
+
+        // DEBUG: Seed a ticket if empty so admin can see something
+        if (tickets.length === 0) {
+            const dummy = {
+                id: 'TICKET-DEMO-' + Date.now(),
+                userId: 'demo_user',
+                userDate: new Date().toISOString(),
+                subject: 'Demo Ticket: Login Help',
+                description: 'This is a test ticket to verify the admin dashboard.',
+                status: 'Open',
+                messages: []
+            };
+            tickets.push(dummy);
+            localStorage.setItem(TICKET_STORAGE_KEY, JSON.stringify(tickets));
+            console.log('Seeded dummy ticket:', dummy);
+        }
+
         const filter = statusFilter.value;
 
         // Save scroll position or selection? 
@@ -2676,10 +2717,10 @@ function initAdminTickets() {
             const el = document.createElement('div');
             el.className = 'ticket-item';
             el.innerHTML = `
-            < div style = "font-weight: bold; color: white;" > ${ticket.subject}</div >
+                <div style="font-weight: bold; color: white;">${ticket.subject}</div>
                 <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">${ticket.id}</div> 
                 <div style="font-size: 0.8rem; color: ${ticket.status === 'Open' ? '#fab1a0' : '#81ecec'}; margin-top: 4px;">${ticket.status}</div>
-        `;
+            `;
             el.style.cssText = "padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: background 0.2s;";
             if (currentTicketId === ticket.id) el.style.background = 'rgba(255,255,255,0.1)';
 
@@ -2710,7 +2751,7 @@ function initAdminTickets() {
         // Original Description
         const descDiv = document.createElement('div');
         descDiv.className = 'message user';
-        descDiv.innerHTML = `< b > ${ticket.userId}:</b > ${ticket.description} <br><span class="message-time">${new Date(ticket.userDate).toLocaleString()}</span>`;
+        descDiv.innerHTML = `<b>${ticket.userId}:</b> ${ticket.description}<br><span class="message-time">${new Date(ticket.userDate).toLocaleString()}</span>`;
         ticketChat.appendChild(descDiv);
 
         // Messages
@@ -2746,15 +2787,6 @@ function initAdminTickets() {
         tickets[index].messages.push(msg);
 
         localStorage.setItem(TICKET_STORAGE_KEY, JSON.stringify(tickets));
-
-        // Also push to User Chat History so it appears in the widget
-        const chatHistory = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY)) || [];
-        chatHistory.push({
-            sender: 'admin',
-            text: `(Re: ${tickets[index].subject}) ${text}`,
-            timestamp: new Date().toISOString()
-        });
-        localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory));
 
         replyInput.value = '';
         selectTicket(currentTicketId); // Re-render

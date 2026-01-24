@@ -989,12 +989,15 @@ button:focus-visible,
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
     z-index: 2000;
+    justify-content: center;
+    align-items: center;
 }
 
 .modal.active {
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 1;
 }
 
 .modal-content {
@@ -1007,6 +1010,7 @@ button:focus-visible,
     overflow-y: auto;
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     scrollbar-width: thin;
     scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.1);
 }
@@ -1021,12 +1025,12 @@ button:focus-visible,
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
+    background: var(--primary-color, #4a90e2);;
     border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-color);
+    background: var(--secondary-color, #357abd);
 }
 
 .close-modal {
@@ -1036,11 +1040,11 @@ button:focus-visible,
     font-size: 1.5rem;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.6);
-    transition: var(--transition);
+    transition: 0.3s;
 }
 
 .close-modal:hover {
-    color: var(--accent-color);
+    color: var(--accent-color, #ff4757);
 }
 
 /* Form Styles */

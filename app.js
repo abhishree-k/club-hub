@@ -1317,6 +1317,7 @@ function initCalendar() {
     }
 
     function openEventModal(event = null, date = null) {
+        
         if (!eventModal) return;
 
         if (event) {
@@ -1727,7 +1728,7 @@ function initAdmin() {
             alert(`Event "${name}" saved successfully!`);
             this.reset();
         });
-    }
+    })
     }
 
     function loadAdminDashboard() {

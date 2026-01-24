@@ -165,88 +165,94 @@ img {
 
 /* Accessibility: Visible focus for keyboard users */
 .skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: #000;
-  color: #fff;
-  padding: 8px;
-  text-decoration: none;
-  z-index: 1001;
-  transition: top 0.18s ease;
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #000;
+    color: #fff;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 1001;
+    transition: top 0.18s ease;
 }
+
 .skip-link:focus {
-  top: 0;
-  outline: 3px solid #0066cc;
-  outline-offset: 2px;
-  border-radius: 4px;
-  box-shadow: 0 0 0 6px rgba(0,102,204,0.12);
+    top: 0;
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+    border-radius: 4px;
+    box-shadow: 0 0 0 6px rgba(0, 102, 204, 0.12);
 }
 
 a:focus-visible,
 button:focus-visible,
 .nav-links a:focus-visible,
 .mobile-menu-toggle:focus-visible {
-  outline: 3px solid #0066cc;
-  outline-offset: 2px;
-  border-radius: 6px;
-  box-shadow: 0 0 0 6px rgba(0,102,204,0.12);
-  transform: translateY(-2px);
-  transition: box-shadow 0.15s ease, transform 0.12s ease;
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+    border-radius: 6px;
+    box-shadow: 0 0 0 6px rgba(0, 102, 204, 0.12);
+    transform: translateY(-2px);
+    transition: box-shadow 0.15s ease, transform 0.12s ease;
 }
 
 /* Remove default focus for mouse users */
 *:focus:not(:focus-visible) {
-  outline: none;
+    outline: none;
 }
 
 /* Mobile menu link focus */
 .nav-links a:focus-visible {
-  background-color: rgba(0, 102, 204, 0.08);
-  border-radius: 6px;
+    background-color: rgba(0, 102, 204, 0.08);
+    border-radius: 6px;
 }
+
 /* Ensure primary CTAs also have strong focus */
 .hero-cta:focus-visible {
-  outline: 3px solid #ffd166;
-  outline-offset: 3px;
-  box-shadow: 0 0 0 6px rgba(255,209,102,0.12);
-  transform: translateY(-2px);
+    outline: 3px solid #ffd166;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px rgba(255, 209, 102, 0.12);
+    transform: translateY(-2px);
 }
 
 /* Make the nav button look like a button and ensure it's keyboard-visible */
 .mobile-menu-toggle {
-  background: transparent;
-  border: none;
-  color: inherit;
-  padding: 0.25rem;
+    background: transparent;
+    border: none;
+    color: inherit;
+    padding: 0.25rem;
 }
 
 @media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex; /* ensure button visible on mobile */
-  }
-  .nav-links {
-    position: absolute;
-    top: 100%;
-    right: 5%;
-    background: rgba(26,26,46,0.95);
-    padding: 0.5rem;
-    min-width: 200px;
-    border-radius: 8px;
-    flex-direction: column;
-    gap: 0.25rem;
-    display: none;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-  }
-  .nav-links.active {
-    display: flex;
-  }
-  .nav-links a {
-    display: block;
-    padding: 0.6rem 0.8rem;
-    width: 100%;
-  }
-}  
+    .nav-hamburger {
+        display: flex;
+        /* ensure button visible on mobile */
+    }
+
+    .nav-links {
+        position: absolute;
+        top: 100%;
+        right: 5%;
+        background: rgba(26, 26, 46, 0.95);
+        padding: 0.5rem;
+        min-width: 200px;
+        border-radius: 8px;
+        flex-direction: column;
+        gap: 0.25rem;
+        display: none;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links a {
+        display: block;
+        padding: 0.6rem 0.8rem;
+        width: 100%;
+    }
+}
 
 /* Hero Section */
 .hero-section {
@@ -396,7 +402,7 @@ button:focus-visible,
     right: 12px;
     background: transparent;
     border: none;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255, 255, 255, 0.8);
     font-size: 1.1rem;
     cursor: pointer;
     transition: color 0.2s ease, transform 0.15s ease;
@@ -406,12 +412,23 @@ button:focus-visible,
     padding: 0.25rem;
 }
 
-.favorite-toggle:hover { transform: scale(1.08); color: var(--accent-color); }
+.favorite-toggle:hover {
+    transform: scale(1.08);
+    color: var(--accent-color);
+}
 
-.favorite-toggle .fa-heart { pointer-events: none; }
+.favorite-toggle .fa-heart {
+    pointer-events: none;
+}
 
-.club-card.favorited { box-shadow: 0 18px 36px rgba(253,121,168,0.12); border-color: rgba(253,121,168,0.45); }
-.club-card.favorited .favorite-toggle { color: var(--accent-color); }
+.club-card.favorited {
+    box-shadow: 0 18px 36px rgba(253, 121, 168, 0.12);
+    border-color: rgba(253, 121, 168, 0.45);
+}
+
+.club-card.favorited .favorite-toggle {
+    color: var(--accent-color);
+}
 
 .club-icon {
     font-size: 2.5rem;
@@ -1963,6 +1980,7 @@ select option {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -3033,141 +3051,533 @@ select option {
     color: #ff7675;
     border: 1px solid rgba(214, 48, 49, 0.6);
 }
+
 /* =========================
    FAQ SECTION
 ========================= */
 .faq-wrapper {
-  padding: 100px 20px;
-  min-height: 100vh;
-  text-align: center;
+    padding: 100px 20px;
+    min-height: 100vh;
+    text-align: center;
 }
 
 .faq-wrapper h1 {
-  font-size: 3rem;
-  margin-bottom: 10px;
+    font-size: 3rem;
+    margin-bottom: 10px;
 }
 
 .faq-subtitle {
-  color: #cbd5f5;
-  margin-bottom: 50px;
+    color: #cbd5f5;
+    margin-bottom: 50px;
 }
 
 .faq-grid {
-  max-width: 1100px;
-  margin: auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
+    max-width: 1100px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
 }
 
 .faq-card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  transition: var(--transition);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
 }
 
 .faq-card:hover {
-  transform: translateY(-5px);
+    transform: translateY(-5px);
 }
 
 .faq-card h3 {
-  color: white;
-  margin-bottom: 10px;
+    color: white;
+    margin-bottom: 10px;
 }
 
 .faq-answer {
-  display: none;
-  color: #e5e7eb;
-  background: rgba(255, 255, 255, 0.12);
-  padding: 15px;
-  border-radius: 8px;
+    display: none;
+    color: #e5e7eb;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 15px;
+    border-radius: 8px;
 }
 
-/* ================= CHATBOT FIX ================= */
+/* ================= CHATBOT REDESIGN ================= */
 
 .chatbot-icon {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  background: linear-gradient(135deg, #6c5ce7, #fd79a8);
-  color: white;
-  padding: 14px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 99999;   /* 🔥 VERY IMPORTANT */
-  box-shadow: 0 0 15px rgba(253, 121, 168, 0.6);
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: var(--gradient);
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 99999;
+    box-shadow: 0 10px 25px rgba(108, 92, 231, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Chatbox */
+.chatbot-icon:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 15px 35px rgba(108, 92, 231, 0.6);
+}
+
+/* Chatbox Container - Redesigned for Sidebar */
 .chatbot-box {
-  position: fixed;
-  bottom: 90px;
-  right: 25px;
-  width: 320px;
-  background: #0f172a;
-  border-radius: 12px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-  display: none;
-  flex-direction: column;
-  z-index: 99999; /* 🔥 FIX */
-  overflow: hidden;
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 600px;
+    /* Increased width for sidebar */
+    height: 500px;
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    display: none;
+    /* Toggled via JS logic (display flex when active) */
+    z-index: 99999;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+    transform-origin: bottom right;
+    animation: chatPopup 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes chatPopup {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Internal Layout */
+.widget-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* Sidebar */
+.widget-sidebar {
+    width: 80px;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 1.5rem;
+}
+
+.sidebar-item {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.sidebar-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.sidebar-item.active {
+    background: var(--gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+}
+
+/* Main Content Area */
+.widget-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Tabs */
+.widget-tab {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    animation: fadeIn 0.3s ease;
+}
+
+.widget-tab.active {
+    display: flex;
+}
+
+/* Tickets Tab Styles */
+.tickets-list-container {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.ticket-item-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.2s;
+    cursor: pointer;
+    color: white;
+    /* Ensure text is white */
+}
+
+.ticket-item-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.ticket-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.ticket-status {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.ticket-status.open {
+    background: rgba(253, 203, 110, 0.2);
+    color: #fdcb6e;
+}
+
+.ticket-status.closed {
+    background: rgba(0, 184, 148, 0.2);
+    color: #55efc4;
+}
+
+.new-ticket-container {
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.new-ticket-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--gradient);
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: transform 0.2s;
+}
+
+.new-ticket-btn:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes chatPopup {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* Header */
 .chat-header {
-  background: linear-gradient(135deg, #6c5ce7, #fd79a8);
-  padding: 10px;
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  color: white;
+    background: transparent;
+    padding: 1.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.1rem;
+}
+
+.chat-header-actions {
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    font-size: 1.2rem;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.chat-header-actions:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* Body */
 .chat-body {
-  height: 220px;
-  overflow-y: auto;
-  padding: 10px;
-  color: white;
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 }
 
-.chat-body .bot {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 8px;
-  border-radius: 6px;
-  margin-bottom: 8px;
+.chat-body::-webkit-scrollbar {
+    width: 6px;
 }
 
-.chat-body .user {
-  background: #fd79a8;
-  padding: 8px;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  text-align: right;
+.chat-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
 }
 
-/* Input */
+/* Messages */
+.message {
+    max-width: 85%;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    position: relative;
+    word-wrap: break-word;
+    animation: messageSlide 0.3s ease-out;
+}
+
+@keyframes messageSlide {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message.bot {
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom-left-radius: 2px;
+    align-self: flex-start;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: #f1f2f6;
+}
+
+.message.user {
+    background: var(--gradient);
+    border-bottom-right-radius: 2px;
+    align-self: flex-end;
+    color: white;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+.message.admin {
+    background: rgba(0, 184, 148, 0.2);
+    border: 1px solid rgba(0, 184, 148, 0.4);
+    color: #55efc4;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+
+.message-time {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    margin-top: 4px;
+    display: block;
+    text-align: right;
+}
+
+/* Input Area */
 .chat-input {
-  display: flex;
-  border-top: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 0.8rem;
 }
 
 .chat-input input {
-  flex: 1;
-  padding: 8px;
-  border: none;
-  outline: none;
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-family: var(--font-main);
+    transition: all 0.3s ease;
+}
+
+.chat-input input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-color);
 }
 
 .chat-input button {
-  background: #6c5ce7;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  cursor: pointer;
+    background: var(--gradient);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+}
+
+.chat-input button:hover {
+    transform: scale(1.1);
+}
+
+/* Ticket Form Inside Chat */
+.ticket-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.ticket-form-container input,
+.ticket-form-container textarea {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-family: var(--font-main);
+}
+
+.ticket-form-container input:focus,
+.ticket-form-container textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.ticket-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.ticket-btn {
+    flex: 1;
+    padding: 0.6rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.ticket-btn.submit {
+    background: var(--success-color);
+    color: white;
+}
+
+.ticket-btn.cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    width: fit-content;
+    margin-bottom: 10px;
+}
+
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes typing {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+
+    40% {
+        transform: scale(1);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+    .chatbot-box {
+        width: 95%;
+        right: 2.5%;
+        bottom: 90px;
+        height: 70vh;
+    }
+
+    .widget-sidebar {
+        width: 60px;
+    }
 }
 
 
@@ -3175,53 +3585,55 @@ select option {
    RESPONSIVE
 ========================= */
 @media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
+    .nav-links {
+        display: none;
+    }
 
-  .faq-wrapper h1 {
-    font-size: 2.3rem;
-  }
+    .faq-wrapper h1 {
+        font-size: 2.3rem;
+    }
 }
+
 /* ===========================
    FAQ VISIBILITY FIX
 =========================== */
 
 .faq-wrapper {
-  background: transparent;
-  color: white;
+    background: transparent;
+    color: white;
 }
 
 .faq-wrapper h1 {
-  color: white;
+    color: white;
 }
 
 .faq-subtitle {
-  color: #cbd5f5;
+    color: #cbd5f5;
 }
 
 .faq-card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  color: white;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    color: white;
 }
 
 .faq-card h3 {
-  color: white;
+    color: white;
 }
 
 .faq-answer {
-  color: #e5e7eb;
-  background: rgba(255, 255, 255, 0.12);
+    color: #e5e7eb;
+    background: rgba(255, 255, 255, 0.12);
 }
+
 .navbar {
-  background: rgba(15, 23, 42, 0.9);
+    background: rgba(15, 23, 42, 0.9);
 }
 
 .nav-links a {
-  color: white !important;
+    color: white !important;
 }
 
 .nav-links a.active {
-  border-bottom: 2px solid #fd79a8;
+    border-bottom: 2px solid #fd79a8;
 }

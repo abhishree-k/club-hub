@@ -2015,7 +2015,7 @@ function initAdmin() {
 }
 
 function initDashboardCharts(isLeader, userClub) {
-    // 1. Event Participation Chart
+    // 1. Event Participation Chart (Loaded)
     const ctx1 = document.getElementById('eventParticipationChart')?.getContext('2d');
     if (ctx1) {
         // Destroy existing if any (simple cheat: replace canvas to prevent overlay issues or just assume fresh load)

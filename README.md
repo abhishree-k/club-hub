@@ -141,6 +141,12 @@ club-hub/
    node server.js
    ```
 
+3. **Create Admin User**
+   ```bash
+   # Usage: node add_admin.js <email> <password> [firstName] [lastName]
+   node add_admin.js super@admin.com securepass123 "Top" "Secret"
+   ```
+
 3. **Run Frontend**
    - Open `index.html` in your browser
    - (Optional) Use Live Server for better experience

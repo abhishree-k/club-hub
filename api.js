@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'http://127.0.0.1:3000/api';
 
 const api = {
     async getEvents() {
@@ -50,6 +50,22 @@ const api = {
             const error = await response.json();
             throw new Error(error.message || 'Event registration failed');
         }
+        return response.json();
+    },
+
+    async getAdminRegistrations(token) {
+        const response = await fetch(`${API_URL}/admin/registrations`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed to fetch registrations');
+        return response.json();
+    },
+
+    async getAdminClubMemberships(token) {
+        const response = await fetch(`${API_URL}/admin/club-memberships`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed to fetch club memberships');
         return response.json();
     }
 };

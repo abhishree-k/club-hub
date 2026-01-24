@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, studentId, major, year, role } = req.body;
+        const { firstName, lastName, email, password, studentId, major, year, clubs } = req.body;
 
         if (!email || !password) {
             return res.status(400).json({ message: 'Email and password are required' });
@@ -20,8 +20,21 @@ exports.register = async (req, res) => {
             studentId,
             major,
             year,
-            role: role || 'student'
+            role: 'student'
         });
+
+        if (clubs && Array.isArray(clubs) && clubs.length > 0) {
+            const { ClubMembership } = require('../models');
+            const membershipPromises = clubs.map(club => {
+                return ClubMembership.create({
+                    UserId: user.id,
+                    studentId: user.studentId,
+                    club: club,
+                    status: 'Active'
+                });
+            });
+            await Promise.all(membershipPromises);
+        }
 
         res.status(201).json({ message: 'User created successfully', userId: user.id });
     } catch (error) {

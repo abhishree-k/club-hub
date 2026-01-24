@@ -743,7 +743,7 @@ function initForms() {
             try {
                 // 1. Register User in Backend
                 await window.api.register({
-                    firstName, lastName, email, password, studentId, major, year, role: 'student'
+                    firstName, lastName, email, password, studentId, major, year, role: 'student', clubs: selectedClubs
                 });
 
                 // 2. Auto Login
@@ -754,40 +754,10 @@ function initForms() {
                 student.name = `${firstName} ${lastName}`;
                 localStorage.setItem('studentUser', JSON.stringify(student));
 
-                // 3. Save Clubs (Local Logic for now, can be moved to backend later)
+                // 3. Save Clubs (Local Logic for student view)
                 localStorage.setItem(`clubs_${student.id}`, JSON.stringify(selectedClubs));
 
-                // --- START ADMIN SYNC ---
-                // 1. Update 'Recent Registrations' (Admin -> Registrations)
-                const allRegistrations = JSON.parse(localStorage.getItem('allRegistrations')) || [];
-                allRegistrations.unshift({
-                    id: Math.floor(Math.random() * 10000) + 1000,
-                    name: `${firstName} ${lastName}`,
-                    email: email,
-                    studentId: studentId,
-                    clubs: selectedClubs,
-                    registeredAt: new Date().toISOString()
-                });
-                localStorage.setItem('allRegistrations', JSON.stringify(allRegistrations));
-
-                // 2. Update 'Club Memberships' (Admin -> Club Management)
-                let allMemberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
-                // If empty, initClubManagement usually seeds it, but we can append safely
-                const nextId = allMemberships.length > 0 ? Math.max(...allMemberships.map(m => m.id)) + 1 : 1;
-
-                selectedClubs.forEach((clubCode, index) => {
-                    allMemberships.push({
-                        id: nextId + index,
-                        name: `${firstName} ${lastName}`,
-                        studentId: studentId,
-                        club: clubCode,
-                        status: 'Active'
-                    });
-                });
-                localStorage.setItem('allClubMemberships', JSON.stringify(allMemberships));
-                // --- END ADMIN SYNC ---
-
-                // Save legacy student data structure
+                // Save legacy student data structure (for student profile view)
                 const studentData = {
                     firstName, lastName, email, studentId, major, year, clubs: selectedClubs, reason,
                     registeredAt: new Date().toISOString()
@@ -1568,58 +1538,14 @@ function initAdmin() {
 
     let isLoginMode = true;
 
-    function toggleMode(login) {
-        isLoginMode = login;
-        if (login) {
-            confirmPasswordGroup.style.display = 'none';
-            loginButton.textContent = 'Login';
-            tabLogin.classList.add('active');
-            tabSignup.classList.remove('active');
-            footerText.textContent = "Don't have an account?";
-            toggleModeLink.textContent = "Sign Up";
-        } else {
-            confirmPasswordGroup.style.display = 'block';
-            loginButton.textContent = 'Create Account';
-            tabSignup.classList.add('active');
-            tabLogin.classList.remove('active');
-            footerText.textContent = "Already have an account?";
-            toggleModeLink.textContent = "Login";
-        }
-    }
-
-    if (tabLogin && tabSignup) {
-        tabLogin.addEventListener('click', () => toggleMode(true));
-        tabSignup.addEventListener('click', () => toggleMode(false));
-    }
-
-    if (toggleModeLink) {
-        toggleModeLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMode(!isLoginMode);
-        });
-    }
-
     // Password Toggle
     if (togglePassword && passwordInput) {
         togglePassword.addEventListener('click', function () {
-
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-
             passwordInput.setAttribute('type', type);
-
-            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-
-        });
-    }
-    // Confirm 
-    if (toggleConfirmPassword && confirmPasswordInput) {
-        toggleConfirmPassword.addEventListener('click', function () {
-            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            confirmPasswordInput.setAttribute('type', type);
             this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
         });
     }
-
 
     // Login Submission
     if (adminLoginForm) {
@@ -1633,7 +1559,7 @@ function initAdmin() {
             }
         }
 
-        adminLoginForm.addEventListener('submit', function (e) {
+        adminLoginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             const username = document.getElementById('admin-username').value;
             const password = document.getElementById('admin-password').value;
@@ -1644,66 +1570,40 @@ function initAdmin() {
                 return;
             }
 
-            if (isLoginMode) {
-                // LOGIN LOGIC
-                // Check stored custom admins first, then hardcoded default
-                const result = checkAdminCredentials(username, password);
+            // LOGIN LOGIC
+            try {
+                // Try to login via API
+                const loginRes = await window.api.login(username, password);
 
-                if (result.success) {
-                    if (rememberMe) {
-                        localStorage.setItem('adminRemembered', 'true');
-                        localStorage.setItem('adminUsername', username);
-                    } else {
-                        localStorage.removeItem('adminRemembered');
-                        localStorage.removeItem('adminUsername');
-                    }
+                // Check if admin
+                if (loginRes.user.role !== 'admin') {
+                    alert('Access denied. Admin privileges required.');
+                    return;
+                }
 
-                    localStorage.setItem('adminLoggedIn', 'true');
-                    localStorage.setItem('currentAdminUser', username);
-
-                    if (loginButton) {
-                        loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Logging in...</span>';
-                        loginButton.disabled = true;
-                    }
-                    setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 1000);
+                if (rememberMe) {
+                    localStorage.setItem('adminRemembered', 'true');
+                    localStorage.setItem('adminUsername', username);
                 } else {
-                    alert('Invalid credentials. Please try again.');
-                }
-            } else {
-                // SIGN UP LOGIC
-                const confirmPass = confirmPasswordInput.value;
-                if (password !== confirmPass) {
-                    alert('Passwords do not match!');
-                    return;
+                    localStorage.removeItem('adminRemembered');
+                    localStorage.removeItem('adminUsername');
                 }
 
-                // Check if user exists
-                const existingAdmins = JSON.parse(localStorage.getItem('adminUsers')) || [];
-                if (username === 'admin' || existingAdmins.some(u => u.username === username)) {
-                    alert('Username already exists. Please choose another.');
-                    return;
+                localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('adminToken', loginRes.token); // Store token
+                localStorage.setItem('currentAdminUser', username);
+
+                if (loginButton) {
+                    loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Logging in...</span>';
+                    loginButton.disabled = true;
                 }
+                setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 1000);
 
-                // Create new user
-                existingAdmins.push({ username, password });
-                localStorage.setItem('adminUsers', JSON.stringify(existingAdmins));
-
-                alert('Account created successfully! Please login.');
-                toggleMode(true);
+            } catch (error) {
+                console.error(error);
+                alert('Invalid credentials. If you are an admin, please contact support to reset access.');
             }
         });
-    }
-
-    function checkAdminCredentials(u, p) {
-        // 1. Default Hardcoded
-        if (u === 'admin' && p === 'admin123') return { success: true };
-
-        // 2. Local Storage
-        const admins = JSON.parse(localStorage.getItem('adminUsers')) || [];
-        const found = admins.find(user => user.username === u && user.password === p);
-        if (found) return { success: true };
-
-        return { success: false };
     }
 
 
@@ -1760,58 +1660,56 @@ function initAdmin() {
         });
     }
 
-    function loadAdminDashboard() {
+    async function loadAdminDashboard() {
         // Helper
         const getClubName = (id) => {
             const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
             return map[id] || id;
         };
 
+        const token = localStorage.getItem('adminToken');
+        if (!token) return;
+
         // Render Student Registrations
         const registrationsTable = document.getElementById('registrations-table');
         if (registrationsTable) {
-            registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+            registrationsTable.querySelector('tbody').innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
 
-            // LOAD FROM LOCAL STORAGE
-            let registrations = JSON.parse(localStorage.getItem('allRegistrations'));
+            try {
+                const registrations = await window.api.getAdminRegistrations(token);
+                const tbody = registrationsTable.querySelector('tbody');
+                tbody.innerHTML = '';
 
-            // Fallback: Seed with mock data if empty (for demo purposes)
-            if (!registrations || registrations.length === 0) {
-                registrations = [
-                    { id: 1001, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-11-15' },
-                    { id: 1002, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-11-16' }
-                ];
-                localStorage.setItem('allRegistrations', JSON.stringify(registrations));
+                registrations.forEach(reg => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>#${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
+                        <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
+                        <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
+                        <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+                            <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (e) {
+                console.error("Error loading registrations", e);
+                registrationsTable.querySelector('tbody').innerHTML = '<tr><td colspan="6">Error loading data</td></tr>';
             }
-
-            registrations.forEach(reg => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
-                    <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
-                    <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
-                    <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
-                        <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
-                `;
-                registrationsTable.querySelector('tbody').appendChild(row);
-            });
         }
 
         // Render Event Registrations
         const eventRegistrationsTable = document.getElementById('event-registrations-table');
         if (eventRegistrationsTable) {
-            eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-            // LOAD FROM LOCAL STORAGE
-            let eventRegs = JSON.parse(localStorage.getItem('allEventRegistrations'));
-
-            // Fallback: Seed if empty
-            if (!eventRegs || eventRegs.length === 0) {
+            // Keep legacy/mock for now as backend endpoint might not be ready for this specific table
+            // or implement if time permits. Focusing on the requested "Registrations" (User Signups).
+            // ... existing code ...
+            eventRegistrationsTable.querySelector('tbody').innerHTML = '';
+            let eventRegs = JSON.parse(localStorage.getItem('allEventRegistrations')) || [];
+            if (eventRegs.length === 0) {
                 eventRegs = [
                     { id: 1, eventName: 'AI Workshop Series', name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
                 ];
-                localStorage.setItem('allEventRegistrations', JSON.stringify(eventRegs));
             }
-
             eventRegs.forEach(reg => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -1822,10 +1720,6 @@ function initAdmin() {
                 `;
                 eventRegistrationsTable.querySelector('tbody').appendChild(row);
             });
-
-            // Dashboard Button Actions
-            document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
-            document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
         }
     }
 }
@@ -2137,22 +2031,23 @@ function initClubManagement() {
     // Make sure we are on the admin dashboard
     if (!tableBody) return;
 
-    // 1. Initial Data Load & Mocking
-    let memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
-    if (memberships.length === 0) {
-        memberships = [
-            { id: 1, name: 'Alice Walker', studentId: 'S1001', club: 'tech', status: 'Active' },
-            { id: 2, name: 'Bob Builder', studentId: 'S1002', club: 'arts', status: 'Pending' },
-            { id: 3, name: 'Charlie Day', studentId: 'S1003', club: 'debate', status: 'Active' }
-        ];
-        localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
-    }
+    // 1. Initial Data Load
+    let memberships = [];
 
     // 2. Render Table
-    function renderTable() {
-        tableBody.innerHTML = '';
-        memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
+    async function renderTable() {
+        tableBody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
 
+        try {
+            const token = localStorage.getItem('adminToken');
+            memberships = await window.api.getAdminClubMemberships(token);
+        } catch (e) {
+            console.error(e);
+            // Fallback (or empty)
+            memberships = [];
+        }
+
+        tableBody.innerHTML = '';
         const getClubName = (code) => {
             const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD' };
             return map[code] || code;

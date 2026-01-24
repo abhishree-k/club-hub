@@ -1518,27 +1518,36 @@ function initAdmin() {
     const toggleModeLink = document.getElementById('toggle-mode');
     const loginButton = document.querySelector('.login-button');
     const footerText = document.getElementById('footer-text');
+    const forgotWrapper = document.getElementById('forgot-password-wrapper'); // <div> with Forgot password link
 
     let isLoginMode = true;
 
     function toggleMode(login) {
         isLoginMode = login;
+
         if (login) {
+            // LOGIN MODE
             confirmPasswordGroup.style.display = 'none';
             loginButton.textContent = 'Login';
             tabLogin.classList.add('active');
             tabSignup.classList.remove('active');
             footerText.textContent = "Don't have an account?";
             toggleModeLink.textContent = "Sign Up";
+            if (forgotWrapper) forgotWrapper.style.display = 'block';  // show only in login
         } else {
+            // SIGNUP MODE
             confirmPasswordGroup.style.display = 'block';
             loginButton.textContent = 'Create Account';
             tabSignup.classList.add('active');
             tabLogin.classList.remove('active');
             footerText.textContent = "Already have an account?";
             toggleModeLink.textContent = "Login";
+            if (forgotWrapper) forgotWrapper.style.display = 'none';   // hide in signup
         }
     }
+
+    // Set initial mode (login)
+    toggleMode(true);
 
     if (tabLogin && tabSignup) {
         tabLogin.addEventListener('click', () => toggleMode(true));
@@ -1559,12 +1568,11 @@ function initAdmin() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
 
             passwordInput.setAttribute('type', type);
-
             this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-
         });
     }
-    // Confirm 
+
+    // Password Toggle for confirm password field
     if (toggleConfirmPassword && confirmPasswordInput) {
         toggleConfirmPassword.addEventListener('click', function () {
             const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -1573,8 +1581,8 @@ function initAdmin() {
         });
     }
 
+    // Login / Signup Submission
 
-    // Login Submission
     if (adminLoginForm) {
         // Auto-fill if remembered
         if (localStorage.getItem('adminRemembered') === 'true') {
@@ -1599,7 +1607,6 @@ function initAdmin() {
 
             if (isLoginMode) {
                 // LOGIN LOGIC
-                // Check stored custom admins first, then hardcoded default
                 const result = checkAdminCredentials(username, password);
 
                 if (result.success) {
@@ -1630,18 +1637,13 @@ function initAdmin() {
                     return;
                 }
 
-                // Check if user exists
                 const existingAdmins = JSON.parse(localStorage.getItem('adminUsers')) || [];
                 if (username === 'admin' || existingAdmins.some(u => u.username === username)) {
                     alert('Username already exists. Please choose another.');
                     return;
                 }
 
-                // Create new user
-                existingAdmins.push({ username, password });
-                localStorage.setItem('adminUsers', JSON.stringify(existingAdmins));
 
-                alert('Account created successfully! Please login.');
                 toggleMode(true);
             }
         });
@@ -1658,7 +1660,6 @@ function initAdmin() {
 
         return { success: false };
     }
-
 
     // 6b. Admin Dashboard Logic
     const adminDashboard = document.getElementById('admin-dashboard');
@@ -1678,20 +1679,25 @@ function initAdmin() {
                         e.preventDefault();
                         const targetId = href.substring(1);
 
-                        // Update Active State
                         document.querySelectorAll('.admin-menu li').forEach(li => li.classList.remove('active'));
                         link.parentElement.classList.add('active');
 
-                        // Show Target Section
                         sections.forEach(sec => sec.style.display = 'none');
                         const targetSec = document.getElementById(targetId);
                         if (targetSec) targetSec.style.display = 'block';
+
+                        if (targetId === 'dashboard') {
+                            setTimeout(initAnalytics, 100);
+                        }
+
                     }
                 });
             });
 
             loadAdminDashboard();
             initClubManagement();
+            initAnalytics();
+
             const logoutButton = document.getElementById('admin-logout');
             if (logoutButton) {
                 logoutButton.addEventListener('click', function () {
@@ -1705,12 +1711,23 @@ function initAdmin() {
     // Admin Event Management Form
     const adminEventForm = document.getElementById('admin-event-form');
     if (adminEventForm) {
+        adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', function () {
+                clearFieldError(this);
+            });
+        });
+
+        adminEventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-event-name').value;
+
         adminEventForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const name = document.getElementById('admin-event-name').value;
             alert(`Event "${name}" saved successfully!`);
             this.reset();
         });
+    }
     }
 
     function loadAdminDashboard() {
@@ -1719,6 +1736,7 @@ function initAdmin() {
             const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
             return map[id] || id;
         };
+
 
         // Render Student Registrations
         const registrationsTable = document.getElementById('registrations-table');

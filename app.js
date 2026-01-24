@@ -1925,15 +1925,13 @@ function initAdmin() {
                         if (targetSec) targetSec.style.display = 'block';
 
                         if (targetId === 'dashboard') {
-                            setTimeout(initAnalytics, 100);
+                            // setTimeout(initAnalytics, 100); // Removed: we use initDashboardCharts now
                         }
 
                     }
                 });
             });
 
-            loadAdminDashboard();
-            initClubManagement();
             loadAdminDashboard();
             initClubManagement();
             initUserManagement();

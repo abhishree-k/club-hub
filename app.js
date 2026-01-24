@@ -72,18 +72,130 @@ function getCurrentMonthYear() {
  * Handles mobile menu toggling and smooth scrolling.
  */
 function initNavigation() {
-    const hamburger = document.querySelector('.nav-hamburger');
-    const navLinks = document.querySelector('.nav-links');
+    // Elements
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle'); // toggle button
+    const mobileMenu = document.querySelector('.nav-links'); // nav list
 
-    if (hamburger && navLinks) {
-        hamburger.addEventListener('click', function () {
-            navLinks.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        });
+    if (!mobileMenuToggle || !mobileMenu) return; // nothing to do if missing
+
+    const navLinks = mobileMenu.querySelectorAll('a');
+    let isMenuOpen = false;
+
+    // Open the menu and move focus to first link
+    function openMenu() {
+        isMenuOpen = true;
+        mobileMenu.classList.add('active');
+        mobileMenuToggle.classList.add('active');
+        mobileMenuToggle.setAttribute('aria-expanded', 'true');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+
+        // Focus the first link inside the menu (small delay to allow CSS transition)
+        setTimeout(() => {
+            const firstLink = mobileMenu.querySelector('a');
+            if (firstLink) firstLink.focus();
+        }, 50);
+
+        // Attach document key handler for Escape, Tab trap and arrow navigation
+        document.addEventListener('keydown', onDocumentKeyDown);
     }
 
+    // Close the menu and return focus to toggle
+    function closeMenu() {
+        isMenuOpen = false;
+        mobileMenu.classList.remove('active');
+        mobileMenuToggle.classList.remove('active');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        mobileMenuToggle.focus();
 
-    // Smooth scrolling for anchor links
+        // Remove document-level key handler
+        document.removeEventListener('keydown', onDocumentKeyDown);
+    }
+
+    function toggleMenu() {
+        if (isMenuOpen) closeMenu(); else openMenu();
+    }
+
+    // Click to toggle
+    mobileMenuToggle.addEventListener('click', function () {
+        toggleMenu();
+    });
+
+    // Keyboard activation for toggle (Enter / Space)
+    mobileMenuToggle.addEventListener('keydown', function (event) {
+        // Activate on Enter or Space
+        if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+            event.preventDefault();
+            toggleMenu();
+        }
+    });
+
+    // Helper: move focus by delta within menu links (wraps around)
+    function moveFocus(delta) {
+        const focusable = Array.from(mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])'));
+        if (!focusable.length) return;
+
+        const currentIndex = focusable.indexOf(document.activeElement);
+        let nextIndex = currentIndex + delta;
+
+        // If nothing is focused inside the menu, focus the first (or last if delta < 0)
+        if (currentIndex === -1) {
+            nextIndex = delta > 0 ? 0 : focusable.length - 1;
+        }
+
+        // Wrap around
+        if (nextIndex < 0) nextIndex = focusable.length - 1;
+        if (nextIndex >= focusable.length) nextIndex = 0;
+
+        focusable[nextIndex].focus();
+    }
+
+    // Document-level keyboard handler: Escape to close, Tab to trap focus, Arrow keys to navigate
+    function onDocumentKeyDown(event) {
+        // Close on Escape
+        if (event.key === 'Escape') {
+            if (isMenuOpen) closeMenu();
+            return;
+        }
+
+        // Arrow navigation (Left/Up = previous, Right/Down = next)
+        if (isMenuOpen && (event.key === 'ArrowDown' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowLeft')) {
+            event.preventDefault();
+            if (event.key === 'ArrowDown' || event.key === 'ArrowRight') moveFocus(1);
+            else moveFocus(-1);
+            return;
+        }
+
+        // Focus trap: if menu is open and Tab is pressed, ensure focus cycles within menu
+        if (event.key === 'Tab' && isMenuOpen) {
+            const focusable = mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+            if (!focusable.length) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (event.shiftKey) { // Shift+Tab
+                if (document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                }
+            } else { // Tab
+                if (document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+        }
+    }
+
+    // Close when clicking outside the menu
+    document.addEventListener('click', function (event) {
+        if (isMenuOpen && !mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+            closeMenu();
+        }
+    });
+
+    // Smooth scrolling for anchor links (preserve previous behavior)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -99,9 +211,8 @@ function initNavigation() {
                 });
 
                 // Close mobile menu if open
-                if (navLinks && navLinks.classList.contains('active')) {
-                    navLinks.classList.remove('active');
-                    if (hamburger) hamburger.classList.remove('active');
+                if (mobileMenu && mobileMenu.classList.contains('active')) {
+                    closeMenu();
                 }
             }
         });
@@ -951,27 +1062,36 @@ function initAdmin() {
     const toggleModeLink = document.getElementById('toggle-mode');
     const loginButton = document.querySelector('.login-button');
     const footerText = document.getElementById('footer-text');
+    const forgotWrapper = document.getElementById('forgot-password-wrapper'); // <div> with Forgot password link
 
     let isLoginMode = true;
 
     function toggleMode(login) {
         isLoginMode = login;
+
         if (login) {
+            // LOGIN MODE
             confirmPasswordGroup.style.display = 'none';
             loginButton.textContent = 'Login';
             tabLogin.classList.add('active');
             tabSignup.classList.remove('active');
             footerText.textContent = "Don't have an account?";
             toggleModeLink.textContent = "Sign Up";
+            if (forgotWrapper) forgotWrapper.style.display = 'block';  // show only in login
         } else {
+            // SIGNUP MODE
             confirmPasswordGroup.style.display = 'block';
             loginButton.textContent = 'Create Account';
             tabSignup.classList.add('active');
             tabLogin.classList.remove('active');
             footerText.textContent = "Already have an account?";
             toggleModeLink.textContent = "Login";
+            if (forgotWrapper) forgotWrapper.style.display = 'none';   // hide in signup
         }
     }
+
+    // Set initial mode (login)
+    toggleMode(true);
 
     if (tabLogin && tabSignup) {
         tabLogin.addEventListener('click', () => toggleMode(true));
@@ -990,11 +1110,12 @@ function initAdmin() {
         togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
+
             this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
         });
     }
 
-    // Login Submission
+
     if (adminLoginForm) {
         // Auto-fill if remembered
         if (localStorage.getItem('adminRemembered') === 'true') {
@@ -1041,7 +1162,6 @@ function initAdmin() {
 
             if (isLoginMode) {
                 // LOGIN LOGIC
-                // Check stored custom admins first, then hardcoded default
                 const result = checkAdminCredentials(username, password);
 
                 if (result.success) {
@@ -1072,12 +1192,12 @@ function initAdmin() {
                     return;
                 }
 
-                // Check if user exists
                 const existingAdmins = JSON.parse(localStorage.getItem('adminUsers')) || [];
                 if (username === 'admin' || existingAdmins.some(u => u.username === username)) {
                     alert('Username already exists. Please choose another.');
                     return;
                 }
+
             }
         });
     }
@@ -1093,7 +1213,6 @@ function initAdmin() {
 
         return { success: false };
     }
-
 
     // 6b. Admin Dashboard Logic
     const adminDashboard = document.getElementById('admin-dashboard');
@@ -1113,19 +1232,14 @@ function initAdmin() {
                         e.preventDefault();
                         const targetId = href.substring(1);
 
-                        // Update Active State
                         document.querySelectorAll('.admin-menu li').forEach(li => li.classList.remove('active'));
                         link.parentElement.classList.add('active');
 
-                        // Show Target Section
                         sections.forEach(sec => sec.style.display = 'none');
                         const targetSec = document.getElementById(targetId);
                         if (targetSec) targetSec.style.display = 'block';
 
-                        // Auto-refresh analytics when switching to dashboard
-                        if (targetId === 'dashboard') {
-                            setTimeout(initAnalytics, 100); // Small delay to ensure container is visible
-                        }
+
                     }
                 });
             });
@@ -1133,6 +1247,7 @@ function initAdmin() {
             loadAdminDashboard();
             initClubManagement();
             initAnalytics();
+
             const logoutButton = document.getElementById('admin-logout');
             if (logoutButton) {
                 logoutButton.addEventListener('click', function () {
@@ -1146,12 +1261,13 @@ function initAdmin() {
     // Admin Event Management Form
     const adminEventForm = document.getElementById('admin-event-form');
     if (adminEventForm) {
-        // Clear errors on input
+
         adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
             field.addEventListener('input', function () {
                 clearFieldError(this);
             });
         });
+
 
         adminEventForm.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -1206,8 +1322,7 @@ function initAdmin() {
             }, 2000);
         });
     }
-    
-}
+
 
 function loadAdminDashboard() {
     // Helper
@@ -1216,17 +1331,7 @@ function loadAdminDashboard() {
         return map[id] || id;
     };
 
-    // Render Student Registrations
-    const registrationsTable = document.getElementById('registrations-table');
-    if (registrationsTable) {
-        registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-        const registrations = [
-            { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
-            { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
-        ];
-        registrations.forEach(reg => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
+
                     <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
                     <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
                     <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
@@ -1458,201 +1563,7 @@ function updateEnrollmentStatus() {
 }
 
 /**
- * Initialize Dynamic Event Dates
- * Updates event cards with dynamic dates based on data-days-offset attribute
- */
-function initDynamicEventDates() {
-    document.querySelectorAll('.event-card[data-days-offset]').forEach(card => {
-        const daysOffset = parseInt(card.getAttribute('data-days-offset'));
-        if (isNaN(daysOffset)) return;
 
-        // Calculate the future date
-        const futureDate = getFutureDate(daysOffset);
-        
-        // Update data-date attribute for filtering
-        card.setAttribute('data-date', futureDate);
-        
-        // Format and display the date
-        const dateElement = card.querySelector('.event-date');
-        if (dateElement) {
-            let date;
-            // Avoid timezone issues when parsing plain "YYYY-MM-DD" dates
-            if (typeof futureDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(futureDate)) {
-                const [year, month, day] = futureDate.split('-').map(Number);
-                date = new Date(year, month - 1, day);
-            } else {
-                date = new Date(futureDate);
-            }
-            const options = { month: 'short', day: 'numeric', year: 'numeric' };
-            const formattedDate = date.toLocaleDateString('en-US', options);
-            dateElement.textContent = formattedDate;
-        }
-    });
-}
-
-/**
- * 9. Analytics Logic
- * Renders charts using Chart.js for the Admin Dashboard.
- */
-function initAnalytics() {
-    // Check if Chart.js is loaded
-    if (typeof Chart === 'undefined') return;
-
-    // Common Chart Options
-    Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
-    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
-
-    // --- 1. Fetch Real Data from LocalStorage ---
-
-    // Event Data
-    const allEventRegs = JSON.parse(localStorage.getItem('allEventRegistrations')) || [
-        // Mock data fallback if empty (for demo)
-        { eventName: 'AI Workshop', date: '2023-11-15' },
-        { eventName: 'AI Workshop', date: '2023-11-15' },
-        { eventName: 'Digital Art Masterclass', date: '2023-11-20' },
-        { eventName: 'Public Speaking Workshop', date: '2023-11-22' },
-        { eventName: 'Public Speaking Workshop', date: '2023-11-22' },
-        { eventName: 'Public Speaking Workshop', date: '2023-11-22' }
-    ];
-
-    // Club Data
-    const allMemberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [
-        // Mock data fallback
-        { club: 'tech', status: 'Active', joinedAt: '2023-10-01' },
-        { club: 'tech', status: 'Active', joinedAt: '2023-10-05' },
-        { club: 'arts', status: 'Pending', joinedAt: '2023-10-10' },
-        { club: 'debate', status: 'Active', joinedAt: '2023-10-12' }
-    ];
-
-    // --- 2. Process Data ---
-
-    // Process Events: Count per Event Name
-    const eventCounts = {};
-    allEventRegs.forEach(reg => {
-        eventCounts[reg.eventName] = (eventCounts[reg.eventName] || 0) + 1;
-    });
-    const eventLabels = Object.keys(eventCounts);
-    const eventData = Object.values(eventCounts);
-
-    // Process Clubs: Count per Club Code
-    const clubCounts = {};
-    const clubNames = {
-        'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club',
-        'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD'
-    };
-    allMemberships.forEach(m => {
-        const name = clubNames[m.club] || m.club;
-        clubCounts[name] = (clubCounts[name] || 0) + 1;
-    });
-    const clubLabels = Object.keys(clubCounts);
-    const clubDataValues = Object.values(clubCounts);
-
-    // Process Engagement: Actions per Month
-    const monthlyActivity = {};
-    const processDate = (dateStr) => {
-        if (!dateStr) return;
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return;
-        const key = d.toLocaleString('default', { month: 'short' }); // e.g., "Nov"
-        monthlyActivity[key] = (monthlyActivity[key] || 0) + 1;
-    };
-
-    allEventRegs.forEach(r => processDate(r.date));
-    allMemberships.forEach(m => processDate(m.joinedAt));
-
-    // Sort Months (Naive approach for this year/fixed list)
-    const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const sortedMonths = Object.keys(monthlyActivity).sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
-    const engagementData = sortedMonths.map(m => monthlyActivity[m]);
-
-
-    // --- 3. Render Charts (Destroy existing first) ---
-
-    // Helper: Destroy and Create
-    const createChart = (canvasId, config) => {
-        const canvas = document.getElementById(canvasId);
-        if (!canvas) return;
-
-        const existingChart = Chart.getChart(canvas);
-        if (existingChart) existingChart.destroy();
-
-        new Chart(canvas, config);
-    };
-
-    // Render Event Participation Chart
-    createChart('eventParticipationChart', {
-        type: 'bar',
-        data: {
-            labels: eventLabels.length ? eventLabels : ['No Data'],
-            datasets: [{
-                label: 'Registrations',
-                data: eventData.length ? eventData : [0],
-                backgroundColor: 'rgba(108, 92, 231, 0.6)',
-                borderColor: 'rgba(108, 92, 231, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-
-    // Render Active Clubs Chart
-    createChart('activeClubsChart', {
-        type: 'doughnut',
-        data: {
-            labels: clubLabels.length ? clubLabels : ['No Data'],
-            datasets: [{
-                data: clubDataValues.length ? clubDataValues : [1], // 1 for empty placeholder
-                backgroundColor: [
-                    'rgba(108, 92, 231, 0.8)', 'rgba(253, 121, 168, 0.8)',
-                    'rgba(0, 184, 148, 0.8)', 'rgba(9, 132, 227, 0.8)',
-                    'rgba(225, 112, 85, 0.8)', 'rgba(255, 234, 167, 0.8)'
-                ],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'right', labels: { boxWidth: 12, color: 'white' } }
-            }
-        }
-    });
-
-    // Render Monthly Engagement Chart
-    createChart('monthlyEngagementChart', {
-        type: 'line',
-        data: {
-            labels: sortedMonths.length ? sortedMonths : ['Nov'],
-            datasets: [{
-                label: 'Activity',
-                data: engagementData.length ? engagementData : [0],
-                borderColor: '#00cec9',
-                backgroundColor: 'rgba(0, 206, 201, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#00cec9'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } }
-            }
-        }
-    });
 }
 // FAQ Toggle
 document.querySelectorAll(".faq-question").forEach(q => {

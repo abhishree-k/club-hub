@@ -1756,6 +1756,7 @@ function initAdmin() {
 
     function toggleMode(login) {
         isLoginMode = login;
+        if (!confirmPasswordGroup || !loginButton || !tabLogin || !tabSignup) return;
 
         if (login) {
             // LOGIN MODE
@@ -1779,7 +1780,7 @@ function initAdmin() {
     }
 
     // Set initial mode (login)
-    toggleMode(true);
+    if (confirmPasswordGroup) toggleMode(true);
 
     if (tabLogin && tabSignup) {
         tabLogin.addEventListener('click', () => toggleMode(true));

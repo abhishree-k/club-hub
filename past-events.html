@@ -10,6 +10,133 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* COMPLETE OVERRIDE - Ignore original timeline CSS */
+        .timeline-section {
+            position: relative !important;
+            padding: 3rem 2rem !important;
+            margin-bottom: 0 !important;
+        }
+        
+        .timeline-container {
+            position: relative !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
+            display: block !important;
+            height: auto !important;
+            min-height: 0 !important;
+        }
+        
+        .timeline-line {
+            position: absolute !important;
+            left: 50% !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            width: 2px !important;
+            background: rgba(255, 255, 255, 0.2) !important;
+            transform: translateX(-50%) !important;
+            height: 100% !important;
+        }
+        
+        .timeline-item {
+            position: relative !important;
+            width: calc(50% - 40px) !important;
+            margin-bottom: 50px !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: none !important;
+            animation: none !important;
+            transition: none !important;
+            display: block !important;
+            clear: none !important;
+        }
+        
+        .timeline-item.left {
+            float: left !important;
+            clear: left !important;
+            left: 0 !important;
+            right: auto !important;
+        }
+        
+        .timeline-item.right {
+            float: right !important;
+            clear: right !important;
+            right: 0 !important;
+            left: auto !important;
+        }
+        
+        .timeline-item::after {
+            content: '' !important;
+            position: absolute !important;
+            top: 24px !important;
+            width: 20px !important;
+            height: 20px !important;
+            background: #fd79a8 !important;
+            border-radius: 50% !important;
+            z-index: 2 !important;
+        }
+        
+        .timeline-item.left::after {
+            right: -50px !important;
+        }
+        
+        .timeline-item.right::after {
+            left: -50px !important;
+        }
+        
+        .timeline-content {
+            background: rgba(26, 26, 46, 0.7) !important;
+            backdrop-filter: blur(5px) !important;
+            padding: 2rem !important;
+            border-radius: 15px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        /* Clear floats after timeline */
+        .timeline-container::after {
+            content: "" !important;
+            display: table !important;
+            clear: both !important;
+        }
+        
+        .highlights-section {
+            clear: both !important;
+            margin-top: 6rem !important;
+            margin-bottom: 4rem !important;
+        }
+        
+        .past-events-main {
+            padding-bottom: 4rem !important;
+            overflow: visible !important;
+        }
+        
+        .cosmic-footer {
+            position: relative !important;
+            margin-top: 4rem !important;
+            width: 100% !important;
+            clear: both !important;
+            display: block !important;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .timeline-item {
+                width: 100% !important;
+                float: none !important;
+                padding-left: 4rem !important;
+            }
+            
+            .timeline-item::after {
+                left: 20px !important;
+            }
+            
+            .timeline-line {
+                left: 40px !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -51,7 +178,7 @@
             <div class="timeline-container">
                 <div class="timeline-line"></div>
 
-                <div class="timeline-item left">
+                <div class="timeline-item left visible">
                     <div class="timeline-content">
                         <div class="timeline-date">May 2025</div>
                         <h3 class="timeline-event">PB Hustle</h3>
@@ -69,7 +196,7 @@
                     </div>
                 </div>
 
-                <div class="timeline-item right">
+                <div class="timeline-item right visible">
                     <div class="timeline-content">
                         <div class="timeline-date">April 2025</div>
                         <h3 class="timeline-event">Spring Art Exhibition</h3>
@@ -87,7 +214,7 @@
                     </div>
                 </div>
 
-                <div class="timeline-item left">
+                <div class="timeline-item left visible">
                     <div class="timeline-content">
                         <div class="timeline-date">March 2025</div>
                         <h3 class="timeline-event">Inter-College Debate Championship</h3>
@@ -103,7 +230,7 @@
                     </div>
                 </div>
 
-                <div class="timeline-item right">
+                <div class="timeline-item right visible">
                     <div class="timeline-content">
                         <div class="timeline-date">February 2025</div>
                         <h3 class="timeline-event">Winter Music Festival</h3>
@@ -119,7 +246,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="timeline-item left">
+
+                <div class="timeline-item left visible">
                     <div class="timeline-content">
                         <div class="timeline-date">January 2025</div>
                         <h3 class="timeline-event">IEDC E'SUMMIT</h3>
@@ -137,13 +265,14 @@
                 </div>
             </div>
         </section>
+
         <section class="highlights-section">
             <h2 class="section-title">Event <span class="text-gradient">Highlights</span></h2>
             <div class="highlights-grid">
                 <div class="highlight-card">
                     <div class="highlight-media">
                         <video controls poster="images/tech-highlight-poster.jpg">
-                            <source src="C:\Users\megha\Videos\tech fest iit bombay.mp4" type="video/mp4">
+                            <source src="videos/tech-symposium.mp4" type="video/mp4">
                         </video>
                     </div>
                     <div class="highlight-content">
@@ -159,12 +288,10 @@
                 <div class="highlight-card">
                     <div class="highlight-media">
                         <div class="image-slider">
-                            <img src="C:\Users\megha\Downloads\art gallary.jpg" alt="Art Exhibition" class="active">
-                            <img src="C:\Users\megha\Downloads\art gallary.jpg" alt="Art Exhibition">
-                            <img src="C:\Users\megha\Downloads\art gallary.jpg" alt="Art Exhibition">
+                            <img src="images/art-gallery.jpg" alt="Art Exhibition" class="active">
+                            <img src="images/art-gallery-2.jpg" alt="Art Exhibition">
+                            <img src="images/art-gallery-3.jpg" alt="Art Exhibition">
                         </div>
-                    </div>
-                    
                     </div>
                     <div class="highlight-content">
                         <h3>Art Exhibition Gallery</h3>
@@ -180,11 +307,53 @@
     </main>
 
     <footer class="cosmic-footer">
-        <!-- Same footer as index.html -->
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">🌌</span>
+                <span class="logo-text">DSCE Clubs</span>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="past-events.html">Past Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Get Involved</h4>
+                    <ul>
+                        <li><a href="registration.html">Register</a></li>
+                        <li><a href="#">Volunteer</a></li>
+                        <li><a href="#">Start a Club</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class='fab fa-discord'></i> Discord</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
+        </div>
     </footer>
 
     <script src="js/main.js"></script>
-    <script src="js/animations.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearEl = document.getElementById('year');
+            if (yearEl) {
+                yearEl.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
 </body>
 
 </html>

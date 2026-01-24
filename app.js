@@ -1999,197 +1999,37 @@ function updateEnrollmentStatus() {
     });
 }
 
-/* Favorites: simple localStorage-backed favorites for clubs */
-const FAVORITES_KEY = 'favoriteClubs';
-
-function getFavoriteClubs() {
-    return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
-}
-
-function isClubFavorited(id) {
-    return getFavoriteClubs().includes(id);
-}
-
-function setClubFavorited(id, favorited) {
-    const favs = getFavoriteClubs();
-    if (favorited) {
-        if (!favs.includes(id)) favs.push(id);
-    } else {
-        const idx = favs.indexOf(id);
-        if (idx !== -1) favs.splice(idx, 1);
-    }
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
-}
-
-function updateFavoriteUI() {
-    document.querySelectorAll('.favorite-toggle').forEach(btn => {
-        const clubId = btn.getAttribute('data-club');
-        const icon = btn.querySelector('i');
-        const card = btn.closest('.club-card');
-        if (isClubFavorited(clubId)) {
-            btn.classList.add('active');
-            if (icon) { icon.classList.remove('far'); icon.classList.add('fas'); }
-            if (card) card.classList.add('favorited');
-            btn.setAttribute('aria-pressed', 'true');
-        } else {
-            btn.classList.remove('active');
-            if (icon) { icon.classList.remove('fas'); icon.classList.add('far'); }
-            if (card) card.classList.remove('favorited');
-            btn.setAttribute('aria-pressed', 'false');
-        }
-    });
-}
-
-function initFavorites() {
-    // Delegate clicks for favorite toggles
-    document.addEventListener('click', function (e) {
-        const btn = e.target.closest && e.target.closest('.favorite-toggle');
-        if (!btn) return;
-        const clubId = btn.getAttribute('data-club');
-        if (!clubId) return;
-        const currently = isClubFavorited(clubId);
-        setClubFavorited(clubId, !currently);
-        updateFavoriteUI();
-
-        // If on My Hub, re-run initMyHub to refresh favorites list
-        if (typeof initMyHub === 'function') initMyHub();
-    });
-
-    // Initial render
-    updateFavoriteUI();
-}
-
 /**
- * 8. Club Management Logic
- * Handles CRUD operations for club memberships in the Admin Dashboard.
+ * Export functions for testing
+ * Only exports if running in Node.js environment (for Jest tests)
  */
-function initClubManagement() {
-    const tableBody = document.querySelector('#clubs-table tbody');
-    const addBtn = document.getElementById('add-club-member-btn');
-    const modal = document.getElementById('club-member-modal');
-    const form = document.getElementById('club-member-form');
-    const closeBtns = document.querySelectorAll('.close-club-modal');
-
-    // Make sure we are on the admin dashboard
-    if (!tableBody) return;
-
-    // 1. Initial Data Load & Mocking
-    let memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
-    if (memberships.length === 0) {
-        memberships = [
-            { id: 1, name: 'Alice Walker', studentId: 'S1001', club: 'tech', status: 'Active' },
-            { id: 2, name: 'Bob Builder', studentId: 'S1002', club: 'arts', status: 'Pending' },
-            { id: 3, name: 'Charlie Day', studentId: 'S1003', club: 'debate', status: 'Active' }
-        ];
-        localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
-    }
-
-    // 2. Render Table
-    function renderTable() {
-        tableBody.innerHTML = '';
-        memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
-
-        const getClubName = (code) => {
-            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD' };
-            return map[code] || code;
-        };
-
-        memberships.forEach(m => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>#${m.id}</td>
-                <td>${m.name}</td>
-                <td>${m.studentId}</td>
-                <td>${getClubName(m.club)}</td>
-                <td><span class="status-${m.status.toLowerCase()}">${m.status}</span></td>
-                <td>
-                    <button class="admin-action edit-club" data-id="${m.id}"><i class="fas fa-edit"></i></button>
-                    <button class="admin-action delete-club" data-id="${m.id}"><i class="fas fa-trash"></i></button>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-    }
-
-    renderTable();
-
-    // 3. Modal Actions
-    function openModal(member = null) {
-        const title = document.getElementById('club-modal-title');
-        const idInput = document.getElementById('club-member-id');
-        const nameInput = document.getElementById('club-student-name');
-        const dbIdInput = document.getElementById('club-student-db-id');
-        const clubInput = document.getElementById('club-select');
-        const statusInput = document.getElementById('club-status');
-
-        if (member) {
-            title.textContent = 'Edit Club Member';
-            idInput.value = member.id;
-            nameInput.value = member.name;
-            dbIdInput.value = member.studentId;
-            clubInput.value = member.club;
-            statusInput.value = member.status;
-        } else {
-            title.textContent = 'Add Club Member';
-            form.reset();
-            idInput.value = '';
-        }
-        modal.style.display = 'block';
-    }
-
-    if (addBtn) addBtn.addEventListener('click', () => openModal());
-
-    closeBtns.forEach(btn => btn.addEventListener('click', () => {
-        modal.style.display = 'none';
-    }));
-
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) modal.style.display = 'none';
-    });
-
-    // 4. Form Submit
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const id = document.getElementById('club-member-id').value;
-        const name = document.getElementById('club-student-name').value;
-        const studentId = document.getElementById('club-student-db-id').value;
-        const club = document.getElementById('club-select').value;
-        const status = document.getElementById('club-status').value;
-
-        if (id) {
-            // Edit
-            const index = memberships.findIndex(m => m.id == id);
-            if (index !== -1) {
-                memberships[index] = { id: parseInt(id), name, studentId, club, status };
-            }
-        } else {
-            // Add
-            const newId = memberships.length > 0 ? Math.max(...memberships.map(m => m.id)) + 1 : 1;
-            memberships.push({ id: newId, name, studentId, club, status });
-        }
-
-        localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
-        renderTable();
-        modal.style.display = 'none';
-    });
-
-    // 5. Table Actions (Edit/Delete)
-    tableBody.addEventListener('click', (e) => {
-        const btn = e.target.closest('.admin-action');
-        if (!btn) return;
-
-        const id = btn.getAttribute('data-id');
-        if (btn.classList.contains('edit-club')) {
-            const member = memberships.find(m => m.id == id);
-            openModal(member);
-        } else if (btn.classList.contains('delete-club')) {
-            if (confirm('Are you sure you want to remove this member?')) {
-                memberships = memberships.filter(m => m.id != id);
-                localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
-                renderTable();
-            }
-        }
-    });
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        // Helper functions
+        escapeHtml,
+        getFutureDate,
+        getCurrentMonthYear,
+        showFieldError,
+        clearFieldError,
+        showFormSuccess,
+        clearFormErrors,
+        
+        // Main initialization functions
+        initNavigation,
+        initMyHub,
+        initTestimonialsAndSliders,
+        initTabsAndModals,
+        initCalendar,
+        initForms,
+        initAdmin,
+        initAnimations,
+        initStudentSession,
+        initDynamicEventDates,
+        
+        // UI update functions
+        updateUIForStudent,
+        updateEnrollmentStatus
+    };
 }
 // FAQ Toggle
 document.querySelectorAll(".faq-question").forEach(q => {

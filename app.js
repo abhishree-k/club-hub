@@ -1756,26 +1756,28 @@ function initAdmin() {
 
     function toggleMode(login) {
         isLoginMode = login;
-        if (!confirmPasswordGroup || !loginButton || !tabLogin || !tabSignup) return;
+
+        // Safety check: if essential container missing, stop UI updates but state is set
+        if (!confirmPasswordGroup) return;
 
         if (login) {
             // LOGIN MODE
             confirmPasswordGroup.style.display = 'none';
-            loginButton.textContent = 'Login';
-            tabLogin.classList.add('active');
-            tabSignup.classList.remove('active');
-            footerText.textContent = "Don't have an account?";
-            toggleModeLink.textContent = "Sign Up";
-            if (forgotWrapper) forgotWrapper.style.display = 'block';  // show only in login
+            if (loginButton) loginButton.textContent = 'Login';
+            if (tabLogin) tabLogin.classList.add('active');
+            if (tabSignup) tabSignup.classList.remove('active');
+            if (footerText) footerText.textContent = "Don't have an account?";
+            if (toggleModeLink) toggleModeLink.textContent = "Sign Up";
+            if (forgotWrapper) forgotWrapper.style.display = 'block';
         } else {
             // SIGNUP MODE
             confirmPasswordGroup.style.display = 'block';
-            loginButton.textContent = 'Create Account';
-            tabSignup.classList.add('active');
-            tabLogin.classList.remove('active');
-            footerText.textContent = "Already have an account?";
-            toggleModeLink.textContent = "Login";
-            if (forgotWrapper) forgotWrapper.style.display = 'none';   // hide in signup
+            if (loginButton) loginButton.textContent = 'Create Account';
+            if (tabSignup) tabSignup.classList.add('active');
+            if (tabLogin) tabLogin.classList.remove('active');
+            if (footerText) footerText.textContent = "Already have an account?";
+            if (toggleModeLink) toggleModeLink.textContent = "Login";
+            if (forgotWrapper) forgotWrapper.style.display = 'none';
         }
     }
 
@@ -2366,69 +2368,9 @@ function updateEnrollmentStatus() {
     });
 }
 
-/* Favorites: simple localStorage-backed favorites for clubs */
-const FAVORITES_KEY = 'favoriteClubs';
-
-function getFavoriteClubs() {
-    return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
-}
-
-function isClubFavorited(id) {
-    return getFavoriteClubs().includes(id);
-}
-
-function setClubFavorited(id, favorited) {
-    const favs = getFavoriteClubs();
-    if (favorited) {
-        if (!favs.includes(id)) favs.push(id);
-    } else {
-        const idx = favs.indexOf(id);
-        if (idx !== -1) favs.splice(idx, 1);
-    }
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
-}
-
-function updateFavoriteUI() {
-    document.querySelectorAll('.favorite-toggle').forEach(btn => {
-        const clubId = btn.getAttribute('data-club');
-        const icon = btn.querySelector('i');
-        const card = btn.closest('.club-card');
-        if (isClubFavorited(clubId)) {
-            btn.classList.add('active');
-            if (icon) { icon.classList.remove('far'); icon.classList.add('fas'); }
-            if (card) card.classList.add('favorited');
-            btn.setAttribute('aria-pressed', 'true');
-        } else {
-            btn.classList.remove('active');
-            if (icon) { icon.classList.remove('fas'); icon.classList.add('far'); }
-            if (card) card.classList.remove('favorited');
-            btn.setAttribute('aria-pressed', 'false');
-        }
-    });
-}
-
-function initFavorites() {
-    // Delegate clicks for favorite toggles
-    document.addEventListener('click', function (e) {
-        const btn = e.target.closest && e.target.closest('.favorite-toggle');
-        if (!btn) return;
-        const clubId = btn.getAttribute('data-club');
-        if (!clubId) return;
-        const currently = isClubFavorited(clubId);
-        setClubFavorited(clubId, !currently);
-        updateFavoriteUI();
-
-        // If on My Hub, re-run initMyHub to refresh favorites list
-        if (typeof initMyHub === 'function') initMyHub();
-    });
-
-    // Initial render
-    updateFavoriteUI();
-}
-
 /**
- * 8. Club Management Logic
- * Handles CRUD operations for club memberships in the Admin Dashboard.
+ * Export functions for testing
+ * Only exports if running in Node.js environment (for Jest tests)
  */
 function initClubManagement() {
     const tableBody = document.querySelector('#clubs-table tbody');
@@ -2589,6 +2531,36 @@ function initClubManagement() {
             }
         }
     });
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        // Helper functions
+        escapeHtml,
+        getFutureDate,
+        getCurrentMonthYear,
+        showFieldError,
+        clearFieldError,
+        showFormSuccess,
+        clearFormErrors,
+
+        // Main initialization functions
+        initNavigation,
+        initMyHub,
+        initTestimonialsAndSliders,
+        initTabsAndModals,
+        initCalendar,
+        initForms,
+        initAdmin,
+        initAnimations,
+        initStudentSession,
+        initDynamicEventDates,
+        initClubManagement, // Added this to the exports
+
+        // UI update functions
+        updateUIForStudent,
+        updateEnrollmentStatus
+    };
 }
 
 // Admin-only: User & Role Management

@@ -801,3 +801,13 @@
     color: #4facfe;
     text-decoration: none;
 }
+
+.forgot-password-link {
+  color: #4facfe;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}

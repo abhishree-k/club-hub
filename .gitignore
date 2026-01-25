@@ -1,19 +1,31 @@
 # Dependencies
 node_modules/
+backend/node_modules/
 package-lock.json
 
-# Test coverage
+# Environment variables
+.env
+backend/.env
+
+# Build & Test outputs
+dist/
+build/
 coverage/
 .nyc_output/
 
-# IDE
+# Database
+*.sqlite
+backend/*.sqlite
+*.db
+
+# IDE & Editors
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS
+# OS generated files
 .DS_Store
 Thumbs.db
 
@@ -22,7 +34,3 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Build outputs
-dist/
-build/

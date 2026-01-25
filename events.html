@@ -46,19 +46,14 @@
 
     <main class="events-main">
         <!-- 🔍 Event Search -->
-<div style="text-align:center; margin: 20px 0;">
-    <input 
-        type="text" 
-        id="eventSearch" 
-        placeholder="Search events or clubs..." 
-        style="
+        <div style="text-align:center; margin: 20px 0;">
+            <input type="text" id="eventSearch" placeholder="Search events or clubs..." style="
             width:60%;
             padding:10px;
             border-radius:8px;
             border:1px solid #ccc;
-        "
-    >
-</div>
+        ">
+        </div>
 
         <section class="calendar-section">
             <div class="calendar-controls">
@@ -90,7 +85,8 @@
                 </select>
 
                 <button id="jump-to-date" class="calendar-jump-btn"><i class="fas fa-arrow-right"></i> Jump</button>
-                <button id="today-btn" class="calendar-jump-btn today"><i class="fas fa-calendar-today"></i> Today</button>
+                <button id="today-btn" class="calendar-jump-btn today"><i class="fas fa-calendar-today"></i>
+                    Today</button>
             </div>
 
             <div class="calendar-grid">
@@ -149,13 +145,13 @@
                 <span>Past Events</span>
             </a>
             </a>
-                <a href="#" class="action-button" id="open-feedback">
-               <i class="fas fa-comment-alt"></i>
-             <span>Event Feedback</span>
-              </a>
+            <a href="#" class="action-button" id="open-feedback">
+                <i class="fas fa-comment-alt"></i>
+                <span>Event Feedback</span>
+            </a>
         </section>
         <!-- ================= Event Feedback Modal ================= -->
-<div id="feedback-modal" style="
+        <div id="feedback-modal" style="
     display:none;
     position:fixed;
     inset:0;
@@ -164,37 +160,41 @@
     align-items:center;
     justify-content:center;
 ">
-    <div style="
+            <div style="
         background:#0f172a;
         padding:25px;
         width:420px;
         border-radius:14px;
         color:#fff;
     ">
-        <span id="close-feedback" style="float:right;cursor:pointer;font-size:20px">&times;</span>
+                <span id="close-feedback" style="float:right;cursor:pointer;font-size:20px">&times;</span>
 
-        <h2 style="text-align:center;margin-bottom:15px;">💬 Event Feedback</h2>
+                <h2 style="text-align:center;margin-bottom:15px;">💬 Event Feedback</h2>
 
-        <form>
-            <label>Your Name</label>
-            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
+                <form>
+                    <label>Your Name</label>
+                    <input type="text" required
+                        style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
 
-            <label>Event Name</label>
-            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
+                    <label>Event Name</label>
+                    <input type="text" required
+                        style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
 
-            <label>Rating</label>
-            <select required style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
-                <option value="">Select</option>
-                <option>⭐ Excellent</option>
-                <option>😊 Good</option>
-                <option>😐 Average</option>
-                <option>😕 Poor</option>
-            </select>
+                    <label>Rating</label>
+                    <select required
+                        style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
+                        <option value="">Select</option>
+                        <option>⭐ Excellent</option>
+                        <option>😊 Good</option>
+                        <option>😐 Average</option>
+                        <option>😕 Poor</option>
+                    </select>
 
-            <label>Feedback</label>
-            <textarea required style="width:100%;height:80px;padding:8px;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px"></textarea>
+                    <label>Feedback</label>
+                    <textarea required
+                        style="width:100%;height:80px;padding:8px;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px"></textarea>
 
-            <button type="submit" style="
+                    <button type="submit" style="
                 margin-top:12px;
                 width:100%;
                 padding:10px;
@@ -204,9 +204,9 @@
                 color:white;
                 cursor:pointer;
             ">Submit</button>
-        </form>
-    </div>
-</div>
+                </form>
+            </div>
+        </div>
     </main>
 
     <footer class="cosmic-footer">
@@ -321,32 +321,33 @@
     </footer>
 
     <script>
-    const openFeedback = document.getElementById("open-feedback");
-    const feedbackModal = document.getElementById("feedback-modal");
-    const closeFeedback = document.getElementById("close-feedback");
+        const openFeedback = document.getElementById("open-feedback");
+        const feedbackModal = document.getElementById("feedback-modal");
+        const closeFeedback = document.getElementById("close-feedback");
 
-    openFeedback.onclick = () => feedbackModal.style.display = "flex";
-    closeFeedback.onclick = () => feedbackModal.style.display = "none";
-</script>
+        openFeedback.onclick = () => feedbackModal.style.display = "flex";
+        closeFeedback.onclick = () => feedbackModal.style.display = "none";
+    </script>
+    <script src="api.js"></script>
     <script src="app.js"></script>
     <script>
-// Event Search Functionality
-document.getElementById("eventSearch").addEventListener("keyup", function () {
-    const searchValue = this.value.toLowerCase();
-    const events = document.querySelectorAll(".event-card");
+        // Event Search Functionality
+        document.getElementById("eventSearch").addEventListener("keyup", function () {
+            const searchValue = this.value.toLowerCase();
+            const events = document.querySelectorAll(".event-card");
 
-    events.forEach(event => {
-        const eventText = event.innerText.toLowerCase();
+            events.forEach(event => {
+                const eventText = event.innerText.toLowerCase();
 
-        if (eventText.includes(searchValue)) {
-            event.style.display = "block";
-        } else {
-            event.style.display = "none";
-        }
-    });
-});
+                if (eventText.includes(searchValue)) {
+                    event.style.display = "block";
+                } else {
+                    event.style.display = "none";
+                }
+            });
+        });
 
-</script>
+    </script>
 
 </body>
 

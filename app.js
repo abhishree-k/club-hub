@@ -1710,25 +1710,21 @@ function initAdmin() {
 
     // Admin Event Management Form
     const adminEventForm = document.getElementById('admin-event-form');
-    if (adminEventForm) {
-        adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function () {
-                clearFieldError(this);
-            });
+if (adminEventForm) {
+    adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
+        field.addEventListener('input', function () {
+            clearFieldError(this);
         });
+    });
 
-        adminEventForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const name = document.getElementById('admin-event-name').value;
+    adminEventForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = document.getElementById('admin-event-name').value;
+        alert(`Event "${name}" saved successfully!`);
+        this.reset();
+    });
+}
 
-        adminEventForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const name = document.getElementById('admin-event-name').value;
-            alert(`Event "${name}" saved successfully!`);
-            this.reset();
-        });
-    }
-    }
 
     function loadAdminDashboard() {
         // Helper

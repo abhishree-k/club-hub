@@ -1260,68 +1260,9 @@ function initAdmin() {
 
     // Admin Event Management Form
     const adminEventForm = document.getElementById('admin-event-form');
-    if (adminEventForm) {
 
-        adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function () {
-                clearFieldError(this);
-            });
         });
-
-
-        adminEventForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            clearFormErrors(this);
-
-            const nameField = document.getElementById('admin-event-name');
-            const clubField = document.getElementById('admin-event-club');
-            const dateField = document.getElementById('admin-event-date');
-            const timeField = document.getElementById('admin-event-time');
-            const locationField = document.getElementById('admin-event-location');
-
-            const name = nameField?.value.trim();
-            const club = clubField?.value;
-            const date = dateField?.value;
-            const time = timeField?.value;
-            const location = locationField?.value.trim();
-
-            let isValid = true;
-
-            if (!name) {
-                showFieldError(nameField, 'Event name is required');
-                isValid = false;
-            }
-
-            if (!club) {
-                showFieldError(clubField, 'Please select a club');
-                isValid = false;
-            }
-
-            if (!date) {
-                showFieldError(dateField, 'Event date is required');
-                isValid = false;
-            }
-
-            if (!time) {
-                showFieldError(timeField, 'Event time is required');
-                isValid = false;
-            }
-
-            if (!location) {
-                showFieldError(locationField, 'Event location is required');
-                isValid = false;
-            }
-
-            if (!isValid) {
-                return;
-            }
-
-            showFormSuccess(this, `Event "${name}" saved successfully!`);
-            setTimeout(() => {
-                this.reset();
-            }, 2000);
-        });
-    }
+    });
 
 
 function loadAdminDashboard() {

@@ -31,8 +31,7 @@
             <form id="admin-login-form">
                 <div class="form-toggle-container">
                     <button type="button" id="tab-login" class="toggle-btn active">Login</button>
-                    <button type="button" id="tab-signup" class="toggle-btn">Sign
-                        Up</button>
+                    <button type="button" id="tab-signup" class="toggle-btn">Sign Up</button>
                 </div>
                 <div class="form-group">
                     <label for="admin-username">Username</label>
@@ -43,8 +42,9 @@
                     <div style="position: relative;">
                         <input type="password" id="admin-password" required placeholder="Enter password">
                         <span class="toggle-password"
-                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: white;"><i
-                                class="fas fa-eye"></i></span>
+                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: white;">
+                            <i class="fas fa-eye"></i>
+                        </span>
                     </div>
                 </div>
                 <div class="form-group" id="confirm-password-group" style="display: none;">
@@ -56,6 +56,12 @@
                                 class="fas fa-eye"></i></span>
                     </div>
                 </div>
+                
+                <!-- Forgot Password Link - Only visible in login mode -->
+                <div class="form-group" id="forgot-password-wrapper" style="text-align: right; margin-top: -0.5rem; margin-bottom: 0.5rem;">
+                    <a href="forgot-password.html" class="forgot-password-link">Forgot password?</a>
+                </div>
+                
                 <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
                     <input type="checkbox" id="remember-me" style="width: auto;">
                     <label for="remember-me" style="margin: 0; cursor: pointer;">Remember Me</label>

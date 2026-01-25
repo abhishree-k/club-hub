@@ -1,0 +1,65 @@
+[
+  {
+    "id": "tech",
+    "name": "Tech Society - POINT BLANK",
+    "icon": "💻",
+    "description": "Innovate, code, and build the future with fellow tech enthusiasts.",
+    "contact": "tech@dsce.edu",
+    "events": [
+      { "title": "AI Workshop Series", "date": "2026-02-15" },
+      { "title": "Hackathon Spring", "date": "2026-04-02" }
+    ]
+  },
+  {
+    "id": "arts",
+    "name": "Creative Arts - AALEKA",
+    "icon": "🎨",
+    "description": "Express yourself through painting, sculpture, and digital art.",
+    "contact": "arts@dsce.edu",
+    "events": [
+      { "title": "Digital Art Masterclass", "date": "2026-03-10" }
+    ]
+  },
+  {
+    "id": "debate",
+    "name": "Debate Club - LITSOC",
+    "icon": "💬",
+    "description": "Sharpen your rhetoric and critical thinking skills.",
+    "contact": "debate@dsce.edu",
+    "events": [
+      { "title": "Intercollege Debate", "date": "2026-05-20" }
+    ]
+  },
+  {
+    "id": "music",
+    "name": "Music Society",
+    "icon": "🎵",
+    "description": "Create, perform, and appreciate music in all its forms.",
+    "contact": "music@dsce.edu",
+    "events": [
+      { "title": "Spring Concert", "date": "2026-04-25" }
+    ]
+  },
+  {
+    "id": "sports",
+    "name": "Sports Club",
+    "icon": "⚽",
+    "description": "Stay active and compete in various sports activities.",
+    "contact": "sports@dsce.edu",
+    "events": [
+      { "title": "Inter-college Tournament", "date": "2026-03-15" },
+      { "title": "Fitness Challenge", "date": "2026-04-10" }
+    ]
+  },
+  {
+    "id": "science",
+    "name": "Dance Club - ABCD",
+    "icon": "💃",
+    "description": "Let's move to the beat and make memories together!",
+    "contact": "dance@dsce.edu",
+    "events": [
+      { "title": "Annual Dance Recital", "date": "2026-05-05" },
+      { "title": "Workshop Series", "date": "2026-03-20" }
+    ]
+  }
+]

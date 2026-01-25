@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
     initAnimations();
     initStudentSession();
     initDynamicEventDates();
+    initClubButtons();
+    initClubDetails();
   
     const yearEl = document.getElementById("year");
     if (yearEl) {
@@ -70,18 +72,130 @@ function getCurrentMonthYear() {
  * Handles mobile menu toggling and smooth scrolling.
  */
 function initNavigation() {
-    const hamburger = document.querySelector('.nav-hamburger');
-    const navLinks = document.querySelector('.nav-links');
+    // Elements
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle'); // toggle button
+    const mobileMenu = document.querySelector('.nav-links'); // nav list
 
-    if (hamburger && navLinks) {
-        hamburger.addEventListener('click', function () {
-            navLinks.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        });
+    if (!mobileMenuToggle || !mobileMenu) return; // nothing to do if missing
+
+    const navLinks = mobileMenu.querySelectorAll('a');
+    let isMenuOpen = false;
+
+    // Open the menu and move focus to first link
+    function openMenu() {
+        isMenuOpen = true;
+        mobileMenu.classList.add('active');
+        mobileMenuToggle.classList.add('active');
+        mobileMenuToggle.setAttribute('aria-expanded', 'true');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+
+        // Focus the first link inside the menu (small delay to allow CSS transition)
+        setTimeout(() => {
+            const firstLink = mobileMenu.querySelector('a');
+            if (firstLink) firstLink.focus();
+        }, 50);
+
+        // Attach document key handler for Escape, Tab trap and arrow navigation
+        document.addEventListener('keydown', onDocumentKeyDown);
     }
 
+    // Close the menu and return focus to toggle
+    function closeMenu() {
+        isMenuOpen = false;
+        mobileMenu.classList.remove('active');
+        mobileMenuToggle.classList.remove('active');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        mobileMenuToggle.focus();
 
-    // Smooth scrolling for anchor links
+        // Remove document-level key handler
+        document.removeEventListener('keydown', onDocumentKeyDown);
+    }
+
+    function toggleMenu() {
+        if (isMenuOpen) closeMenu(); else openMenu();
+    }
+
+    // Click to toggle
+    mobileMenuToggle.addEventListener('click', function () {
+        toggleMenu();
+    });
+
+    // Keyboard activation for toggle (Enter / Space)
+    mobileMenuToggle.addEventListener('keydown', function (event) {
+        // Activate on Enter or Space
+        if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+            event.preventDefault();
+            toggleMenu();
+        }
+    });
+
+    // Helper: move focus by delta within menu links (wraps around)
+    function moveFocus(delta) {
+        const focusable = Array.from(mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])'));
+        if (!focusable.length) return;
+
+        const currentIndex = focusable.indexOf(document.activeElement);
+        let nextIndex = currentIndex + delta;
+
+        // If nothing is focused inside the menu, focus the first (or last if delta < 0)
+        if (currentIndex === -1) {
+            nextIndex = delta > 0 ? 0 : focusable.length - 1;
+        }
+
+        // Wrap around
+        if (nextIndex < 0) nextIndex = focusable.length - 1;
+        if (nextIndex >= focusable.length) nextIndex = 0;
+
+        focusable[nextIndex].focus();
+    }
+
+    // Document-level keyboard handler: Escape to close, Tab to trap focus, Arrow keys to navigate
+    function onDocumentKeyDown(event) {
+        // Close on Escape
+        if (event.key === 'Escape') {
+            if (isMenuOpen) closeMenu();
+            return;
+        }
+
+        // Arrow navigation (Left/Up = previous, Right/Down = next)
+        if (isMenuOpen && (event.key === 'ArrowDown' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowLeft')) {
+            event.preventDefault();
+            if (event.key === 'ArrowDown' || event.key === 'ArrowRight') moveFocus(1);
+            else moveFocus(-1);
+            return;
+        }
+
+        // Focus trap: if menu is open and Tab is pressed, ensure focus cycles within menu
+        if (event.key === 'Tab' && isMenuOpen) {
+            const focusable = mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+            if (!focusable.length) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (event.shiftKey) { // Shift+Tab
+                if (document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                }
+            } else { // Tab
+                if (document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+        }
+    }
+
+    // Close when clicking outside the menu
+    document.addEventListener('click', function (event) {
+        if (isMenuOpen && !mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+            closeMenu();
+        }
+    });
+
+    // Smooth scrolling for anchor links (preserve previous behavior)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -97,9 +211,8 @@ function initNavigation() {
                 });
 
                 // Close mobile menu if open
-                if (navLinks && navLinks.classList.contains('active')) {
-                    navLinks.classList.remove('active');
-                    if (hamburger) hamburger.classList.remove('active');
+                if (mobileMenu && mobileMenu.classList.contains('active')) {
+                    closeMenu();
                 }
             }
         });
@@ -495,7 +608,6 @@ function initForms() {
                 showFieldError(email, 'Please enter a valid email address');
                 isValid = false;
             }
-
             if (!studentId.value.trim()) {
                 showFieldError(studentId, 'Student ID is required');
                 isValid = false;
@@ -999,27 +1111,36 @@ function initAdmin() {
     const toggleModeLink = document.getElementById('toggle-mode');
     const loginButton = document.querySelector('.login-button');
     const footerText = document.getElementById('footer-text');
+    const forgotWrapper = document.getElementById('forgot-password-wrapper'); // <div> with Forgot password link
 
     let isLoginMode = true;
 
     function toggleMode(login) {
         isLoginMode = login;
+
         if (login) {
+            // LOGIN MODE
             confirmPasswordGroup.style.display = 'none';
             loginButton.textContent = 'Login';
             tabLogin.classList.add('active');
             tabSignup.classList.remove('active');
             footerText.textContent = "Don't have an account?";
             toggleModeLink.textContent = "Sign Up";
+            if (forgotWrapper) forgotWrapper.style.display = 'block';  // show only in login
         } else {
+            // SIGNUP MODE
             confirmPasswordGroup.style.display = 'block';
             loginButton.textContent = 'Create Account';
             tabSignup.classList.add('active');
             tabLogin.classList.remove('active');
             footerText.textContent = "Already have an account?";
             toggleModeLink.textContent = "Login";
+            if (forgotWrapper) forgotWrapper.style.display = 'none';   // hide in signup
         }
     }
+
+    // Set initial mode (login)
+    toggleMode(true);
 
     if (tabLogin && tabSignup) {
         tabLogin.addEventListener('click', () => toggleMode(true));
@@ -1038,11 +1159,12 @@ function initAdmin() {
         togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
+
             this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
         });
     }
 
-    // Login Submission
+
     if (adminLoginForm) {
         // Auto-fill if remembered
         if (localStorage.getItem('adminRemembered') === 'true') {
@@ -1089,7 +1211,6 @@ function initAdmin() {
 
             if (isLoginMode) {
                 // LOGIN LOGIC
-                // Check stored custom admins first, then hardcoded default
                 const result = checkAdminCredentials(username, password);
 
                 if (result.success) {
@@ -1120,12 +1241,12 @@ function initAdmin() {
                     return;
                 }
 
-                // Check if user exists
                 const existingAdmins = JSON.parse(localStorage.getItem('adminUsers')) || [];
                 if (username === 'admin' || existingAdmins.some(u => u.username === username)) {
                     alert('Username already exists. Please choose another.');
                     return;
                 }
+
             }
         });
     }
@@ -1141,7 +1262,6 @@ function initAdmin() {
 
         return { success: false };
     }
-
 
     // 6b. Admin Dashboard Logic
     const adminDashboard = document.getElementById('admin-dashboard');
@@ -1161,19 +1281,14 @@ function initAdmin() {
                         e.preventDefault();
                         const targetId = href.substring(1);
 
-                        // Update Active State
                         document.querySelectorAll('.admin-menu li').forEach(li => li.classList.remove('active'));
                         link.parentElement.classList.add('active');
 
-                        // Show Target Section
                         sections.forEach(sec => sec.style.display = 'none');
                         const targetSec = document.getElementById(targetId);
                         if (targetSec) targetSec.style.display = 'block';
 
-                        // Auto-refresh analytics when switching to dashboard
-                        if (targetId === 'dashboard') {
-                            setTimeout(initAnalytics, 100); // Small delay to ensure container is visible
-                        }
+
                     }
                 });
             });
@@ -1181,6 +1296,7 @@ function initAdmin() {
             loadAdminDashboard();
             initClubManagement();
             initAnalytics();
+
             const logoutButton = document.getElementById('admin-logout');
             if (logoutButton) {
                 logoutButton.addEventListener('click', function () {
@@ -1193,69 +1309,10 @@ function initAdmin() {
 
     // Admin Event Management Form
     const adminEventForm = document.getElementById('admin-event-form');
-    if (adminEventForm) {
-        // Clear errors on input
-        adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function () {
-                clearFieldError(this);
-            });
+
         });
+    });
 
-        adminEventForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            clearFormErrors(this);
-
-            const nameField = document.getElementById('admin-event-name');
-            const clubField = document.getElementById('admin-event-club');
-            const dateField = document.getElementById('admin-event-date');
-            const timeField = document.getElementById('admin-event-time');
-            const locationField = document.getElementById('admin-event-location');
-
-            const name = nameField?.value.trim();
-            const club = clubField?.value;
-            const date = dateField?.value;
-            const time = timeField?.value;
-            const location = locationField?.value.trim();
-
-            let isValid = true;
-
-            if (!name) {
-                showFieldError(nameField, 'Event name is required');
-                isValid = false;
-            }
-
-            if (!club) {
-                showFieldError(clubField, 'Please select a club');
-                isValid = false;
-            }
-
-            if (!date) {
-                showFieldError(dateField, 'Event date is required');
-                isValid = false;
-            }
-
-            if (!time) {
-                showFieldError(timeField, 'Event time is required');
-                isValid = false;
-            }
-
-            if (!location) {
-                showFieldError(locationField, 'Event location is required');
-                isValid = false;
-            }
-
-            if (!isValid) {
-                return;
-            }
-
-            showFormSuccess(this, `Event "${name}" saved successfully!`);
-            setTimeout(() => {
-                this.reset();
-            }, 2000);
-        });
-    }
-    
-}
 
 function loadAdminDashboard() {
     // Helper
@@ -1264,17 +1321,7 @@ function loadAdminDashboard() {
         return map[id] || id;
     };
 
-    // Render Student Registrations
-    const registrationsTable = document.getElementById('registrations-table');
-    if (registrationsTable) {
-        registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
-        const registrations = [
-            { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
-            { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' }
-        ];
-        registrations.forEach(reg => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
+
                     <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
                     <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
                     <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
@@ -1506,199 +1553,362 @@ function updateEnrollmentStatus() {
 }
 
 /**
- * Initialize Dynamic Event Dates
- * Updates event cards with dynamic dates based on data-days-offset attribute
- */
-function initDynamicEventDates() {
-    document.querySelectorAll('.event-card[data-days-offset]').forEach(card => {
-        const daysOffset = parseInt(card.getAttribute('data-days-offset'));
-        if (isNaN(daysOffset)) return;
 
-        // Calculate the future date
-        const futureDate = getFutureDate(daysOffset);
-        
-        // Update data-date attribute for filtering
-        card.setAttribute('data-date', futureDate);
-        
-        // Format and display the date
-        const dateElement = card.querySelector('.event-date');
-        if (dateElement) {
-            let date;
-            // Avoid timezone issues when parsing plain "YYYY-MM-DD" dates
-            if (typeof futureDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(futureDate)) {
-                const [year, month, day] = futureDate.split('-').map(Number);
-                date = new Date(year, month - 1, day);
-            } else {
-                date = new Date(futureDate);
-            }
-            const options = { month: 'short', day: 'numeric', year: 'numeric' };
-            const formattedDate = date.toLocaleDateString('en-US', options);
-            dateElement.textContent = formattedDate;
-        }
+}
+// FAQ Toggle
+document.querySelectorAll(".faq-question").forEach(q => {
+  q.addEventListener("click", () => {
+    const ans = q.nextElementSibling;
+    ans.style.display = ans.style.display === "block" ? "none" : "block";
+  });
+});
+
+// Chatbot Toggle
+function toggleChat() {
+  const chat = document.getElementById("chatbot");
+  chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+}
+
+// Chatbot Logic
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const chat = document.getElementById("chatBody");
+
+  if (input.value.trim() === "") return;
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "user";
+  userMsg.innerText = input.value;
+  chat.appendChild(userMsg);
+
+  let reply = "Please check the Events page for details.";
+
+  const text = input.value.toLowerCase();
+
+  if (text.includes("register"))
+    reply = "You can register from the Events page.";
+  else if (text.includes("event"))
+    reply = "All upcoming events are listed in the Events section.";
+  else if (text.includes("fee"))
+    reply = "Some events are free, some require payment.";
+  else if (text.includes("contact"))
+    reply = "You can contact organizers via Contact page.";
+  else if (text.includes("hello"))
+    reply = "Hello 👋 How can I help you?";
+
+  const botMsg = document.createElement("div");
+  botMsg.className = "bot";
+  botMsg.innerText = reply;
+
+  setTimeout(() => chat.appendChild(botMsg), 400);
+
+  input.value = "";
+}
+
+/**
+ * Initialize Club Buttons
+ * Adds event listeners to view club buttons
+ */
+function initClubButtons() {
+    document.querySelectorAll('.view-club-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const clubId = this.getAttribute('data-club');
+            window.location.href = `club.html?club=${clubId}`;
+        });
     });
 }
 
 /**
- * 9. Analytics Logic
- * Renders charts using Chart.js for the Admin Dashboard.
+ * Initialize Club Details
+ * Loads club details on club.html page
  */
-function initAnalytics() {
-    // Check if Chart.js is loaded
-    if (typeof Chart === 'undefined') return;
-
-    // Common Chart Options
-    Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
-    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
-
-    // --- 1. Fetch Real Data from LocalStorage ---
-
-    // Event Data
-    const allEventRegs = JSON.parse(localStorage.getItem('allEventRegistrations')) || [
-        // Mock data fallback if empty (for demo)
-        { eventName: 'AI Workshop', date: '2023-11-15' },
-        { eventName: 'AI Workshop', date: '2023-11-15' },
-        { eventName: 'Digital Art Masterclass', date: '2023-11-20' },
-        { eventName: 'Public Speaking Workshop', date: '2023-11-22' },
-        { eventName: 'Public Speaking Workshop', date: '2023-11-22' },
-        { eventName: 'Public Speaking Workshop', date: '2023-11-22' }
-    ];
-
-    // Club Data
-    const allMemberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [
-        // Mock data fallback
-        { club: 'tech', status: 'Active', joinedAt: '2023-10-01' },
-        { club: 'tech', status: 'Active', joinedAt: '2023-10-05' },
-        { club: 'arts', status: 'Pending', joinedAt: '2023-10-10' },
-        { club: 'debate', status: 'Active', joinedAt: '2023-10-12' }
-    ];
-
-    // --- 2. Process Data ---
-
-    // Process Events: Count per Event Name
-    const eventCounts = {};
-    allEventRegs.forEach(reg => {
-        eventCounts[reg.eventName] = (eventCounts[reg.eventName] || 0) + 1;
-    });
-    const eventLabels = Object.keys(eventCounts);
-    const eventData = Object.values(eventCounts);
-
-    // Process Clubs: Count per Club Code
-    const clubCounts = {};
-    const clubNames = {
-        'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club',
-        'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD'
-    };
-    allMemberships.forEach(m => {
-        const name = clubNames[m.club] || m.club;
-        clubCounts[name] = (clubCounts[name] || 0) + 1;
-    });
-    const clubLabels = Object.keys(clubCounts);
-    const clubDataValues = Object.values(clubCounts);
-
-    // Process Engagement: Actions per Month
-    const monthlyActivity = {};
-    const processDate = (dateStr) => {
-        if (!dateStr) return;
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return;
-        const key = d.toLocaleString('default', { month: 'short' }); // e.g., "Nov"
-        monthlyActivity[key] = (monthlyActivity[key] || 0) + 1;
-    };
-
-    allEventRegs.forEach(r => processDate(r.date));
-    allMemberships.forEach(m => processDate(m.joinedAt));
-
-    // Sort Months (Naive approach for this year/fixed list)
-    const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const sortedMonths = Object.keys(monthlyActivity).sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
-    const engagementData = sortedMonths.map(m => monthlyActivity[m]);
-
-
-    // --- 3. Render Charts (Destroy existing first) ---
-
-    // Helper: Destroy and Create
-    const createChart = (canvasId, config) => {
-        const canvas = document.getElementById(canvasId);
-        if (!canvas) return;
-
-        const existingChart = Chart.getChart(canvas);
-        if (existingChart) existingChart.destroy();
-
-        new Chart(canvas, config);
-    };
-
-    // Render Event Participation Chart
-    createChart('eventParticipationChart', {
-        type: 'bar',
-        data: {
-            labels: eventLabels.length ? eventLabels : ['No Data'],
-            datasets: [{
-                label: 'Registrations',
-                data: eventData.length ? eventData : [0],
-                backgroundColor: 'rgba(108, 92, 231, 0.6)',
-                borderColor: 'rgba(108, 92, 231, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                x: { grid: { display: false } }
-            }
+function initClubDetails() {
+    if (window.location.pathname.includes('club.html')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const clubId = urlParams.get('club');
+        
+        if (clubId) {
+            loadClubDetails(clubId);
         }
+    }
+}
+
+/**
+ * Load Club Details
+ * Fetches and displays club information
+ */
+function loadClubDetails(clubId) {
+    // Simulate backend API call
+    fetchClubDetailsFromBackend(clubId)
+        .then(clubData => {
+            displayClubDetails(clubData);
+        })
+        .catch(error => {
+            console.error('Error loading club details:', error);
+            displayClubError();
+        });
+}
+
+/**
+ * Fetch Club Details from Backend
+ * Simulates API call to get club data
+ */
+function fetchClubDetailsFromBackend(clubId) {
+    return new Promise((resolve, reject) => {
+        // Simulate network delay
+        setTimeout(() => {
+            const clubsData = {
+                'tech': {
+                    name: 'Tech Society - POINT BLANK',
+                    icon: '💻',
+                    subtitle: 'Innovate, code, and build the future',
+                    description: 'Join our vibrant tech community where innovation meets implementation. From hackathons to AI workshops, we provide the platform to turn your ideas into reality.',
+                    activities: [
+                        'Weekly coding sessions and hackathons',
+                        'AI/ML workshops and seminars',
+                        'Cybersecurity training programs',
+                        'Tech talks by industry experts',
+                        'Project development and collaboration'
+                    ],
+                    benefits: [
+                        'Access to cutting-edge technology resources',
+                        'Networking with tech professionals',
+                        'Skill development and certification opportunities',
+                        'Participation in national and international competitions',
+                        'Mentorship from senior developers'
+                    ],
+                    contact: {
+                        coordinator: 'Tech Coordinator',
+                        email: 'tech@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'arts': {
+                    name: 'Creative Arts - AALEKA',
+                    icon: '🎨',
+                    subtitle: 'Express yourself through art',
+                    description: 'Unleash your creativity in our artistic sanctuary. Whether you\'re a painter, sculptor, or digital artist, find your voice and showcase your talent.',
+                    activities: [
+                        'Art exhibitions and galleries',
+                        'Live drawing and painting sessions',
+                        'Digital art workshops',
+                        'Collaborative art projects',
+                        'Competitions and showcases'
+                    ],
+                    benefits: [
+                        'Access to art supplies and studio space',
+                        'Exhibition opportunities',
+                        'Skill development workshops',
+                        'Networking with artists and designers',
+                        'Portfolio development support'
+                    ],
+                    contact: {
+                        coordinator: 'Arts Coordinator',
+                        email: 'arts@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'debate': {
+                    name: 'Debate Club - LITSOC',
+                    icon: '💬',
+                    subtitle: 'Sharpen your mind through debate',
+                    description: 'Hone your rhetorical skills and critical thinking in our debate society. Engage in intellectual discourse and prepare for real-world challenges.',
+                    activities: [
+                        'Weekly debate sessions',
+                        'Model United Nations simulations',
+                        'Public speaking workshops',
+                        'Inter-college debate tournaments',
+                        'Guest lectures by renowned speakers'
+                    ],
+                    benefits: [
+                        'Improved communication and critical thinking skills',
+                        'Leadership development opportunities',
+                        'Participation in national debate competitions',
+                        'Networking with professionals',
+                        'Confidence building through public speaking'
+                    ],
+                    contact: {
+                        coordinator: 'Debate Coordinator',
+                        email: 'debate@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'music': {
+                    name: 'Music Society',
+                    icon: '🎵',
+                    subtitle: 'Create and perform music',
+                    description: 'Join our musical community to create, perform, and appreciate music in all its forms. From concerts to jam sessions, let the rhythm guide you.',
+                    activities: [
+                        'Concert performances and shows',
+                        'Jam sessions and open mics',
+                        'Music composition workshops',
+                        'Shayari and poetry sessions',
+                        'Music production training'
+                    ],
+                    benefits: [
+                        'Access to musical instruments and equipment',
+                        'Performance opportunities',
+                        'Music theory and production training',
+                        'Collaboration with musicians',
+                        'Recording studio access'
+                    ],
+                    contact: {
+                        coordinator: 'Music Coordinator',
+                        email: 'music@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'sports': {
+                    name: 'Sports Club',
+                    icon: '⚽',
+                    subtitle: 'Stay active and competitive',
+                    description: 'Maintain your physical fitness and competitive spirit through various sports activities. Teamwork, discipline, and victory await you.',
+                    activities: [
+                        'Inter-college sports tournaments',
+                        'Fitness training sessions',
+                        'Team building activities',
+                        'Sports workshops and clinics',
+                        'Recreational sports events'
+                    ],
+                    benefits: [
+                        'Access to sports facilities and equipment',
+                        'Fitness assessment and training programs',
+                        'Team sports participation',
+                        'Leadership development',
+                        'Health and wellness support'
+                    ],
+                    contact: {
+                        coordinator: 'Sports Coordinator',
+                        email: 'sports@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'science': {
+                    name: 'Dance Club - ABCD',
+                    icon: '💃',
+                    subtitle: 'Move to the beat and create memories',
+                    description: 'Express yourself through dance and movement. Join our energetic dance community for performances, competitions, and unforgettable experiences.',
+                    activities: [
+                        'Dance performances and shows',
+                        'Choreography workshops',
+                        'Dance competitions',
+                        'Celebrity meetups and interactions',
+                        'Dance fitness sessions'
+                    ],
+                    benefits: [
+                        'Professional dance training',
+                        'Performance opportunities',
+                        'Fitness and health benefits',
+                        'Creative expression development',
+                        'Social connections and friendships'
+                    ],
+                    contact: {
+                        coordinator: 'Dance Coordinator',
+                        email: 'dance@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                }
+            };
+
+            const clubData = clubsData[clubId];
+            if (clubData) {
+                resolve(clubData);
+            } else {
+                reject(new Error('Club not found'));
+            }
+        }, 500); // Simulate 500ms network delay
+    });
+}
+
+/**
+ * Display Club Details
+ * Updates the DOM with club information
+ */
+function displayClubDetails(clubData) {
+    document.getElementById('club-title').textContent = clubData.name;
+    document.getElementById('club-subtitle').textContent = clubData.subtitle;
+    document.getElementById('club-icon').textContent = clubData.icon;
+    document.getElementById('club-name').textContent = clubData.name;
+    document.getElementById('club-description').textContent = clubData.description;
+
+    // Activities
+    const activitiesList = document.getElementById('club-activities-list');
+    activitiesList.innerHTML = '';
+    clubData.activities.forEach(activity => {
+        const li = document.createElement('li');
+        li.textContent = activity;
+        activitiesList.appendChild(li);
     });
 
-    // Render Active Clubs Chart
-    createChart('activeClubsChart', {
-        type: 'doughnut',
-        data: {
-            labels: clubLabels.length ? clubLabels : ['No Data'],
-            datasets: [{
-                data: clubDataValues.length ? clubDataValues : [1], // 1 for empty placeholder
-                backgroundColor: [
-                    'rgba(108, 92, 231, 0.8)', 'rgba(253, 121, 168, 0.8)',
-                    'rgba(0, 184, 148, 0.8)', 'rgba(9, 132, 227, 0.8)',
-                    'rgba(225, 112, 85, 0.8)', 'rgba(255, 234, 167, 0.8)'
-                ],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'right', labels: { boxWidth: 12, color: 'white' } }
-            }
-        }
+    // Benefits
+    const benefitsList = document.getElementById('club-benefits-list');
+    benefitsList.innerHTML = '';
+    clubData.benefits.forEach(benefit => {
+        const li = document.createElement('li');
+        li.textContent = benefit;
+        benefitsList.appendChild(li);
     });
 
-    // Render Monthly Engagement Chart
-    createChart('monthlyEngagementChart', {
-        type: 'line',
-        data: {
-            labels: sortedMonths.length ? sortedMonths : ['Nov'],
-            datasets: [{
-                label: 'Activity',
-                data: engagementData.length ? engagementData : [0],
-                borderColor: '#00cec9',
-                backgroundColor: 'rgba(0, 206, 201, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#00cec9'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } }
-            }
+    // Contact
+    const contactInfo = document.getElementById('club-contact-info');
+    contactInfo.innerHTML = `
+        <p><strong>Coordinator:</strong> ${clubData.contact.coordinator}</p>
+        <p><strong>Email:</strong> <a href="mailto:${clubData.contact.email}" style="color: var(--accent-color);">${clubData.contact.email}</a></p>
+        <p><strong>Phone:</strong> ${clubData.contact.phone}</p>
+    `;
+
+    // Join button functionality
+    const joinBtn = document.getElementById('join-club-btn');
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (student) {
+        const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
+        const clubId = new URLSearchParams(window.location.search).get('club');
+        if (joinedClubs.includes(clubId)) {
+            joinBtn.textContent = 'Already Joined';
+            joinBtn.disabled = true;
+            joinBtn.style.background = 'var(--success-color)';
+        } else {
+            joinBtn.addEventListener('click', function() {
+                joinClub(clubId);
+            });
         }
-    });
+    } else {
+        joinBtn.textContent = 'Login to Join';
+        joinBtn.addEventListener('click', function() {
+            window.location.href = 'registration.html#student-login';
+        });
+    }
+}
+
+/**
+ * Join Club
+ * Adds club to student's joined clubs
+ */
+function joinClub(clubId) {
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (!student) return;
+
+    let joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
+    if (!joinedClubs.includes(clubId)) {
+        joinedClubs.push(clubId);
+        localStorage.setItem(`clubs_${student.id}`, JSON.stringify(joinedClubs));
+        
+        const joinBtn = document.getElementById('join-club-btn');
+        joinBtn.textContent = 'Joined!';
+        joinBtn.disabled = true;
+        joinBtn.style.background = 'var(--success-color)';
+        
+        // Update enrollment status
+        updateEnrollmentStatus();
+    }
+}
+
+/**
+ * Display Club Error
+ * Shows error message when club data fails to load
+ */
+function displayClubError() {
+    document.getElementById('club-title').textContent = 'Club Not Found';
+    document.getElementById('club-subtitle').textContent = 'The requested club could not be found.';
+    document.getElementById('club-description').textContent = 'Please check the club ID or return to the home page.';
 }

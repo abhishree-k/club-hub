@@ -33,6 +33,7 @@ All contributions—small or large—are valued.
 
 - Don't change the theme of website. Be careful what you change in the existing code. Adding new features or enhancements should also align with the theme.
 - Compulsorily test before creating a PR.
+- Make sure to link your issue.
 - Always make sure your working on the latest updated code files from the repository.
 
 ---

@@ -67,6 +67,32 @@
                 <button id="next-month" class="calendar-nav"><i class="fas fa-chevron-right"></i></button>
             </div>
 
+            <div class="calendar-jump-picker">
+                <label for="month-picker">Jump to Month:</label>
+                <select id="month-picker">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+
+                <label for="year-picker">Year:</label>
+                <select id="year-picker">
+                    <!-- Years will be populated by JavaScript -->
+                </select>
+
+                <button id="jump-to-date" class="calendar-jump-btn"><i class="fas fa-arrow-right"></i> Jump</button>
+                <button id="today-btn" class="calendar-jump-btn today"><i class="fas fa-calendar-today"></i> Today</button>
+            </div>
+
             <div class="calendar-grid">
                 <div class="calendar-header">Sun</div>
                 <div class="calendar-header">Mon</div>
@@ -151,13 +177,13 @@
 
         <form>
             <label>Your Name</label>
-            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
 
             <label>Event Name</label>
-            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+            <input type="text" required style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
 
             <label>Rating</label>
-            <select required style="width:100%;padding:8px;margin:6px 0;background:#1e293b;border:none;color:white;border-radius:6px">
+            <select required style="width:100%;padding:8px;margin:6px 0;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px">
                 <option value="">Select</option>
                 <option>⭐ Excellent</option>
                 <option>😊 Good</option>
@@ -166,13 +192,13 @@
             </select>
 
             <label>Feedback</label>
-            <textarea required style="width:100%;height:80px;padding:8px;background:#1e293b;border:none;color:white;border-radius:6px"></textarea>
+            <textarea required style="width:100%;height:80px;padding:8px;background: rgba(108, 92, 231, 0.1);border:1px solid rgba(108, 92, 231, 0.3);color:white;border-radius:6px"></textarea>
 
             <button type="submit" style="
                 margin-top:12px;
                 width:100%;
                 padding:10px;
-                background:#6b7280;
+                background: linear-gradient(135deg, #6c5ce7, #fd79a8);
                 border:none;
                 border-radius:8px;
                 color:white;
@@ -210,12 +236,20 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="event-date">Date</label>
-                    <input type="date" id="event-date" required>
+                    <label for="event-start-date">Start Date</label>
+                    <input type="date" id="event-start-date" required>
                 </div>
                 <div class="form-group">
-                    <label for="event-time">Time</label>
-                    <input type="time" id="event-time" required>
+                    <label for="event-end-date">End Date</label>
+                    <input type="date" id="event-end-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-start-time">Start Time</label>
+                    <input type="time" id="event-start-time" required>
+                </div>
+                <div class="form-group">
+                    <label for="event-end-time">End Time</label>
+                    <input type="time" id="event-end-time" required>
                 </div>
                 <div class="form-group">
                     <label for="event-location">Location</label>
@@ -232,6 +266,59 @@
             </form>
         </div>
     </div>
+
+    <!-- Conflict Modal -->
+    <div id="conflict-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>⚠️ Event Conflict Detected</h2>
+            <div id="conflict-details"></div>
+            <div id="alternative-suggestions"></div>
+            <div class="conflict-actions">
+                <button id="cancel-registration" class="modal-button">Cancel</button>
+                <button id="force-register" class="modal-button danger">Register Anyway</button>
+                <button id="choose-alternative" class="modal-button" style="display:none;">Choose Alternative</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="cosmic-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">🌌</span>
+                <span class="logo-text">DSCE Clubs</span>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="past-events.html">Past Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Get Involved</h4>
+                    <ul>
+                        <li><a href="registration.html">Register</a></li>
+                        <li><a href="#">Volunteer</a></li>
+                        <li><a href="#">Start a Club</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class='fab fa-discord'></i> Discord</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
     const openFeedback = document.getElementById("open-feedback");

@@ -167,6 +167,29 @@ git push origin feature/your-feature
 Open a Pull Request 🚀
 
 --- 
+## ♿ Accessibility
+
+This project has been enhanced to improve keyboard accessibility and focus visibility across the navigation UI to meet WCAG guidance (2.1.1, 2.1.2, 2.4.7).
+
+Key changes:
+- Added a **Skip to main content** link (`.skip-link`) for keyboard users.
+- Mobile menu is now a proper button (`.mobile-menu-toggle`) with `aria-label`, `aria-expanded`, and `aria-controls`.
+- Navigation list (`#nav-links`) uses `aria-hidden` when closed and is reachable via `Tab` when opened.
+- Strong, visible focus styles added for keyboard users (`:focus-visible`) on links, buttons, and CTAs.
+- Keyboard handling implemented in `initNavigation()`:
+  - **Enter / Space** toggles the mobile menu
+  - **Escape** closes the menu and returns focus to the toggle
+  - **Tab / Shift+Tab** cycles focus within the open menu (focus trap)
+  - **Arrow keys (↑/↓/←/→)** move focus between menu items while the menu is open
+
+How to test (manual):
+1. Load the site and press Tab — the **Skip to main content** link should become visible. Press Enter to jump to the main area.
+2. Tab to the hamburger button, press Enter or Space to open the menu. Focus should move into the menu.
+3. Use Arrow keys to move between menu items. Press Esc to close the menu — focus returns to the toggle.
+4. Ensure visible focus outlines are present on focused interactive elements.
+
+---
+
 ## 🗺 Roadmap
 
 - Backend integration

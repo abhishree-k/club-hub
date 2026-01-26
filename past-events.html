@@ -10,7 +10,7 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
     <style>
     
     html body .timeline-section {
@@ -142,19 +142,156 @@
             padding-left: 60px !important;
             text-align: left !important;
         }
-        
-        html body .timeline-item.left, 
-        html body .timeline-item.right {
-            text-align: left !important;
-            align-self: flex-start !important;
+
+        .timeline-container {
+            position: relative !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
+            display: block !important;
+            height: auto !important;
+            min-height: 0 !important;
         }
 
-        html body .timeline-item::after {
-            left: 12px !important;
+        .timeline-line {
+            position: absolute !important;
+            left: 50% !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            width: 2px !important;
+            background: rgba(255, 255, 255, 0.2) !important;
+            transform: translateX(-50%) !important;
+            height: 100% !important;
+        }
+
+        .timeline-item {
+            position: relative !important;
+            width: calc(50% - 40px) !important;
+            margin-bottom: 50px !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: none !important;
+            animation: none !important;
+            transition: none !important;
+            display: block !important;
+            clear: none !important;
+        }
+
+        .timeline-item.left {
+            float: left !important;
+            clear: left !important;
+            left: 0 !important;
             right: auto !important;
         }
+
+        .timeline-item.right {
+            float: right !important;
+            clear: right !important;
+            right: 0 !important;
+            left: auto !important;
+        }
+
+        .timeline-item::after {
+            content: '' !important;
+            position: absolute !important;
+            top: 24px !important;
+            width: 20px !important;
+            height: 20px !important;
+            background: #fd79a8 !important;
+            border-radius: 50% !important;
+            z-index: 2 !important;
+        }
+
+        .timeline-item.left::after {
+            right: -50px !important;
+        }
+
+        .timeline-item.right::after {
+            left: -50px !important;
+        }
+
+        .timeline-content {
+            background: rgba(26, 26, 46, 0.7) !important;
+            backdrop-filter: blur(5px) !important;
+            padding: 2rem !important;
+            border-radius: 15px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Clear floats after timeline */
+        .timeline-container::after {
+            content: "" !important;
+            display: table !important;
+            clear: both !important;
+        }
+
+        .highlights-section {
+            clear: both !important;
+            margin-top: 6rem !important;
+            margin-bottom: 4rem !important;
+        }
+
+        .past-events-main {
+            padding-bottom: 4rem !important;
+            overflow: visible !important;
+        }
+
+        /* Centering Override for Hero Section */
+        .past-events-hero {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            /* Centers horizontally */
+            justify-content: center !important;
+            /* Centers vertically */
+            text-align: center !important;
+            /* Centers text lines */
+            width: 100% !important;
+            padding: 60px 20px !important;
+            /* Adds breathing room */
+        }
+
+        .hero-content {
+            margin: 0 auto !important;
+            /* Forces block centering */
+            width: 100% !important;
+            max-width: 900px !important;
+        }
+
+        .hero-title,
+        .hero-subtitle {
+            text-align: center !important;
+            /* Forces individual text elements to center */
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        .cosmic-footer {
+            position: relative !important;
+            margin-top: 4rem !important;
+            width: 100% !important;
+            clear: both !important;
+            display: block !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .timeline-item {
+                width: 100% !important;
+                float: none !important;
+                padding-left: 4rem !important;
+            }
+
+            .timeline-item::after {
+                left: 20px !important;
+            }
+
+            .timeline-line {
+                left: 40px !important;
+            }
+        }
     }
-</style>
+    </style>
 </head>
 
 <body>
@@ -363,9 +500,9 @@
     </footer>
 
     <script src="js/main.js"></script>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const yearEl = document.getElementById('year');
             if (yearEl) {
                 yearEl.textContent = new Date().getFullYear();

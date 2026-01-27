@@ -49,6 +49,9 @@ Educational institutions often face:
 - View upcoming and past events  
 - Register for events seamlessly  
 - Receive announcements and updates  
+- FAQ-frequently asked questions page
+- View club details
+- Add clubs to favourites ❤️
 
 </details>
 
@@ -76,11 +79,10 @@ Educational institutions often face:
 
 ## 🖼️ Screenshots
 
-> 📌 Upload screenshots inside: `assets/screenshots/`
+> 📌 Uploaded screenshots inside: `assets/screenshots/
 
-| Home | Events | Admin |
-|------|--------|-------|
-| ![](assets/screenshots/home.png) | ![](assets/screenshots/events.png) | ![](assets/screenshots/admin-dashboard.png) |
+
+
 
 ---
 
@@ -101,21 +103,35 @@ Educational institutions often face:
 
 ```bash
 club-hub/
-├── assets/
-│   └── screenshots/
-├── index.html
-├── events.html
-├── past-events.html
-├── registration.html
+├── admin-dashboard.html
 ├── admin-login.html
 ├── admin.css
-├── admin.js
 ├── app.js
-├── style.css
+├── club.html
+├── clubs.json
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── events.html
+├── faq.html
+├── index.html
+├── LICENSE
+├── my-hub.html
+├── package.json
+├── past-events.html
 ├── README.md
-└── CONTRIBUTING.md
+├── registration.html
+├── SECURITY.md
+├── style.css
+└── assets/
+  └── screenshots/
+  ├── home.png
+  ├── clubs.png
+  ├── view-club.png
+  └── view-club.png
+
 ```
 ---
+
 
 ## ⚙️ Getting Started
 ### Prerequisites

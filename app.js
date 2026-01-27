@@ -933,6 +933,7 @@ function initCalendar() {
     }
 
     function openEventModal(event = null, date = null) {
+        
         if (!eventModal) return;
 
         if (event) {
@@ -1269,7 +1270,8 @@ function initAdmin() {
         const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
         if (!isLoggedIn) {
             window.location.href = 'admin-login.html';
-        } else {
+        } 
+        else {
             // Init Sidebar Navigation
             const sidebarLinks = document.querySelectorAll('.admin-menu a');
             const sections = document.querySelectorAll('.admin-tab-content');
@@ -1310,27 +1312,31 @@ function initAdmin() {
     // Admin Event Management Form
     const adminEventForm = document.getElementById('admin-event-form');
 
+        adminEventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-event-name').value;
+
+        adminEventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-event-name').value;
+            alert(`Event "${name}" saved successfully!`);
+            this.reset();
         });
     });
 
+    function loadAdminDashboard() {
+        // Helper
+        const getClubName = (id) => {
+            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
+            return map[id] || id;
+        };
 
-function loadAdminDashboard() {
-    // Helper
-    const getClubName = (id) => {
-        const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
-        return map[id] || id;
-    };
 
-
-                    <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
-                    <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
-                    <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
-                    <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
-                        <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
-                `;
+                    <><td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td><td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td><td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+            <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td></>
+                ;
             registrationsTable.querySelector('tbody').appendChild(row);
-        });
-    }
+        }
 
     // Render Event Registrations
     const eventRegistrationsTable = document.getElementById('event-registrations-table');

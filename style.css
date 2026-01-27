@@ -878,8 +878,15 @@ button:focus-visible,
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
     z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.active {
+    display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 1;
 }
 
 .modal-content {
@@ -892,6 +899,27 @@ button:focus-visible,
     overflow-y: auto;
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.1);
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--primary-color, #4a90e2);;
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color, #357abd);
 }
 
 .close-modal {
@@ -901,11 +929,11 @@ button:focus-visible,
     font-size: 1.5rem;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.6);
-    transition: var(--transition);
+    transition: 0.3s;
 }
 
 .close-modal:hover {
-    color: var(--accent-color);
+    color: var(--accent-color, #ff4757);
 }
 
 /* Form Styles */
@@ -2686,56 +2714,6 @@ button:focus-visible,
     color: #ff7675;
     border: 1px solid rgba(214, 48, 49, 0.6);
 }
-
-/* Event Search Styles */
-.search-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 500px;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 25px;
-    padding: 5px;
-    backdrop-filter: blur(10px);
-}
-
-.search-input {
-    flex: 1;
-    padding: 12px 20px;
-    background: transparent;
-    border: none;
-    border-radius: 20px;
-    color: white;
-    font-family: var(--font-main);
-    font-size: 1rem;
-    outline: none;
-}
-
-.search-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.search-btn {
-    padding: 12px 20px;
-    background: var(--gradient);
-    border: none;
-    border-radius: 20px;
-    color: white;
-    cursor: pointer;
-    transition: var(--transition);
-    margin-left: 5px;
-}
-
-.search-btn:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-hover);
-}
-
-.search-btn i {
-    font-size: 1rem;
-=======
 /* =========================
    FAQ SECTION
 ========================= */

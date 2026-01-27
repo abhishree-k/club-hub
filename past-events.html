@@ -12,11 +12,135 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        /* COMPLETE OVERRIDE - Ignore original timeline CSS */
-        .timeline-section {
-            position: relative !important;
-            padding: 3rem 2rem !important;
-            margin-bottom: 0 !important;
+    
+    html body .timeline-section {
+        display: block !important;
+        position: relative !important;
+        height: auto !important;
+        min-height: 100vh !important; 
+        padding: 5rem 2rem !important;
+        overflow: visible !important;
+        z-index: 10 !important;
+    }
+
+    
+    html body .highlights-section {
+        position: relative !important;
+        clear: both !important;
+        margin-top: 100px !important;
+        z-index: 20 !important;
+        display: block !important;
+        background: transparent !important;
+    }
+
+    
+    html body .timeline-container {
+        display: flex !important;
+        flex-direction: column !important;
+        position: relative !important;
+        max-width: 1000px !important;
+        margin: 0 auto !important;
+        height: auto !important;
+        gap: 50px !important; 
+    }
+
+    
+    html body .timeline-item {
+        position: relative !important; 
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        
+        display: block !important;
+        width: 45% !important; 
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        float: none !important;
+        clear: both !important;
+    }
+
+   
+    html body .timeline-item.left {
+        align-self: flex-start !important;
+        text-align: right !important;
+        margin-right: auto !important;
+    }
+
+    html body .timeline-item.right {
+        align-self: flex-end !important;
+        text-align: left !important;
+        margin-left: auto !important; 
+    }
+
+   
+    html body .timeline-line {
+        position: absolute !important;
+        left: 50% !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        width: 4px !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+        transform: translateX(-50%) !important;
+    }
+
+   
+    html body .timeline-content {
+        position: relative !important;
+        display: block !important;
+        background: rgba(26, 26, 46, 0.95) !important;
+        padding: 2rem !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        height: auto !important;
+    }
+
+   
+    html body .timeline-content * {
+        position: relative !important;
+        display: block !important;
+        top: auto !important;
+        left: auto !important;
+        margin-bottom: 10px !important;
+        height: auto !important;
+        width: auto !important;
+        color: white !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    
+    html body .timeline-date { color: #fd79a8 !important; font-weight: bold !important; }
+    html body .timeline-description { color: #ccc !important; }
+
+    
+    html body .timeline-item::after {
+        content: '' !important;
+        position: absolute !important;
+        top: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+        background: #fd79a8 !important;
+        border-radius: 50% !important;
+        z-index: 100 !important;
+        box-shadow: 0 0 0 4px rgba(253, 121, 168, 0.2) !important;
+    }
+    html body .timeline-item.left::after { right: -40px !important; left: auto !important; }
+    html body .timeline-item.right::after { left: -40px !important; right: auto !important; }
+
+    
+    @media (max-width: 768px) {
+        html body .timeline-line { left: 20px !important; }
+        
+        html body .timeline-item {
+            width: 100% !important;
+            padding-left: 60px !important;
+            text-align: left !important;
         }
 
         .timeline-container {
@@ -166,6 +290,7 @@
                 left: 40px !important;
             }
         }
+    }
     </style>
 </head>
 

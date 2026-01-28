@@ -1,82 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home | DSCE Clubs</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | DSCE Clubs</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="darkmode.js" defer></script>
-</head>
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="stars-background"></div>
 
-    <nav class="cosmic-nav"> 
-        <div class="nav-logo">
-            <span class="logo-icon">🌌</span>
-            <span class="logo-text">DSCE Clubs</span>
-        </div>
-        <ul class="nav-links">
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="events.html">Live & Upcoming Events</a></li>
-            <li><a href="past-events.html">Past Events</a></li>
-            <li><a href="registration.html">Registration</a></li>
-            <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
-            <li><a href="admin-login.html">Admin</a></li>
-            <li id="nav-login"><a href="registration.html#student-login">Student Login</a></li>
-            <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
-          <!-- button for switch themes -->
-          <button id="theme-switch">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-<path d="M0 0 C-2 4 -2 4 -3.1875 5.875 C-4.36377419 8.95140942 -3.91349151 10.86802912 -3 14 C-0.62427019 17.38084626 0.64396525 17.92879305 4.75 18.75 C5.8225 18.8325 6.895 18.915 8 19 C7.265625 20.94140625 7.265625 20.94140625 6 23 C1.77292704 24.5471087 -2.16737291 24.27754236 -6.375 22.875 C-9.37849231 20.72964835 -10.62821625 19.42945937 -12 16 C-12.54333853 11.10995324 -12.52109104 9.00496129 -10.25 4.625 C-6.83147172 0.63671701 -5.25942751 0 0 0 Z " fill="#494DDC" transform="translate(14,0)"/>
-<path d="M0 0 C-1.34978533 2.78043337 -2.81178397 5.43400585 -4.4375 8.0625 C-4.84871094 8.73410156 -5.25992187 9.40570313 -5.68359375 10.09765625 C-6.98768055 11.98219711 -8.25924752 13.50991587 -10 15 C-10.66 15 -11.32 15 -12 15 C-12.45543387 9.30707666 -11.68246386 6.3984985 -8 2 C-4.9744375 -0.08007422 -3.85524891 0 0 0 Z " fill="#3193DE" transform="translate(14,0)"/>
-<path d="M0 0 C2.05078125 0.03255208 4.1015625 0.06510417 6.15234375 0.09765625 C5.44140625 2.05078125 5.44140625 2.05078125 4.15234375 4.09765625 C1.98828125 4.70703125 1.98828125 4.70703125 -0.47265625 4.84765625 C-1.28992188 4.904375 -2.1071875 4.96109375 -2.94921875 5.01953125 C-3.57570313 5.0453125 -4.2021875 5.07109375 -4.84765625 5.09765625 C-2.44354091 0.12915121 -2.44354091 0.12915121 0 0 Z " fill="#6006D4" transform="translate(15.84765625,18.90234375)"/>
-<path d="M0 0 C0.66 0.66 1.32 1.32 2 2 C1.9375 3.875 1.9375 3.875 1 6 C-1.5625 8.25 -1.5625 8.25 -4 10 C-4.66 8.35 -5.32 6.7 -6 5 C-4.02 3.35 -2.04 1.7 0 0 Z " fill="#3E6ADB" transform="translate(8,10)"/>
-<path d="M0 0 C-2.97 2.97 -5.94 5.94 -9 9 C-9.33 8.34 -9.66 7.68 -10 7 C-4.4 -2.2 -4.4 -2.2 0 0 Z " fill="#2BA5E2" transform="translate(12,1)"/>
-<path d="M0 0 C0.99 0.66 1.98 1.32 3 2 C1.25 4.0625 1.25 4.0625 -1 6 C-3.25 5.75 -3.25 5.75 -5 5 C-3.35 3.35 -1.7 1.7 0 0 Z " fill="#5034D6" transform="translate(12,17)"/>
-<path d="M0 0 C0.99 0 1.98 0 3 0 C2.25 1.9375 2.25 1.9375 1 4 C-1.125 4.75 -1.125 4.75 -3 5 C-1.125 1.125 -1.125 1.125 0 0 Z " fill="#581CD4" transform="translate(14,19)"/>
-<path d="M0 0 C0.33 0.99 0.66 1.98 1 3 C-0.62339805 4.70884005 -2.29319053 6.37446717 -4 8 C-4.66 8 -5.32 8 -6 8 C-4.55746343 4.63408134 -2.66735273 2.48952921 0 0 Z " fill="#3682DE" transform="translate(8,7)"/>
-</svg>
-
-
-
-          
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-<path d="M0 0 C2.375 1.625 2.375 1.625 4 4 C4.61195145 7.6717087 4.48706506 9.28813568 2.375 12.375 C-0.71186432 14.48706506 -2.3282913 14.61195145 -6 14 C-8.375 12.375 -8.375 12.375 -10 10 C-10.61195145 6.3282913 -10.48706506 4.71186432 -8.375 1.625 C-5.28813568 -0.48706506 -3.6717087 -0.61195145 0 0 Z " fill="#7278ED" transform="translate(15,5)"/>
-<path d="M0 0 C0.66 0.66 1.32 1.32 2 2 C1.34 2 0.68 2 0 2 C-0.2475 2.5775 -0.495 3.155 -0.75 3.75 C-2.18299988 6.32939979 -3.78424676 8.06121592 -6 10 C-6.66 10 -7.32 10 -8 10 C-8.33 10.66 -8.66 11.32 -9 12 C-10.42041821 9.15916359 -10.31452272 7.14522722 -10 4 C-7.19858725 -0.09437248 -4.83360432 -0.63047013 0 0 Z " fill="#AC43F4" transform="translate(15,5)"/>
-<path d="M0 0 C-0.3125 3.375 -0.3125 3.375 -1 7 C-4.22791555 9.1519437 -5.28400809 9.20086443 -9 9 C-8.04663979 7.68388323 -7.08714226 6.37221039 -6.125 5.0625 C-5.59132813 4.33160156 -5.05765625 3.60070312 -4.5078125 2.84765625 C-2.18393235 0 -2.18393235 0 0 0 Z " fill="#4B98E7" transform="translate(19,10)"/>
-<path d="M0 0 C0.99 0.33 1.98 0.66 3 1 C2.34 1 1.68 1 1 1 C0.7525 1.5775 0.505 2.155 0.25 2.75 C-1.18299988 5.32939979 -2.78424676 7.06121592 -5 9 C-5.66 9 -6.32 9 -7 9 C-7.33 9.66 -7.66 10.32 -8 11 C-7.49268371 6.60325886 -4.88085945 4.16191891 -2 1 C-1.34 0.67 -0.68 0.34 0 0 Z " fill="#8E5DF1" transform="translate(14,6)"/>
-<path d="M0 0 C1.485 0.99 1.485 0.99 3 2 C3 2.66 3 3.32 3 4 C1.68 3.34 0.36 2.68 -1 2 C-0.67 1.34 -0.34 0.68 0 0 Z " fill="#12C9DE" transform="translate(18,17)"/>
-<path d="M0 0 C0.66 0.66 1.32 1.32 2 2 C0.02 2.99 0.02 2.99 -2 4 C-1.34 2.68 -0.68 1.36 0 0 Z " fill="#7E6DEE" transform="translate(5,17)"/>
-<path d="M0 0 C0.66 0 1.32 0 2 0 C1.34 1.32 0.68 2.64 0 4 C-0.66 3.34 -1.32 2.68 -2 2 C-1.34 1.34 -0.68 0.68 0 0 Z " fill="#7E6DEE" transform="translate(19,3)"/>
-<path d="M0 0 C1.98 0.99 1.98 0.99 4 2 C3.34 2.66 2.68 3.32 2 4 C1.34 2.68 0.68 1.36 0 0 Z " fill="#E911FD" transform="translate(3,3)"/>
-<path d="M0 0 C0.66 0 1.32 0 2 0 C2 1.32 2 2.64 2 4 C1.34 4 0.68 4 0 4 C0 2.68 0 1.36 0 0 Z " fill="#33AEE5" transform="translate(11,20)"/>
-<path d="M0 0 C1.32 0 2.64 0 4 0 C4 0.66 4 1.32 4 2 C2.68 2 1.36 2 0 2 C0 1.34 0 0.68 0 0 Z " fill="#34ADE4" transform="translate(20,11)"/>
-<path d="M0 0 C1.32 0 2.64 0 4 0 C4 0.66 4 1.32 4 2 C2.68 2 1.36 2 0 2 C0 1.34 0 0.68 0 0 Z " fill="#C72CF8" transform="translate(0,11)"/>
-<path d="M0 0 C0.66 0 1.32 0 2 0 C2 1.32 2 2.64 2 4 C1.34 4 0.68 4 0 4 C0 2.68 0 1.36 0 0 Z " fill="#C82CF8" transform="translate(11,0)"/>
-</svg>
+    <nav class="cosmic-nav" role="navigation" aria-label="Main navigation">
+      <div class="nav-logo">
+        <span class="logo-icon">🌌</span>
+        <span class="logo-text">DSCE Clubs</span>
+      </div>
+      <ul class="nav-links" id="nav-links" aria-hidden="false">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="events.html">Live & Upcoming Events</a></li>
+        <li><a href="past-events.html">Past Events</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="registration.html">Registration</a></li>
+        <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
+        <li><a href="admin-login.html">Admin</a></li>
+        <li id="nav-login">
+          <a href="registration.html#student-login">Student Login</a>
+        </li>
+        <li id="nav-logout" class="hidden">
+          <a href="#" id="student-logout-btn">Logout</a>
+        </li>
+      </ul>
+      <button
+        class="mobile-menu-toggle nav-hamburger"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="nav-links"
+        type="button"
+      >
+        <span class="hamburger-icon" aria-hidden="true">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+        </span>
       </button>
-        </ul>
-        <div class="nav-hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-        </ul>
-        <div class="nav-hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
     </nav>
 
     <header class="hero-section">
@@ -96,80 +70,91 @@
       </div>
     </header>
 
-    <main>
-        <section id="clubs" class="clubs-section">
-            <h2 class="section-title">Our <span class="text-gradient">Clubs</span></h2>
-            <div class="clubs-grid">
-                <div class="club-card" data-club="tech">
-                    <div class="club-icon">💻</div>
-                    <h3>Tech Society - POINT BLANK</h3>
-                    <p>Innovate, code, and build the future with fellow tech enthusiasts.</p>
-                    <div class="club-tags">
-                        <span>Hackathons</span>
-                        <span>Weekly Hustle</span>
-                        <span>AI/ML</span>
-                        <span>Cyber</span>
-                    </div>
-                </div>
-                
-                <div class="club-card" data-club="arts">
-                    <div class="club-icon">🎨</div>
-                    <h3>Creative Arts - AALEKA</h3>
-                    <p>Express yourself through painting, sculpture, and digital art.</p>
-                    <div class="club-tags">
-                        <span>Exhibitions</span>
-                        <span>Live Demos</span>
-                        <span>Collaborations</span>
-                        <span>Competitions</span>
-                    </div>
-                </div>
-                
-                <div class="club-card" data-club="debate">
-                    <div class="club-icon">💬</div>
-                    <h3>Debate Club - LITSOC</h3>
-                    <p>Sharpen your rhetoric and critical thinking skills.</p>
-                    <div class="club-tags">
-                        <span>Tournaments</span>
-                        <span>Public Speaking</span>
-                        <span>Model UN</span>
-                    </div>
-                </div>
-                
-                <div class="club-card" data-club="music">
-                    <div class="club-icon">🎵</div>
-                    <h3>Music Society</h3>
-                    <p>Create, perform, and appreciate music in all its forms.</p>
-                    <div class="club-tags">
-                        <span>Concerts</span>
-                        <span>Jam Sessions</span>
-                        <span>Composition</span>
-                        <span>Shayari</span>
-                    </div>
-                </div>
-                
-                <div class="club-card" data-club="sports">
-                    <div class="club-icon">⚽</div>
-                    <h3>Sports Club</h3>
-                    <p>Stay active and compete in various sports activities.</p>
-                    <div class="club-tags">
-                        <span>Tournaments</span>
-                        <span>Fitness</span>
-                        <span>Team Building</span>
-                    </div>
-                </div>
-                
-                <div class="club-card" data-club="science">
-                    <div class="club-icon">💃</div>
-                    <h3>Dance Club - ABCD</h3>
-                    <p>"Let's move to the beat and make memories together!".</p>
-                    <div class="club-tags">
-                        <span>Live Performances</span>
-                        <span>Cine stars meetups</span>
-                        <span>Competitions</span>
-                    </div>
-                </div>
+    <main id="main-content" tabindex="-1">
+      <section id="clubs" class="clubs-section">
+        <h2 class="section-title">
+          Our <span class="text-gradient">Clubs</span>
+        </h2>
+        <div class="clubs-grid">
+          <div class="club-card" data-club="tech">
+            <div class="club-icon">💻</div>
+            <h3>Tech Society - POINT BLANK</h3>
+            <p>
+              Innovate, code, and build the future with fellow tech enthusiasts.
+            </p>
+            <div class="club-tags">
+              <span>Hackathons</span>
+              <span>Weekly Hustle</span>
+              <span>AI/ML</span>
+              <span>Cyber</span>
             </div>
+            <button class="view-club-btn" data-club="tech">View Club</button>
           </div>
+
+          <div class="club-card" data-club="arts">
+            <div class="club-icon">🎨</div>
+            <h3>Creative Arts - AALEKA</h3>
+            <p>
+              Express yourself through painting, sculpture, and digital art.
+            </p>
+            <div class="club-tags">
+              <span>Exhibitions</span>
+              <span>Live Demos</span>
+              <span>Collaborations</span>
+              <span>Competitions</span>
+            </div>
+            <button class="view-club-btn" data-club="arts">View Club</button>
+          </div>
+
+          <div class="club-card" data-club="debate">
+            <div class="club-icon">💬</div>
+            <h3>Debate Club - LITSOC</h3>
+            <p>Sharpen your rhetoric and critical thinking skills.</p>
+            <div class="club-tags">
+              <span>Tournaments</span>
+              <span>Public Speaking</span>
+              <span>Model UN</span>
+            </div>
+            <button class="view-club-btn" data-club="debate">View Club</button>
+          </div>
+
+          <div class="club-card" data-club="music">
+            <div class="club-icon">🎵</div>
+            <h3>Music Society</h3>
+            <p>Create, perform, and appreciate music in all its forms.</p>
+            <div class="club-tags">
+              <span>Concerts</span>
+              <span>Jam Sessions</span>
+              <span>Composition</span>
+              <span>Shayari</span>
+            </div>
+            <button class="view-club-btn" data-club="music">View Club</button>
+          </div>
+
+          <div class="club-card" data-club="sports">
+            <div class="club-icon">⚽</div>
+            <h3>Sports Club</h3>
+            <p>Stay active and compete in various sports activities.</p>
+            <div class="club-tags">
+              <span>Tournaments</span>
+              <span>Fitness</span>
+              <span>Team Building</span>
+            </div>
+            <button class="view-club-btn" data-club="sports">View Club</button>
+          </div>
+
+          <div class="club-card" data-club="science">
+            <div class="club-icon">💃</div>
+            <h3>Dance Club - ABCD</h3>
+            <p>"Let's move to the beat and make memories together!".</p>
+            <div class="club-tags">
+              <span>Live Performances</span>
+              <span>Cine stars meetups</span>
+              <span>Competitions</span>
+            </div>
+            <button class="view-club-btn" data-club="science">View Club</button>
+          </div>
+        </div>
       </section>
 
       <section class="testimonials-section">
@@ -203,19 +188,13 @@
           <span class="dot active"></span>
           <span class="dot"></span>
           <span class="dot"></span>
-        
+        </div>
       </section>
 
       <!-- scroll top button -->
-       <!-- make the icon translucent -->
-      <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5;">
+      <!-- make the icon translucent -->
+      <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
         <i class="fas fa-chevron-up"></i>
-      </button>
-
-      <!-- scroll translate top button -->
-      <button id="showTranslateBtn" title="Translate Page">
-        <i id="google_translate_element">
-        </i>
       </button>
     </main>
 
@@ -223,7 +202,7 @@
       <div class="footer-content">
         <div class="footer-logo">
           <span class="logo-icon">🌌</span>
-          <span class="logo-text">DSCE</span>
+          <span class="logo-text">DSCE Clubs</span>
         </div>
         <div class="footer-links">
           <div class="footer-column">
@@ -249,7 +228,7 @@
                 <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
               </li>
               <li>
-                <a href="#"><i class="fa fa-twitter"></i> Twitter</a>
+                <a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
               </li>
               <li>
                 <a href="#"><i class="fab fa-discord"></i> Discord</a>
@@ -259,24 +238,11 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 ClubsDSCE. All rights reserved.</p>
+        <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
       </div>
     </footer>
 
     <script src="app.js"></script>
-
-    <!-- script for swithc the themes -->
-    <script>
-      function themes() {
-        const body = document.body;
-        const currentTheme = body.getAttribute("data-theme");
-
-        if (currentTheme === "dark") {
-          body.setAttribute("data-theme", "light");
-        } else {
-          body.setAttribute("data-theme", "dark");
-        }
-      }
-    </script>
+    <script src="scroll.js"></script>
   </body>
 </html>

@@ -48,17 +48,17 @@
     <main class="events-main">
         <!-- 🔍 Event Search -->
 <div style="text-align:center; margin: 20px 0;">
-    <input 
-        type="text" 
-        id="eventSearch" 
-        placeholder="Search events or clubs..." 
-        style="
-            width:60%;
-            padding:10px;
-            border-radius:8px;
-            border:1px solid #ccc;
-        "
-    >
+    <div class="search-container">
+        <input 
+            type="text" 
+            id="eventSearch" 
+            placeholder="Search events or clubs..." 
+            class="search-input"
+        >
+        <button type="button" id="search-btn" class="search-btn">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
 </div>
 
         <section class="calendar-section">
@@ -287,6 +287,44 @@
         </div>
     </div>
 
+    <footer class="cosmic-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">🌌</span>
+                <span class="logo-text">DSCE Clubs</span>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="past-events.html">Past Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Get Involved</h4>
+                    <ul>
+                        <li><a href="registration.html">Register</a></li>
+                        <li><a href="#">Volunteer</a></li>
+                        <li><a href="#">Start a Club</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class='fab fa-discord'></i> Discord</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script>
     const openFeedback = document.getElementById("open-feedback");
     const feedbackModal = document.getElementById("feedback-modal");
@@ -294,7 +332,7 @@
 
     openFeedback.onclick = () => feedbackModal.style.display = "flex";
     closeFeedback.onclick = () => feedbackModal.style.display = "none";
-</script>
+    </script>
     <script src="app.js"></script>
     <script src="scroll.js"></script>
     <script>

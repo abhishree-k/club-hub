@@ -15,6 +15,10 @@ document.addEventListener('DOMContentLoaded', function () {
     initClubButtons();
     initClubDetails();
   
+    initDynamicEventDates();
+    initClubButtons();
+    initClubDetails();
+  
     const yearEl = document.getElementById("year");
     if (yearEl) {
         yearEl.textContent = new Date().getFullYear();
@@ -43,9 +47,11 @@ function getFutureDate(daysFromNow) {
     const date = new Date();
     date.setDate(date.getDate() + daysFromNow);
     
+    
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
+    
     
     return `${year}-${month}-${day}`;
 }
@@ -194,7 +200,130 @@ function initNavigation() {
             closeMenu();
         }
     });
+    // Elements
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle'); // toggle button
+    const mobileMenu = document.querySelector('.nav-links'); // nav list
 
+    if (!mobileMenuToggle || !mobileMenu) return; // nothing to do if missing
+
+    const navLinks = mobileMenu.querySelectorAll('a');
+    let isMenuOpen = false;
+
+    // Open the menu and move focus to first link
+    function openMenu() {
+        isMenuOpen = true;
+        mobileMenu.classList.add('active');
+        mobileMenuToggle.classList.add('active');
+        mobileMenuToggle.setAttribute('aria-expanded', 'true');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+
+        // Focus the first link inside the menu (small delay to allow CSS transition)
+        setTimeout(() => {
+            const firstLink = mobileMenu.querySelector('a');
+            if (firstLink) firstLink.focus();
+        }, 50);
+
+        // Attach document key handler for Escape, Tab trap and arrow navigation
+        document.addEventListener('keydown', onDocumentKeyDown);
+    }
+
+    // Close the menu and return focus to toggle
+    function closeMenu() {
+        isMenuOpen = false;
+        mobileMenu.classList.remove('active');
+        mobileMenuToggle.classList.remove('active');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        mobileMenuToggle.focus();
+
+        // Remove document-level key handler
+        document.removeEventListener('keydown', onDocumentKeyDown);
+    }
+
+    function toggleMenu() {
+        if (isMenuOpen) closeMenu(); else openMenu();
+    }
+
+    // Click to toggle
+    mobileMenuToggle.addEventListener('click', function () {
+        toggleMenu();
+    });
+
+    // Keyboard activation for toggle (Enter / Space)
+    mobileMenuToggle.addEventListener('keydown', function (event) {
+        // Activate on Enter or Space
+        if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+            event.preventDefault();
+            toggleMenu();
+        }
+    });
+
+    // Helper: move focus by delta within menu links (wraps around)
+    function moveFocus(delta) {
+        const focusable = Array.from(mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])'));
+        if (!focusable.length) return;
+
+        const currentIndex = focusable.indexOf(document.activeElement);
+        let nextIndex = currentIndex + delta;
+
+        // If nothing is focused inside the menu, focus the first (or last if delta < 0)
+        if (currentIndex === -1) {
+            nextIndex = delta > 0 ? 0 : focusable.length - 1;
+        }
+
+        // Wrap around
+        if (nextIndex < 0) nextIndex = focusable.length - 1;
+        if (nextIndex >= focusable.length) nextIndex = 0;
+
+        focusable[nextIndex].focus();
+    }
+
+    // Document-level keyboard handler: Escape to close, Tab to trap focus, Arrow keys to navigate
+    function onDocumentKeyDown(event) {
+        // Close on Escape
+        if (event.key === 'Escape') {
+            if (isMenuOpen) closeMenu();
+            return;
+        }
+
+        // Arrow navigation (Left/Up = previous, Right/Down = next)
+        if (isMenuOpen && (event.key === 'ArrowDown' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowLeft')) {
+            event.preventDefault();
+            if (event.key === 'ArrowDown' || event.key === 'ArrowRight') moveFocus(1);
+            else moveFocus(-1);
+            return;
+        }
+
+        // Focus trap: if menu is open and Tab is pressed, ensure focus cycles within menu
+        if (event.key === 'Tab' && isMenuOpen) {
+            const focusable = mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+            if (!focusable.length) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (event.shiftKey) { // Shift+Tab
+                if (document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                }
+            } else { // Tab
+                if (document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+        }
+    }
+
+    // Close when clicking outside the menu
+    document.addEventListener('click', function (event) {
+        if (isMenuOpen && !mobileMenu.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
+            closeMenu();
+        }
+    });
+
+    // Smooth scrolling for anchor links (preserve previous behavior)
     // Smooth scrolling for anchor links (preserve previous behavior)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -213,6 +342,8 @@ function initNavigation() {
                 // Close mobile menu if open
                 if (mobileMenu && mobileMenu.classList.contains('active')) {
                     closeMenu();
+                if (mobileMenu && mobileMenu.classList.contains('active')) {
+                    closeMenu();
                 }
             }
         });
@@ -227,6 +358,7 @@ function initMyHub() {
     }
 
     const welcomeMsg = document.getElementById('hub-welcome-msg');
+    // Sanitize user name to prevent XSS
     // Sanitize user name to prevent XSS
     if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${student.name}!`;
 
@@ -249,6 +381,8 @@ function initMyHub() {
                     'sports': { name: 'Sports Club', icon: '⚽' },
                     'science': { name: 'Dance club- ABCD', icon: '💃' }
                 };
+                // Sanitize clubId to prevent XSS if custom club name is added
+                const club = clubs[clubId] || { name: escapeHtml(clubId), icon: '🌟' };
                 // Sanitize clubId to prevent XSS if custom club name is added
                 const club = clubs[clubId] || { name: escapeHtml(clubId), icon: '🌟' };
 
@@ -274,13 +408,18 @@ function initMyHub() {
             eventsList.innerHTML = '';
             // Sort by date then time
             registeredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+            // Sort by date then time
+            registeredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
 
             registeredEvents.forEach(event => {
                 const item = document.createElement('div');
                 item.classList.add('hub-item');
                 // Sanitize event data from localStorage
+                // Sanitize event data from localStorage
                 item.innerHTML = `
                     <div class="hub-item-info">
+                        <h4>${escapeHtml(event.name)}</h4>
+                        <p><i class="far fa-calendar-alt"></i> ${escapeHtml(event.date)} | <i class="far fa-clock"></i> ${escapeHtml(event.time)}</p>
                         <h4>${escapeHtml(event.name)}</h4>
                         <p><i class="far fa-calendar-alt"></i> ${escapeHtml(event.date)} | <i class="far fa-clock"></i> ${escapeHtml(event.time)}</p>
                     </div>
@@ -447,6 +586,13 @@ function initForms() {
             });
         });
 
+        // Clear errors on input
+        clubRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', function () {
+                clearFieldError(this);
+            });
+        });
+
         clubRegistrationForm.addEventListener('submit', function (e) {
             e.preventDefault();
             clearFormErrors(this);
@@ -494,10 +640,84 @@ function initForms() {
                 isValid = false;
             }
 
+            clearFormErrors(this);
+
+            // Validate all required fields
+            const firstName = document.getElementById('club-first-name');
+            const lastName = document.getElementById('club-last-name');
+            const email = document.getElementById('club-email');
+            const studentId = document.getElementById('club-student-id');
+            const major = document.getElementById('club-major');
+            const year = document.getElementById('club-year');
+
+            let isValid = true;
+
+            if (!firstName.value.trim()) {
+                showFieldError(firstName, 'First name is required');
+                isValid = false;
+            }
+
+            if (!lastName.value.trim()) {
+                showFieldError(lastName, 'Last name is required');
+                isValid = false;
+            }
+
+            if (!email.value.trim()) {
+                showFieldError(email, 'Email is required');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                showFieldError(email, 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            if (!studentId.value.trim()) {
+                showFieldError(studentId, 'Student ID is required');
+                isValid = false;
+            }
+
+            if (!major.value.trim()) {
+                showFieldError(major, 'Major is required');
+                isValid = false;
+            }
+
+            if (!year.value) {
+                showFieldError(year, 'Please select your year of study');
+                isValid = false;
+            }
+
             const selectedClubs = Array.from(this.querySelectorAll('input[name="club"]:checked')).map(cb => cb.value);
+            const clubCheckboxContainer = this.querySelector('.club-checkboxes');
             const clubCheckboxContainer = this.querySelector('.club-checkboxes');
 
             if (selectedClubs.length === 0) {
+                // Avoid duplicating error elements
+                let existingClubError = clubCheckboxContainer.parentNode.querySelector('.form-error.club-error');
+                if (!existingClubError) {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.classList.add('form-error', 'club-error');
+                    errorMsg.textContent = 'Please select at least one club';
+                    errorMsg.style.marginTop = '0.5rem';
+                    clubCheckboxContainer.parentNode.appendChild(errorMsg);
+                }
+
+                // Attach change listeners once to clear the error when a club is selected
+                if (!clubCheckboxContainer.dataset.clubListenersAttached) {
+                    const clubCheckboxes = this.querySelectorAll('input[name="club"]');
+                    clubCheckboxes.forEach(cb => {
+                        cb.addEventListener('change', () => {
+                            const anyChecked = clubCheckboxContainer.querySelectorAll('input[name="club"]:checked').length > 0;
+                            const clubError = clubCheckboxContainer.parentNode.querySelector('.form-error.club-error');
+                            if (anyChecked && clubError) {
+                                clubError.remove();
+                            }
+                        });
+                    });
+                    clubCheckboxContainer.dataset.clubListenersAttached = 'true';
+                }
+                isValid = false;
+            }
+
+            if (!isValid) {
                 // Avoid duplicating error elements
                 let existingClubError = clubCheckboxContainer.parentNode.querySelector('.form-error.club-error');
                 if (!existingClubError) {
@@ -561,8 +781,41 @@ function initForms() {
                     localStorage.setItem(`clubs_${studentId.value}`, JSON.stringify(joinedClubs));
                     localStorage.setItem('allClubMemberships', JSON.stringify(allMemberships));
                 }
+            // Save to localStorage if user is logged in
+            if (selectedClubs.length > 0) {
+                const student = JSON.parse(localStorage.getItem('studentUser'));
+                if (student && student.id === studentId.value) {
+                    const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${studentId.value}`)) || [];
+
+                    // Update Global Membership List (for Admin & Analytics)
+                    let allMemberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
+
+                    selectedClubs.forEach(club => {
+                        if (!joinedClubs.includes(club)) {
+                            joinedClubs.push(club);
+
+                            // Add to global list if not already there (simple check)
+                            // In a real app, this would be handled by backend relationships
+                            const existing = allMemberships.find(m => m.studentId === studentId.value && m.club === club);
+                            if (!existing) {
+                                const newId = allMemberships.length > 0 ? Math.max(...allMemberships.map(m => m.id)) + 1 : 1;
+                                allMemberships.push({
+                                    id: newId,
+                                    name: student.name,
+                                    studentId: studentId.value,
+                                    club: club,
+                                    status: 'Pending', // Default status
+                                    joinedAt: new Date().toISOString()
+                                });
+                            }
+                        }
+                    });
+                    localStorage.setItem(`clubs_${studentId.value}`, JSON.stringify(joinedClubs));
+                    localStorage.setItem('allClubMemberships', JSON.stringify(allMemberships));
+                }
             }
 
+            showFormSuccess(this, 'Club registration submitted successfully! We will contact you soon.');
             showFormSuccess(this, 'Club registration submitted successfully! We will contact you soon.');
             this.reset();
             updateEnrollmentStatus();
@@ -576,7 +829,12 @@ function initForms() {
         eventRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
             field.addEventListener('input', function () {
                 clearFieldError(this);
+        // Clear errors on input
+        eventRegistrationForm.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', function () {
+                clearFieldError(this);
             });
+        });
         });
 
         eventRegistrationForm.addEventListener('submit', function (e) {
@@ -590,7 +848,19 @@ function initForms() {
             const studentId = document.getElementById('event-student-id');
 
             let isValid = true;
+            clearFormErrors(this);
 
+            const eventName = document.getElementById('selected-event-name').textContent;
+            const firstName = document.getElementById('event-first-name');
+            const lastName = document.getElementById('event-last-name');
+            const email = document.getElementById('event-email');
+            const studentId = document.getElementById('event-student-id');
+
+            let isValid = true;
+
+            if (!firstName.value.trim()) {
+                showFieldError(firstName, 'First name is required');
+                isValid = false;
             if (!firstName.value.trim()) {
                 showFieldError(firstName, 'First name is required');
                 isValid = false;
@@ -599,8 +869,25 @@ function initForms() {
             if (!lastName.value.trim()) {
                 showFieldError(lastName, 'Last name is required');
                 isValid = false;
+            if (!lastName.value.trim()) {
+                showFieldError(lastName, 'Last name is required');
+                isValid = false;
             }
 
+            if (!email.value.trim()) {
+                showFieldError(email, 'Email is required');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                showFieldError(email, 'Please enter a valid email address');
+                isValid = false;
+            }
+            if (!studentId.value.trim()) {
+                showFieldError(studentId, 'Student ID is required');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
             if (!email.value.trim()) {
                 showFieldError(email, 'Email is required');
                 isValid = false;
@@ -666,6 +953,52 @@ function initForms() {
                 const container = document.getElementById('event-registration-form-container');
                 if (container) container.classList.add('hidden');
             }, 5000);
+                // Dynamic event dates - updated to use relative dates
+                const events = [
+                    { id: 1, name: "AI Workshop Series", date: getFutureDate(7), time: "14:00" },
+                    { id: 2, name: "Digital Art Masterclass", date: getFutureDate(14), time: "16:00" },
+                    { id: 3, name: "Public Speaking Workshop", date: getFutureDate(21), time: "15:00" }
+                ];
+
+                const currentEvent = events.find(ev => ev.name === eventName);
+                if (currentEvent) {
+                    const studentEvents = JSON.parse(localStorage.getItem(`events_${studentId.value}`)) || [];
+
+                    // Conflict detection: Same day, overlapping time (mocking 2 hour duration)
+                    const conflict = studentEvents.find(se => {
+                        if (se.date !== currentEvent.date) return false;
+                        const seTime = parseInt(se.time.split(':')[0]);
+                        const ceTime = parseInt(currentEvent.time.split(':')[0]);
+                        return Math.abs(seTime - ceTime) < 2;
+                    });
+
+                    if (conflict) {
+                        showFieldError(studentId, `Conflict Detected! You are already registered for "${conflict.name}" at ${conflict.time} on this day.`);
+                        return;
+                    }
+
+                    studentEvents.push(currentEvent);
+                    localStorage.setItem(`events_${studentId.value}`, JSON.stringify(studentEvents));
+
+                    // Update Global Event Registrations (for Admin & Analytics)
+                    let allEventRegs = JSON.parse(localStorage.getItem('allEventRegistrations')) || [];
+                    allEventRegs.push({
+                        eventName: currentEvent.name,
+                        eventId: currentEvent.id,
+                        studentId: student.id,
+                        studentName: student.name,
+                        date: new Date().toISOString()
+                    });
+                    localStorage.setItem('allEventRegistrations', JSON.stringify(allEventRegs));
+                }
+            }
+
+            showFormSuccess(this, 'Event registration submitted successfully!');
+            setTimeout(() => {
+                this.reset();
+                const container = document.getElementById('event-registration-form-container');
+                if (container) container.classList.add('hidden');
+            }, 5000);
             updateEnrollmentStatus();
         });
     }
@@ -673,6 +1006,13 @@ function initForms() {
     // Student Login
     const studentLoginForm = document.getElementById('student-login-form');
     if (studentLoginForm) {
+        // Clear errors on input
+        studentLoginForm.querySelectorAll('input').forEach(field => {
+            field.addEventListener('input', function () {
+                clearFieldError(this);
+            });
+        });
+
         // Clear errors on input
         studentLoginForm.querySelectorAll('input').forEach(field => {
             field.addEventListener('input', function () {
@@ -690,7 +1030,43 @@ function initForms() {
             const id = idField.value.trim();
 
             let isValid = true;
+            clearFormErrors(this);
 
+            const nameField = document.getElementById('login-student-name');
+            const idField = document.getElementById('login-student-id');
+            const name = nameField.value.trim();
+            const id = idField.value.trim();
+
+            let isValid = true;
+
+            if (!name) {
+                showFieldError(nameField, 'Full name is required');
+                isValid = false;
+            }
+
+            if (!id) {
+                showFieldError(idField, 'Student ID is required');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            const student = { name, id };
+            localStorage.setItem('studentUser', JSON.stringify(student));
+            updateUIForStudent();
+
+            const loginMessage = document.getElementById('login-message');
+            if (loginMessage) {
+                loginMessage.textContent = 'Login successful! Redirecting...';
+                loginMessage.style.color = 'var(--success-color)';
+            }
+
+            setTimeout(() => {
+                const clubTab = document.querySelector('[data-tab="club-registration"]');
+                if (clubTab) clubTab.click();
+            }, 1000);
             if (!name) {
                 showFieldError(nameField, 'Full name is required');
                 isValid = false;
@@ -735,8 +1111,53 @@ function initForms() {
             });
         });
 
+        // Clear errors on input/change
+        certificateForm.querySelectorAll('input, select').forEach(field => {
+            field.addEventListener('input', function () {
+                clearFieldError(this);
+            });
+            field.addEventListener('change', function () {
+                clearFieldError(this);
+            });
+        });
+
         certificateForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            clearFormErrors(this);
+
+            const studentIdField = document.getElementById('certificate-student-id');
+            const eventIdField = document.getElementById('certificate-event');
+            const fileField = document.getElementById('certificate-file');
+
+            const studentId = studentIdField.value.trim();
+            const eventId = eventIdField.value;
+            const certificateFile = fileField.files[0];
+
+            let isValid = true;
+
+            if (!studentId) {
+                showFieldError(studentIdField, 'Student ID is required');
+                isValid = false;
+            }
+
+            if (!eventId) {
+                showFieldError(eventIdField, 'Please select an event');
+                isValid = false;
+            }
+
+            if (!certificateFile) {
+                showFieldError(fileField, 'Please select a certificate file');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            showFormSuccess(this, `Certificate for student ${studentId} for event ${eventId} uploaded successfully!`);
+            setTimeout(() => {
+                this.reset();
+            }, 3000);
             clearFormErrors(this);
 
             const studentIdField = document.getElementById('certificate-student-id');
@@ -798,11 +1219,29 @@ function initCalendar() {
     const eventCards = document.querySelectorAll('.event-card');
     const eventSearch = document.getElementById('eventSearch');
     const searchBtn = document.getElementById('search-btn');
+    const eventSearch = document.getElementById('eventSearch');
+    const searchBtn = document.getElementById('search-btn');
 
     let currentDate = new Date();
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
     let selectedEvent = null;
+    let searchTerm = '';
+
+    // Sample events data - using dynamic dates for current/future events
+    let events = [
+        { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
+        { id: 2, name: "Digital Art Masterclass", club: "arts", date: getFutureDate(14), time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
+        { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." },
+        { id: 4, name: "Tech Talk: AI Ethics", club: "tech", date: "2025-10-15", time: "15:00", location: "Auditorium", description: "Discussion on ethical AI development." },
+        { id: 5, name: "Photography Workshop", club: "arts", date: "2025-10-20", time: "14:00", location: "Media Lab", description: "Learn basic photography techniques." }
+    ];
+    // Ensure initial save if empty
+    if (!localStorage.getItem('allEvents')) {
+        localStorage.setItem('allEvents', JSON.stringify(events));
+    } else {
+        events = JSON.parse(localStorage.getItem('allEvents'));
+    }
     let searchTerm = '';
 
     // Sample events data - using dynamic dates for current/future events
@@ -827,6 +1266,9 @@ function initCalendar() {
     }
 
     // Helper: Format Date
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     function formatDate(dateStr) {
         const date = new Date(dateStr);
         return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -875,6 +1317,13 @@ function initCalendar() {
                     getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
                     event.description.toLowerCase().includes(searchTerm.toLowerCase());
                 return matchesDate && matchesSearch;
+            const dayEventsData = events.filter(event => {
+                const matchesDate = event.date === dateStr;
+                const matchesSearch = searchTerm === '' || 
+                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesDate && matchesSearch;
             });
 
             dayEventsData.forEach(event => {
@@ -906,17 +1355,24 @@ function initCalendar() {
         selectedEvent = event;
 
         // Sanitize all event data before rendering
+        // Sanitize all event data before rendering
         eventDetailsContainer.innerHTML = `
             <div class="event-details">
                 <div class="event-header">
                     <span class="event-club-badge ${escapeHtml(event.club)}">${escapeHtml(getClubName(event.club))}</span>
+                    <span class="event-club-badge ${escapeHtml(event.club)}">${escapeHtml(getClubName(event.club))}</span>
                     <button id="edit-event" class="action-button"><i class="fas fa-edit"></i> Edit</button>
                 </div>
+                <h2 class="event-title">${escapeHtml(event.name)}</h2>
                 <h2 class="event-title">${escapeHtml(event.name)}</h2>
                 <div class="event-date-time">
                     <span><i class="far fa-calendar-alt"></i> ${escapeHtml(formatDate(event.date))}</span>
                     <span><i class="far fa-clock"></i> ${escapeHtml(event.time)}</span>
+                    <span><i class="far fa-calendar-alt"></i> ${escapeHtml(formatDate(event.date))}</span>
+                    <span><i class="far fa-clock"></i> ${escapeHtml(event.time)}</span>
                 </div>
+                <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location)}</div>
+                <p class="event-description">${escapeHtml(event.description)}</p>
                 <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location)}</div>
                 <p class="event-description">${escapeHtml(event.description)}</p>
                 <div class="event-actions">
@@ -929,10 +1385,12 @@ function initCalendar() {
         // Bind dynamic buttons
         document.getElementById('edit-event').addEventListener('click', () => openEventModal(event));
         document.getElementById('register-for-event').addEventListener('click', () => alert(`Registered for ${event.name}`));
+        document.getElementById('register-for-event').addEventListener('click', () => alert(`Registered for ${event.name}`));
         document.getElementById('share-event').addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
     }
 
     function openEventModal(event = null, date = null) {
+        
         
         if (!eventModal) return;
 
@@ -942,6 +1400,8 @@ function initCalendar() {
             document.getElementById('event-club').value = event.club;
             document.getElementById('event-date').value = event.date;
             document.getElementById('event-time').value = event.time;
+            document.getElementById('event-date').value = event.date;
+            document.getElementById('event-time').value = event.time;
             document.getElementById('event-location').value = event.location;
             document.getElementById('event-description').value = event.description;
             if (deleteEventButton) deleteEventButton.style.display = 'block';
@@ -949,6 +1409,7 @@ function initCalendar() {
         } else {
             document.getElementById('modal-title').textContent = 'Add New Event';
             eventForm.reset();
+            if (date) document.getElementById('event-date').value = date;
             if (date) document.getElementById('event-date').value = date;
             if (deleteEventButton) deleteEventButton.style.display = 'none';
             selectedEvent = null;
@@ -965,6 +1426,8 @@ function initCalendar() {
                 club: document.getElementById('event-club').value,
                 date: document.getElementById('event-date').value,
                 time: document.getElementById('event-time').value,
+                date: document.getElementById('event-date').value,
+                time: document.getElementById('event-time').value,
                 location: document.getElementById('event-location').value,
                 description: document.getElementById('event-description').value
             };
@@ -978,6 +1441,8 @@ function initCalendar() {
             }
             // Save to LocalStorage
             localStorage.setItem('allEvents', JSON.stringify(events));
+            // Save to LocalStorage
+            localStorage.setItem('allEvents', JSON.stringify(events));
             renderCalendar();
             showEventDetails(selectedEvent);
             eventModal.style.display = 'none';
@@ -989,6 +1454,7 @@ function initCalendar() {
         deleteEventButton.addEventListener('click', function () {
             if (selectedEvent && confirm('Are you sure you want to delete this event?')) {
                 events = events.filter(e => e.id !== selectedEvent.id);
+                localStorage.setItem('allEvents', JSON.stringify(events));
                 localStorage.setItem('allEvents', JSON.stringify(events));
                 renderCalendar();
                 eventDetailsContainer.innerHTML = `<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>`;
@@ -1014,6 +1480,39 @@ function initCalendar() {
         });
     }
 
+    // Search Functionality
+    function handleSearch() {
+        const newSearchTerm = eventSearch.value.trim();
+        
+        if (newSearchTerm !== searchTerm) {
+            searchTerm = newSearchTerm;
+            
+            if (searchTerm !== '') {
+                // Find the first event that matches the search
+                const matchingEvent = events.find(event => 
+                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                
+                if (matchingEvent) {
+                    // Navigate to the month and year of the matching event
+                    const eventDate = new Date(matchingEvent.date);
+                    currentMonth = eventDate.getMonth();
+                    currentYear = eventDate.getFullYear();
+                }
+            }
+        }
+        
+        renderCalendar();
+    }
+
+    if (eventSearch) {
+        eventSearch.addEventListener('input', handleSearch);
+    }
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
     // Search Functionality
     function handleSearch() {
         const newSearchTerm = eventSearch.value.trim();
@@ -1113,13 +1612,16 @@ function initAdmin() {
     const loginButton = document.querySelector('.login-button');
     const footerText = document.getElementById('footer-text');
     const forgotWrapper = document.getElementById('forgot-password-wrapper'); // <div> with Forgot password link
+    const forgotWrapper = document.getElementById('forgot-password-wrapper'); // <div> with Forgot password link
 
     let isLoginMode = true;
 
     function toggleMode(login) {
         isLoginMode = login;
 
+
         if (login) {
+            // LOGIN MODE
             // LOGIN MODE
             confirmPasswordGroup.style.display = 'none';
             loginButton.textContent = 'Login';
@@ -1128,7 +1630,9 @@ function initAdmin() {
             footerText.textContent = "Don't have an account?";
             toggleModeLink.textContent = "Sign Up";
             if (forgotWrapper) forgotWrapper.style.display = 'block';  // show only in login
+            if (forgotWrapper) forgotWrapper.style.display = 'block';  // show only in login
         } else {
+            // SIGNUP MODE
             // SIGNUP MODE
             confirmPasswordGroup.style.display = 'block';
             loginButton.textContent = 'Create Account';
@@ -1137,8 +1641,12 @@ function initAdmin() {
             footerText.textContent = "Already have an account?";
             toggleModeLink.textContent = "Login";
             if (forgotWrapper) forgotWrapper.style.display = 'none';   // hide in signup
+            if (forgotWrapper) forgotWrapper.style.display = 'none';   // hide in signup
         }
     }
+
+    // Set initial mode (login)
+    toggleMode(true);
 
     // Set initial mode (login)
     toggleMode(true);
@@ -1160,9 +1668,11 @@ function initAdmin() {
         togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
+
             this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
         });
     }
+
 
 
     if (adminLoginForm) {
@@ -1183,6 +1693,13 @@ function initAdmin() {
             });
         });
 
+        // Clear errors on input
+        adminLoginForm.querySelectorAll('input').forEach(field => {
+            field.addEventListener('input', function () {
+                clearFieldError(this);
+            });
+        });
+
         adminLoginForm.addEventListener('submit', function (e) {
             e.preventDefault();
             clearFormErrors(this);
@@ -1191,8 +1708,27 @@ function initAdmin() {
             const passwordField = document.getElementById('admin-password');
             const username = usernameField.value.trim();
             const password = passwordField.value.trim();
+            clearFormErrors(this);
+
+            const usernameField = document.getElementById('admin-username');
+            const passwordField = document.getElementById('admin-password');
+            const username = usernameField.value.trim();
+            const password = passwordField.value.trim();
             const rememberMe = document.getElementById('remember-me')?.checked;
 
+            let isValid = true;
+
+            if (!username) {
+                showFieldError(usernameField, 'Username is required');
+                isValid = false;
+            }
+
+            if (!password) {
+                showFieldError(passwordField, 'Password is required');
+                isValid = false;
+            }
+
+            if (!isValid) {
             let isValid = true;
 
             if (!username) {
@@ -1271,6 +1807,8 @@ function initAdmin() {
             window.location.href = 'admin-login.html';
         } 
         else {
+        } 
+        else {
             // Init Sidebar Navigation
             const sidebarLinks = document.querySelectorAll('.admin-menu a');
             const sections = document.querySelectorAll('.admin-tab-content');
@@ -1290,12 +1828,16 @@ function initAdmin() {
                         if (targetSec) targetSec.style.display = 'block';
 
 
+
+
                     }
                 });
             });
 
             loadAdminDashboard();
             initClubManagement();
+            initAnalytics();
+
             initAnalytics();
 
             const logoutButton = document.getElementById('admin-logout');
@@ -1315,12 +1857,18 @@ function initAdmin() {
             e.preventDefault();
             const name = document.getElementById('admin-event-name').value;
 
+
+        adminEventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-event-name').value;
+
         adminEventForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const name = document.getElementById('admin-event-name').value;
             alert(`Event "${name}" saved successfully!`);
             this.reset();
         });
+    });
     });
 
     function loadAdminDashboard() {
@@ -1335,8 +1883,23 @@ function initAdmin() {
             <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td></>
                 ;
             registrationsTable.querySelector('tbody').appendChild(row);
+
+                    <><td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td><td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td><td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+            <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td></>
+                ;
+            registrationsTable.querySelector('tbody').appendChild(row);
         }
 
+    // Render Event Registrations
+    const eventRegistrationsTable = document.getElementById('event-registrations-table');
+    if (eventRegistrationsTable) {
+        eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const eventRegs = [
+            { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
+        ];
+        eventRegs.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
     // Render Event Registrations
     const eventRegistrationsTable = document.getElementById('event-registrations-table');
     if (eventRegistrationsTable) {
@@ -1355,7 +1918,13 @@ function initAdmin() {
             eventRegistrationsTable.querySelector('tbody').appendChild(row);
         });
     }
+            eventRegistrationsTable.querySelector('tbody').appendChild(row);
+        });
+    }
 
+    // Dashboard Button Actions
+    document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
+    document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
     // Dashboard Button Actions
     document.querySelectorAll('.admin-action.view').forEach(btn => btn.addEventListener('click', () => alert('View details')));
     document.querySelectorAll('.admin-action.delete').forEach(btn => btn.addEventListener('click', () => confirm('Delete?') && alert('Deleted')));
@@ -1488,7 +2057,14 @@ function initStudentSession() {
             const firstName = document.getElementById(`${prefix}-first-name`);
             const lastName = document.getElementById(`${prefix}-last-name`);
             const studentId = document.getElementById(`${prefix}-student-id`);
+            const nameParts = student.name.split(' ');
+            const firstName = document.getElementById(`${prefix}-first-name`);
+            const lastName = document.getElementById(`${prefix}-last-name`);
+            const studentId = document.getElementById(`${prefix}-student-id`);
 
+            if (firstName) firstName.value = nameParts[0] || '';
+            if (lastName) lastName.value = nameParts.slice(1).join(' ') || '';
+            if (studentId) studentId.value = student.id;
             if (firstName) firstName.value = nameParts[0] || '';
             if (lastName) lastName.value = nameParts.slice(1).join(' ') || '';
             if (studentId) studentId.value = student.id;
@@ -1572,8 +2148,365 @@ document.querySelectorAll(".faq-question").forEach(q => {
 function toggleChat() {
   const chat = document.getElementById("chatbot");
   chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+/**
+
+}
+// FAQ Toggle
+document.querySelectorAll(".faq-question").forEach(q => {
+  q.addEventListener("click", () => {
+    const ans = q.nextElementSibling;
+    ans.style.display = ans.style.display === "block" ? "none" : "block";
+  });
+});
+
+// Chatbot Toggle
+function toggleChat() {
+  const chat = document.getElementById("chatbot");
+  chat.style.display = chat.style.display === "flex" ? "none" : "flex";
 }
 
+// Chatbot Logic
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const chat = document.getElementById("chatBody");
+
+  if (input.value.trim() === "") return;
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "user";
+  userMsg.innerText = input.value;
+  chat.appendChild(userMsg);
+
+  let reply = "Please check the Events page for details.";
+
+  const text = input.value.toLowerCase();
+
+  if (text.includes("register"))
+    reply = "You can register from the Events page.";
+  else if (text.includes("event"))
+    reply = "All upcoming events are listed in the Events section.";
+  else if (text.includes("fee"))
+    reply = "Some events are free, some require payment.";
+  else if (text.includes("contact"))
+    reply = "You can contact organizers via Contact page.";
+  else if (text.includes("hello"))
+    reply = "Hello 👋 How can I help you?";
+
+  const botMsg = document.createElement("div");
+  botMsg.className = "bot";
+  botMsg.innerText = reply;
+
+  setTimeout(() => chat.appendChild(botMsg), 400);
+
+  input.value = "";
+}
+
+/**
+ * Initialize Club Buttons
+ * Adds event listeners to view club buttons
+ */
+function initClubButtons() {
+    document.querySelectorAll('.view-club-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const clubId = this.getAttribute('data-club');
+            window.location.href = `club.html?club=${clubId}`;
+        });
+    });
+}
+
+/**
+ * Initialize Club Details
+ * Loads club details on club.html page
+ */
+function initClubDetails() {
+    if (window.location.pathname.includes('club.html')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const clubId = urlParams.get('club');
+        
+        if (clubId) {
+            loadClubDetails(clubId);
+        }
+    }
+}
+
+/**
+ * Load Club Details
+ * Fetches and displays club information
+ */
+function loadClubDetails(clubId) {
+    // Simulate backend API call
+    fetchClubDetailsFromBackend(clubId)
+        .then(clubData => {
+            displayClubDetails(clubData);
+        })
+        .catch(error => {
+            console.error('Error loading club details:', error);
+            displayClubError();
+        });
+}
+
+/**
+ * Fetch Club Details from Backend
+ * Simulates API call to get club data
+ */
+function fetchClubDetailsFromBackend(clubId) {
+    return new Promise((resolve, reject) => {
+        // Simulate network delay
+        setTimeout(() => {
+            const clubsData = {
+                'tech': {
+                    name: 'Tech Society - POINT BLANK',
+                    icon: '💻',
+                    subtitle: 'Innovate, code, and build the future',
+                    description: 'Join our vibrant tech community where innovation meets implementation. From hackathons to AI workshops, we provide the platform to turn your ideas into reality.',
+                    activities: [
+                        'Weekly coding sessions and hackathons',
+                        'AI/ML workshops and seminars',
+                        'Cybersecurity training programs',
+                        'Tech talks by industry experts',
+                        'Project development and collaboration'
+                    ],
+                    benefits: [
+                        'Access to cutting-edge technology resources',
+                        'Networking with tech professionals',
+                        'Skill development and certification opportunities',
+                        'Participation in national and international competitions',
+                        'Mentorship from senior developers'
+                    ],
+                    contact: {
+                        coordinator: 'Tech Coordinator',
+                        email: 'tech@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'arts': {
+                    name: 'Creative Arts - AALEKA',
+                    icon: '🎨',
+                    subtitle: 'Express yourself through art',
+                    description: 'Unleash your creativity in our artistic sanctuary. Whether you\'re a painter, sculptor, or digital artist, find your voice and showcase your talent.',
+                    activities: [
+                        'Art exhibitions and galleries',
+                        'Live drawing and painting sessions',
+                        'Digital art workshops',
+                        'Collaborative art projects',
+                        'Competitions and showcases'
+                    ],
+                    benefits: [
+                        'Access to art supplies and studio space',
+                        'Exhibition opportunities',
+                        'Skill development workshops',
+                        'Networking with artists and designers',
+                        'Portfolio development support'
+                    ],
+                    contact: {
+                        coordinator: 'Arts Coordinator',
+                        email: 'arts@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'debate': {
+                    name: 'Debate Club - LITSOC',
+                    icon: '💬',
+                    subtitle: 'Sharpen your mind through debate',
+                    description: 'Hone your rhetorical skills and critical thinking in our debate society. Engage in intellectual discourse and prepare for real-world challenges.',
+                    activities: [
+                        'Weekly debate sessions',
+                        'Model United Nations simulations',
+                        'Public speaking workshops',
+                        'Inter-college debate tournaments',
+                        'Guest lectures by renowned speakers'
+                    ],
+                    benefits: [
+                        'Improved communication and critical thinking skills',
+                        'Leadership development opportunities',
+                        'Participation in national debate competitions',
+                        'Networking with professionals',
+                        'Confidence building through public speaking'
+                    ],
+                    contact: {
+                        coordinator: 'Debate Coordinator',
+                        email: 'debate@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'music': {
+                    name: 'Music Society',
+                    icon: '🎵',
+                    subtitle: 'Create and perform music',
+                    description: 'Join our musical community to create, perform, and appreciate music in all its forms. From concerts to jam sessions, let the rhythm guide you.',
+                    activities: [
+                        'Concert performances and shows',
+                        'Jam sessions and open mics',
+                        'Music composition workshops',
+                        'Shayari and poetry sessions',
+                        'Music production training'
+                    ],
+                    benefits: [
+                        'Access to musical instruments and equipment',
+                        'Performance opportunities',
+                        'Music theory and production training',
+                        'Collaboration with musicians',
+                        'Recording studio access'
+                    ],
+                    contact: {
+                        coordinator: 'Music Coordinator',
+                        email: 'music@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'sports': {
+                    name: 'Sports Club',
+                    icon: '⚽',
+                    subtitle: 'Stay active and competitive',
+                    description: 'Maintain your physical fitness and competitive spirit through various sports activities. Teamwork, discipline, and victory await you.',
+                    activities: [
+                        'Inter-college sports tournaments',
+                        'Fitness training sessions',
+                        'Team building activities',
+                        'Sports workshops and clinics',
+                        'Recreational sports events'
+                    ],
+                    benefits: [
+                        'Access to sports facilities and equipment',
+                        'Fitness assessment and training programs',
+                        'Team sports participation',
+                        'Leadership development',
+                        'Health and wellness support'
+                    ],
+                    contact: {
+                        coordinator: 'Sports Coordinator',
+                        email: 'sports@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'science': {
+                    name: 'Dance Club - ABCD',
+                    icon: '💃',
+                    subtitle: 'Move to the beat and create memories',
+                    description: 'Express yourself through dance and movement. Join our energetic dance community for performances, competitions, and unforgettable experiences.',
+                    activities: [
+                        'Dance performances and shows',
+                        'Choreography workshops',
+                        'Dance competitions',
+                        'Celebrity meetups and interactions',
+                        'Dance fitness sessions'
+                    ],
+                    benefits: [
+                        'Professional dance training',
+                        'Performance opportunities',
+                        'Fitness and health benefits',
+                        'Creative expression development',
+                        'Social connections and friendships'
+                    ],
+                    contact: {
+                        coordinator: 'Dance Coordinator',
+                        email: 'dance@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                }
+            };
+
+            const clubData = clubsData[clubId];
+            if (clubData) {
+                resolve(clubData);
+            } else {
+                reject(new Error('Club not found'));
+            }
+        }, 500); // Simulate 500ms network delay
+    });
+}
+
+/**
+ * Display Club Details
+ * Updates the DOM with club information
+ */
+function displayClubDetails(clubData) {
+    document.getElementById('club-title').textContent = clubData.name;
+    document.getElementById('club-subtitle').textContent = clubData.subtitle;
+    document.getElementById('club-icon').textContent = clubData.icon;
+    document.getElementById('club-name').textContent = clubData.name;
+    document.getElementById('club-description').textContent = clubData.description;
+
+    // Activities
+    const activitiesList = document.getElementById('club-activities-list');
+    activitiesList.innerHTML = '';
+    clubData.activities.forEach(activity => {
+        const li = document.createElement('li');
+        li.textContent = activity;
+        activitiesList.appendChild(li);
+    });
+
+    // Benefits
+    const benefitsList = document.getElementById('club-benefits-list');
+    benefitsList.innerHTML = '';
+    clubData.benefits.forEach(benefit => {
+        const li = document.createElement('li');
+        li.textContent = benefit;
+        benefitsList.appendChild(li);
+    });
+
+    // Contact
+    const contactInfo = document.getElementById('club-contact-info');
+    contactInfo.innerHTML = `
+        <p><strong>Coordinator:</strong> ${clubData.contact.coordinator}</p>
+        <p><strong>Email:</strong> <a href="mailto:${clubData.contact.email}" style="color: var(--accent-color);">${clubData.contact.email}</a></p>
+        <p><strong>Phone:</strong> ${clubData.contact.phone}</p>
+    `;
+
+    // Join button functionality
+    const joinBtn = document.getElementById('join-club-btn');
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (student) {
+        const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
+        const clubId = new URLSearchParams(window.location.search).get('club');
+        if (joinedClubs.includes(clubId)) {
+            joinBtn.textContent = 'Already Joined';
+            joinBtn.disabled = true;
+            joinBtn.style.background = 'var(--success-color)';
+        } else {
+            joinBtn.addEventListener('click', function() {
+                joinClub(clubId);
+            });
+        }
+    } else {
+        joinBtn.textContent = 'Login to Join';
+        joinBtn.addEventListener('click', function() {
+            window.location.href = 'registration.html#student-login';
+        });
+    }
+}
+
+/**
+ * Join Club
+ * Adds club to student's joined clubs
+ */
+function joinClub(clubId) {
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (!student) return;
+
+    let joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
+    if (!joinedClubs.includes(clubId)) {
+        joinedClubs.push(clubId);
+        localStorage.setItem(`clubs_${student.id}`, JSON.stringify(joinedClubs));
+        
+        const joinBtn = document.getElementById('join-club-btn');
+        joinBtn.textContent = 'Joined!';
+        joinBtn.disabled = true;
+        joinBtn.style.background = 'var(--success-color)';
+        
+        // Update enrollment status
+        updateEnrollmentStatus();
+    }
+}
+
+/**
+ * Display Club Error
+ * Shows error message when club data fails to load
+ */
+function displayClubError() {
+    document.getElementById('club-title').textContent = 'Club Not Found';
+    document.getElementById('club-subtitle').textContent = 'The requested club could not be found.';
+    document.getElementById('club-description').textContent = 'Please check the club ID or return to the home page.';
 // Chatbot Logic
 function sendMessage() {
   const input = document.getElementById("userInput");

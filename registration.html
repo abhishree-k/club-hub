@@ -47,25 +47,25 @@
 
     <main class="registration-main">
         <section class="registration-tabs">
-            <div class="tab-buttons">
-                <button class="tab-button active" data-tab="club-registration">Club Membership</button>
-                <button class="tab-button" data-tab="event-registration">Event Registration</button>
-                <button class="tab-button" data-tab="e-certificate">E-Certificate</button>
-                <button class="tab-button" data-tab="student-login" id="student-login-tab-btn">Student Login</button>
+            <div class="tab-buttons" role="tablist">
+                <button class="tab-button active" data-tab="club-registration" role="tab" aria-selected="true" aria-controls="club-registration">Club Membership</button>
+                <button class="tab-button" data-tab="event-registration" role="tab" aria-selected="false" aria-controls="event-registration">Event Registration</button>
+                <button class="tab-button" data-tab="e-certificate" role="tab" aria-selected="false" aria-controls="e-certificate">E-Certificate</button>
+                <button class="tab-button" data-tab="student-login" id="student-login-tab-btn" role="tab" aria-selected="false" aria-controls="student-login">Student Login</button>
             </div>
 
-            <div class="tab-content" id="student-login">
+            <div class="tab-content" id="student-login" role="tabpanel">
                 <h2 class="section-title">Student <span class="text-gradient">Login</span></h2>
                 <p style="text-align: center; margin-bottom: 2rem;">Login to access 'My Hub' and manage your club
                     memberships and event registrations.</p>
                 <form id="student-login-form" class="registration-form" style="max-width: 500px; margin: 0 auto;">
                     <div class="form-group">
                         <label for="login-student-name">Full Name</label>
-                        <input type="text" id="login-student-name" placeholder="Enter your full name" required>
+                        <input type="text" id="login-student-name" name="full_name" placeholder="Enter your full name" required>
                     </div>
                     <div class="form-group">
                         <label for="login-student-id">Student ID</label>
-                        <input type="text" id="login-student-id" placeholder="Enter your student ID" required>
+                        <input type="text" id="login-student-id" name="student_id" placeholder="Enter your student ID" required>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="submit-button">Login</button>
@@ -74,38 +74,42 @@
                 </form>
             </div>
 
-            <div class="tab-content active" id="club-registration">
+            <div class="tab-content active" id="club-registration" role="tabpanel">
                 <h2 class="section-title">Join a <span class="text-gradient">Club</span></h2>
+                <div id="club-success-message" class="success-message hidden">
+                    <i class="fas fa-check-circle"></i>
+                    <p id="club-success-text">Club registration submitted successfully!</p>
+                </div>
                 <form id="club-registration-form" class="registration-form">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="club-first-name">First Name</label>
-                            <input type="text" id="club-first-name" required>
+                            <input type="text" id="club-first-name" name="first_name" required>
                         </div>
                         <div class="form-group">
                             <label for="club-last-name">Last Name</label>
-                            <input type="text" id="club-last-name" required>
+                            <input type="text" id="club-last-name" name="last_name" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="club-email">Email</label>
-                        <input type="email" id="club-email" required>
+                        <input type="email" id="club-email" name="email" required>
                     </div>
 
                     <div class="form-group">
                         <label for="club-student-id">Student ID</label>
-                        <input type="text" id="club-student-id" required>
+                        <input type="text" id="club-student-id" name="student_id" required>
                     </div>
 
                     <div class="form-group">
                         <label for="club-major">Major</label>
-                        <input type="text" id="club-major" required>
+                        <input type="text" id="club-major" name="major" required>
                     </div>
 
                     <div class="form-group">
                         <label for="club-year">Year of Study</label>
-                        <select id="club-year" required>
+                        <select id="club-year" name="year" required>
                             <option value="">Select Year</option>
                             <option value="freshman">1st YEAR</option>
                             <option value="sophomore">2nd YEAR</option>
@@ -116,48 +120,46 @@
                     </div>
 
                     <div class="checkbox-group">
-                    <label class="checkbox-item">
-                        <input type="checkbox" >
-                        <span class="checkmark"></span>
-                        <span class="checkbox-text">Tech Society</span>
-                    </label>
+                        <label class="checkbox-item" for="club-tech-society">
+                            <input type="checkbox" id="club-tech-society" name="clubs[]" value="tech-society">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Tech Society</span>
+                        </label>
 
-                    <label class="checkbox-item">
-                        <input type="checkbox" >
-                        <span class="checkmark"></span>
-                        <span class="checkbox-text">Creative Arts</span>
-                    </label>
+                        <label class="checkbox-item" for="club-creative-arts">
+                            <input type="checkbox" id="club-creative-arts" name="clubs[]" value="creative-arts">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Creative Arts</span>
+                        </label>
 
-                    <label class="checkbox-item">
-                        <input type="checkbox" >
-                        <span class="checkmark"></span>
-                        <span class="checkbox-text">Debate Club</span>
-                    </label>
+                        <label class="checkbox-item" for="club-debate-club">
+                            <input type="checkbox" id="club-debate-club" name="clubs[]" value="debate-club">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Debate Club</span>
+                        </label>
 
-                    <label class="checkbox-item">
-                        <input type="checkbox">
-                        <span class="checkmark"></span>
-                        <span class="checkbox-text">Music Society</span>
-                    </label>
+                        <label class="checkbox-item" for="club-music-society">
+                            <input type="checkbox" id="club-music-society" name="clubs[]" value="music-society">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Music Society</span>
+                        </label>
 
-                    <label class="checkbox-item">
-                        <input type="checkbox">
-                        <span class="checkmark"></span>
-                        <span class="checkbox-text">Sports Club</span>
-                    </label>
+                        <label class="checkbox-item" for="club-sports-club">
+                            <input type="checkbox" id="club-sports-club" name="clubs[]" value="sports-club">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Sports Club</span>
+                        </label>
 
-                    <label class="checkbox-item">
-                        <input type="checkbox">
-                        <span class="checkmark"></span>
-                        <span class="checkbox-text">Dance Club</span>
-                    </label>
-                </div>
-
+                        <label class="checkbox-item" for="club-dance-club">
+                            <input type="checkbox" id="club-dance-club" name="clubs[]" value="dance-club">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Dance Club</span>
+                        </label>
                     </div>
 
                     <div class="form-group">
                         <label for="club-reason">Why do you want to join these clubs? (Optional)</label>
-                        <textarea id="club-reason" rows="3"></textarea>
+                        <textarea id="club-reason" name="reason" rows="3"></textarea>
                     </div>
 
                     <div class="form-actions">
@@ -166,7 +168,7 @@
                 </form>
             </div>
 
-            <div class="tab-content" id="event-registration">
+            <div class="tab-content" id="event-registration" role="tabpanel">
                 <h2 class="section-title">Register for <span class="text-gradient">Events</span></h2>
                 <div class="event-selection">
                     <div class="event-filters">
@@ -179,7 +181,7 @@
                                 <option value="debate">Debate Club</option>
                                 <option value="music">Music Society</option>
                                 <option value="sports">Sports Club</option>
-                                <option value="science">Dance Club</option>
+                                <option value="dance">Dance Club</option>
                             </select>
                         </div>
                         <div class="filter-group">
@@ -194,7 +196,7 @@
                     </div>
 
                     <div class="event-list">
-                        <div class="event-card" data-club="tech" data-date="" data-days-offset="7">
+                        <div class="event-card" data-club="tech" data-date="2026-02-01" data-days-offset="7">
                             <div class="event-card-header">
                                 <span class="event-club tech">Tech Society</span>
                                 <span class="event-date">Loading...</span>
@@ -209,7 +211,7 @@
                             <button class="register-button">Register</button>
                         </div>
 
-                        <div class="event-card" data-club="arts" data-date="" data-days-offset="14">
+                        <div class="event-card" data-club="arts" data-date="2026-02-08" data-days-offset="14">
                             <div class="event-card-header">
                                 <span class="event-club arts">Creative Arts</span>
                                 <span class="event-date">Loading...</span>
@@ -224,7 +226,7 @@
                             <button class="register-button">Register</button>
                         </div>
 
-                        <div class="event-card" data-club="debate" data-date="" data-days-offset="21">
+                        <div class="event-card" data-club="debate" data-date="2026-02-15" data-days-offset="21">
                             <div class="event-card-header">
                                 <span class="event-club debate">Debate Club</span>
                                 <span class="event-date">Loading...</span>
@@ -237,10 +239,11 @@
                             </div>
                             <button class="register-button">Register</button>
                         </div>
-                        <div class="event-card" data-club="music" data-date="2023-11-15">
+
+                        <div class="event-card" data-club="music" data-date="2026-02-22">
                             <div class="event-card-header">
                                 <span class="event-club music">Music Society</span>
-                                <span class="event-date">Nov 15, 2023</span>
+                                <span class="event-date">Loading...</span>
                             </div>
                             <h3 class="event-title">Music Jam Session</h3>
                             <p class="event-description">Open mic and jam session.</p>
@@ -260,33 +263,33 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="event-first-name">First Name</label>
-                                <input type="text" id="event-first-name" required>
+                                <input type="text" id="event-first-name" name="first_name" required>
                             </div>
                             <div class="form-group">
                                 <label for="event-last-name">Last Name</label>
-                                <input type="text" id="event-last-name" required>
+                                <input type="text" id="event-last-name" name="last_name" required>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="event-email">Email</label>
-                            <input type="email" id="event-email" required>
+                            <input type="email" id="event-email" name="email" required>
                         </div>
 
                         <div class="form-group">
                             <label for="event-student-id">Student ID</label>
-                            <input type="text" id="event-student-id" required>
+                            <input type="text" id="event-student-id" name="student_id" required>
                         </div>
 
                         <div class="form-group">
                             <label for="event-dietary">Dietary Restrictions (for events with food)</label>
-                            <input type="text" id="event-dietary"
+                            <input type="text" id="event-dietary" name="dietary"
                                 placeholder="None, Vegetarian, Vegan, Allergies, etc.">
                         </div>
 
                         <div class="form-group">
                             <label for="event-accessibility">Accessibility Requirements</label>
-                            <textarea id="event-accessibility" rows="2"
+                            <textarea id="event-accessibility" name="accessibility" rows="2"
                                 placeholder="Please let us know if you have any accessibility needs"></textarea>
                         </div>
 
@@ -298,16 +301,16 @@
                 </div>
             </div>
 
-            <div class="tab-content" id="e-certificate">
+            <div class="tab-content" id="e-certificate" role="tabpanel">
                 <h2 class="section-title">Request <span class="text-gradient">E-Certificate</span></h2>
                 <form id="certificate-form" class="registration-form">
                     <div class="form-group">
                         <label for="certificate-student-id">Student ID</label>
-                        <input type="text" id="certificate-student-id" required>
+                        <input type="text" id="certificate-student-id" name="student_id" required>
                     </div>
                     <div class="form-group">
                         <label for="certificate-event">Event Name</label>
-                        <select id="certificate-event" required>
+                        <select id="certificate-event" name="event" required>
                             <option value="">Select Event</option>
                             <option value="AI Workshop Series">AI Workshop Series</option>
                             <option value="Digital Art Masterclass">Digital Art Masterclass</option>
@@ -316,7 +319,7 @@
                     </div>
                     <div class="form-group">
                         <label for="certificate-file">Upload Proof (if any)</label>
-                        <input type="file" id="certificate-file" required>
+                        <input type="file" id="certificate-file" name="proof_file" accept="image/*,application/pdf" required>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="submit-button">Request Certificate</button>
@@ -337,7 +340,7 @@
         </div>
     </footer>
 
-    <!-- Conflict Warning Modal (same structure as index for consistency) -->
+    <!-- Conflict Warning Modal -->
     <div id="conflict-modal" class="conflict-modal" style="display: none;">
         <div class="modal-content conflict-modal-content">
             <span class="close-modal close-conflict-modal">&times;</span>

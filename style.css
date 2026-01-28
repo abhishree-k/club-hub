@@ -1026,6 +1026,71 @@ button:focus-visible,
 
 /* Modal */
 .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+}
+
+.modal-content {
+    background: rgba(26, 26, 46, 0.95);
+    border-radius: 15px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.1);
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--primary-color, #4a90e2);;
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color, #357abd);
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+    transition: 0.3s;
+}
+
+.close-modal:hover {
+    color: var(--accent-color, #ff4757);
+
   display: none;
   position: fixed;
   top: 0;
@@ -1090,6 +1155,7 @@ button:focus-visible,
 
 .close-modal:hover {
   color: var(--accent-color, #ff4757);
+
 }
 
 /* Form Styles */
@@ -3397,6 +3463,56 @@ button:focus-visible,
 }
 
 .back-btn:hover {
+
+    background: rgba(255, 255, 255, 0.2);
+
+}
+
+.contact-wrapper {
+  min-height: 100vh;
+  padding: 120px 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+
+.contact-subtitle {
+  color: #cbd5f5;
+  margin-bottom: 40px;
+}
+
+.contact-card {
+  max-width: 500px;
+  margin: 40px auto;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+.contact-form button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6a5acd, #8a7cfb);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -3418,3 +3534,4 @@ button:focus-visible,
   transition: all 0.35s ease;
   z-index: 999;
 }
+

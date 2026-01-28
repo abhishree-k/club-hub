@@ -1243,6 +1243,7 @@ function initCalendar() {
     const eventCards = document.querySelectorAll('.event-card');
     const eventSearch = document.getElementById('eventSearch');
     const searchBtn = document.getElementById('search-btn');
+
     const eventSearch = document.getElementById('eventSearch');
     const searchBtn = document.getElementById('search-btn');
 
@@ -1251,6 +1252,7 @@ function initCalendar() {
     let currentYear = currentDate.getFullYear();
     let selectedEvent = null;
     let searchTerm = '';
+
 
     // Sample events data - using dynamic dates for current/future events
     let events = [
@@ -1267,6 +1269,7 @@ function initCalendar() {
         events = JSON.parse(localStorage.getItem('allEvents'));
     }
     let searchTerm = '';
+
 
     // Sample events data - using dynamic dates for current/future events
     let events = [
@@ -1336,6 +1339,7 @@ function initCalendar() {
             const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
             const dayEventsData = events.filter(event => {
                 const matchesDate = event.date === dateStr;
+
                 const matchesSearch = searchTerm === '' ||
                     event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -1414,6 +1418,7 @@ function initCalendar() {
     }
 
     function openEventModal(event = null, date = null) {
+        
         if (!eventModal) return;
 
         if (event) {
@@ -1506,6 +1511,20 @@ function initCalendar() {
     function handleSearch() {
         const newSearchTerm = eventSearch.value.trim();
 
+        
+        if (newSearchTerm !== searchTerm) {
+            searchTerm = newSearchTerm;
+            
+            if (searchTerm !== '') {
+                // Find the first event that matches the search
+                const matchingEvent = events.find(event => 
+                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                
+
+
         if (newSearchTerm !== searchTerm) {
             searchTerm = newSearchTerm;
 
@@ -1517,6 +1536,7 @@ function initCalendar() {
                     event.description.toLowerCase().includes(searchTerm.toLowerCase())
                 );
 
+
                 if (matchingEvent) {
                     // Navigate to the month and year of the matching event
                     const eventDate = new Date(matchingEvent.date);
@@ -1525,6 +1545,26 @@ function initCalendar() {
                 }
             }
         }
+
+        
+        renderCalendar();
+    }
+
+    if (eventSearch) {
+        eventSearch.addEventListener('input', handleSearch);
+    }
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
+    }
+
+    // Filters (Club/Date)
+    function filterEvents() {
+        if (!clubFilter || !dateFilter) return;
+        const clubValue = clubFilter.value;
+        const dateValue = dateFilter.value;
+        const today = new Date();
+
 
         renderCalendar();
     }
@@ -1827,8 +1867,7 @@ function initAdmin() {
         const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
         if (!isLoggedIn) {
             window.location.href = 'admin-login.html';
-        }
-        else {
+   
         } 
         else {
             // Init Sidebar Navigation
@@ -1875,9 +1914,11 @@ function initAdmin() {
     // Admin Event Management Form
     const adminEventForm = document.getElementById('admin-event-form');
 
+
     adminEventForm.addEventListener('submit', function (e) {
         e.preventDefault();
         const name = document.getElementById('admin-event-name').value;
+
 
 
         adminEventForm.addEventListener('submit', function (e) {
@@ -1900,6 +1941,13 @@ function initAdmin() {
             return map[id] || id;
         };
 
+
+
+                    <><td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td><td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td><td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+            <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td></>
+                ;
+            registrationsTable.querySelector('tbody').appendChild(row);
+        }
 
         const registrationsTable = document.getElementById('registrations-table');
         const allMemberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
@@ -1925,6 +1973,7 @@ function initAdmin() {
             });
         }
     }
+
 
     // Render Event Registrations
     const eventRegistrationsTable = document.getElementById('event-registrations-table');
@@ -2177,9 +2226,6 @@ function updateEnrollmentStatus() {
     });
 }
 
-/**
-
-}
 // FAQ Toggle
 document.querySelectorAll(".faq-question").forEach(q => {
   q.addEventListener("click", () => {

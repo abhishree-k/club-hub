@@ -4,6 +4,7 @@
  */
 
 const { escapeHtml } = require('../app.js');
+const { escapeHtml } = require('../app.js');
 // Mock escapeHtml function for testing (in a real setup, this would be imported)
 function escapeHtml(unsafe) {
     if (typeof unsafe !== 'string') {

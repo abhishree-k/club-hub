@@ -796,21 +796,28 @@ function initCalendar() {
     const clubFilter = document.getElementById('event-club-filter');
     const dateFilter = document.getElementById('event-date-filter');
     const eventCards = document.querySelectorAll('.event-card');
+    const eventSearch = document.getElementById('eventSearch');
+    const searchBtn = document.getElementById('search-btn');
 
     let currentDate = new Date();
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
     let selectedEvent = null;
+    let searchTerm = '';
 
     // Sample events data - using dynamic dates for current/future events
     let events = [
         { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
         { id: 2, name: "Digital Art Masterclass", club: "arts", date: getFutureDate(14), time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
-        { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." }
+        { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." },
+        { id: 4, name: "Tech Talk: AI Ethics", club: "tech", date: "2025-10-15", time: "15:00", location: "Auditorium", description: "Discussion on ethical AI development." },
+        { id: 5, name: "Photography Workshop", club: "arts", date: "2025-10-20", time: "14:00", location: "Media Lab", description: "Learn basic photography techniques." }
     ];
     // Ensure initial save if empty
     if (!localStorage.getItem('allEvents')) {
         localStorage.setItem('allEvents', JSON.stringify(events));
+    } else {
+        events = JSON.parse(localStorage.getItem('allEvents'));
     }
 
     // Helper: Get Club Name
@@ -861,7 +868,14 @@ function initCalendar() {
             const dayEvents = document.createElement('div');
             dayEvents.classList.add('day-events');
             const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-            const dayEventsData = events.filter(event => event.date === dateStr);
+            const dayEventsData = events.filter(event => {
+                const matchesDate = event.date === dateStr;
+                const matchesSearch = searchTerm === '' || 
+                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesDate && matchesSearch;
+            });
 
             dayEventsData.forEach(event => {
                 const eventElement = document.createElement('div');
@@ -919,6 +933,7 @@ function initCalendar() {
     }
 
     function openEventModal(event = null, date = null) {
+        
         if (!eventModal) return;
 
         if (event) {
@@ -997,6 +1012,41 @@ function initCalendar() {
             if (currentMonth > 11) { currentMonth = 0; currentYear++; }
             renderCalendar();
         });
+    }
+
+    // Search Functionality
+    function handleSearch() {
+        const newSearchTerm = eventSearch.value.trim();
+        
+        if (newSearchTerm !== searchTerm) {
+            searchTerm = newSearchTerm;
+            
+            if (searchTerm !== '') {
+                // Find the first event that matches the search
+                const matchingEvent = events.find(event => 
+                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                
+                if (matchingEvent) {
+                    // Navigate to the month and year of the matching event
+                    const eventDate = new Date(matchingEvent.date);
+                    currentMonth = eventDate.getMonth();
+                    currentYear = eventDate.getFullYear();
+                }
+            }
+        }
+        
+        renderCalendar();
+    }
+
+    if (eventSearch) {
+        eventSearch.addEventListener('input', handleSearch);
+    }
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
     }
 
     // Filters (Club/Date)
@@ -1220,7 +1270,8 @@ function initAdmin() {
         const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
         if (!isLoggedIn) {
             window.location.href = 'admin-login.html';
-        } else {
+        } 
+        else {
             // Init Sidebar Navigation
             const sidebarLinks = document.querySelectorAll('.admin-menu a');
             const sections = document.querySelectorAll('.admin-tab-content');
@@ -1261,27 +1312,31 @@ function initAdmin() {
     // Admin Event Management Form
     const adminEventForm = document.getElementById('admin-event-form');
 
+        adminEventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-event-name').value;
+
+        adminEventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-event-name').value;
+            alert(`Event "${name}" saved successfully!`);
+            this.reset();
         });
     });
 
+    function loadAdminDashboard() {
+        // Helper
+        const getClubName = (id) => {
+            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
+            return map[id] || id;
+        };
 
-function loadAdminDashboard() {
-    // Helper
-    const getClubName = (id) => {
-        const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
-        return map[id] || id;
-    };
 
-
-                    <td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
-                    <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
-                    <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
-                    <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
-                        <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
-                `;
+                    <><td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td><td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td><td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+            <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td></>
+                ;
             registrationsTable.querySelector('tbody').appendChild(row);
-        });
-    }
+        }
 
     // Render Event Registrations
     const eventRegistrationsTable = document.getElementById('event-registrations-table');
@@ -1503,9 +1558,6 @@ function updateEnrollmentStatus() {
     });
 }
 
-/**
-
-}
 // FAQ Toggle
 document.querySelectorAll(".faq-question").forEach(q => {
   q.addEventListener("click", () => {

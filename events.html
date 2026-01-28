@@ -10,6 +10,7 @@
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script type="text/javascript" src="darkmode.js" defer></script>
 </head>
 
 <body>
@@ -22,7 +23,7 @@
         </div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
-            <li><a href="events.html" class="active">Events</a></li>
+            <li><a href="events.html" class="active">Live & upcoming Events</a></li>
             <li><a href="past-events.html">Past Events</a></li>
             <li><a href="registration.html">Registration</a></li>
             <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
@@ -207,6 +208,10 @@
         </form>
     </div>
 </div>
+<!-- scroll top button -->
+      <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
+        <i class="fas fa-chevron-up"></i>
+      </button>
     </main>
 
     <footer class="cosmic-footer">
@@ -329,6 +334,25 @@
     closeFeedback.onclick = () => feedbackModal.style.display = "none";
     </script>
     <script src="app.js"></script>
+    <script src="scroll.js"></script>
+    <script>
+// Event Search Functionality
+document.getElementById("eventSearch").addEventListener("keyup", function () {
+    const searchValue = this.value.toLowerCase();
+    const events = document.querySelectorAll(".event-card");
+
+    events.forEach(event => {
+        const eventText = event.innerText.toLowerCase();
+
+        if (eventText.includes(searchValue)) {
+            event.style.display = "block";
+        } else {
+            event.style.display = "none";
+        }
+    });
+});
+
+</script>
 
 </body>
 

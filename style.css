@@ -2,6 +2,8 @@
 :root {
   --primary-color: #6c5ce7;
   --secondary-color: #a29bfe;
+  --primary-gold: #d4af37;
+  --secondary-gold: #b8860b;
   --accent-color: #fd79a8;
   --dark-color: #2d3436;
   --light-color: #f5f6fa;
@@ -20,6 +22,8 @@
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
+  --base-color: white;
+  --base-variant: #e8e9ed;
 }
 
 * {
@@ -3417,4 +3421,85 @@ button:focus-visible,
   display: none;
   transition: all 0.35s ease;
   z-index: 999;
+}
+/* show translate button smaller */
+#showTranslateBtn {
+  position: fixed;
+  bottom: 6rem;
+  right: 2rem;
+  background: linear-gradient(
+    135deg,
+    var(--primary-gold),
+    var(--secondary-gold)
+  );
+  color: var(--deep-navy);
+  border: none;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.35);
+  display: none;
+  transition: all 0.35s ease;
+  z-index: 999;
+}
+
+#google_translate_element {
+  height: 26px !important;
+  overflow: hidden !important;
+}
+/* make class goog-te-combo*/
+.goog-te-combo {
+  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcZ8Pe2Lye0bUzx3IqnKSmKdBABDRhdKdhuQ&s");
+  background-size: cover;
+  width: 25px !important;
+  height: 25px !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  padding: 0px !important;
+  background-position: center !important;
+}
+
+/* Hide the "Select Language" option with dropdown */
+.goog-te-combo option[value=""] select {
+  display: none;
+}
+
+/* dark mode */
+.darkmode {
+  --base-color: #070b1d;
+  --base-variant: #101425;
+  --text-color: #ffffff;
+  --secondary-color: #a4a5d8;
+  --primary-color: #3a435d;
+  --accent-color: #0071ff;
+}
+
+#theme-switch {
+  height: 30px;
+  width: 30px;
+  padding: 0;
+  border-radius: 30%;
+  background-color: var(--base-variant);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#theme-switch svg {
+  fill: var(--text-color);
+}
+
+#theme-switch svg:last-child {
+  display: none;
+}
+
+.darkmode #theme-switch svg:first-child {
+  display: none;
+}
+
+.darkmode #theme-switch svg:last-child {
+  display: block;
 }

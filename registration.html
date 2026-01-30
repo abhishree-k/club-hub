@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration | DSCE Clubs</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=1.1">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script type="text/javascript" src="darkmode.js" defer></script>
+    <script type="text/javascript" src="darkmode.js?v=1.1" defer></script>
 </head>
 
 <body>
@@ -48,10 +48,14 @@
     <main class="registration-main">
         <section class="registration-tabs">
             <div class="tab-buttons" role="tablist">
-                <button class="tab-button active" data-tab="club-registration" role="tab" aria-selected="true" aria-controls="club-registration">Club Membership</button>
-                <button class="tab-button" data-tab="event-registration" role="tab" aria-selected="false" aria-controls="event-registration">Event Registration</button>
-                <button class="tab-button" data-tab="e-certificate" role="tab" aria-selected="false" aria-controls="e-certificate">E-Certificate</button>
-                <button class="tab-button" data-tab="student-login" id="student-login-tab-btn" role="tab" aria-selected="false" aria-controls="student-login">Student Login</button>
+                <button class="tab-button active" data-tab="club-registration" role="tab" aria-selected="true"
+                    aria-controls="club-registration">Club Membership</button>
+                <button class="tab-button" data-tab="event-registration" role="tab" aria-selected="false"
+                    aria-controls="event-registration">Event Registration</button>
+                <button class="tab-button" data-tab="e-certificate" role="tab" aria-selected="false"
+                    aria-controls="e-certificate">E-Certificate</button>
+                <button class="tab-button" data-tab="student-login" id="student-login-tab-btn" role="tab"
+                    aria-selected="false" aria-controls="student-login">Student Login</button>
             </div>
 
             <div class="tab-content" id="student-login" role="tabpanel">
@@ -60,12 +64,13 @@
                     memberships and event registrations.</p>
                 <form id="student-login-form" class="registration-form" style="max-width: 500px; margin: 0 auto;">
                     <div class="form-group">
-                        <label for="login-student-name">Full Name</label>
-                        <input type="text" id="login-student-name" name="full_name" placeholder="Enter your full name" required>
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" name="email" placeholder="Enter your email" required>
                     </div>
                     <div class="form-group">
-                        <label for="login-student-id">Student ID</label>
-                        <input type="text" id="login-student-id" name="student_id" placeholder="Enter your student ID" required>
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="password" placeholder="Enter your password"
+                            required>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="submit-button">Login</button>
@@ -319,7 +324,8 @@
                     </div>
                     <div class="form-group">
                         <label for="certificate-file">Upload Proof (if any)</label>
-                        <input type="file" id="certificate-file" name="proof_file" accept="image/*,application/pdf" required>
+                        <input type="file" id="certificate-file" name="proof_file" accept="image/*,application/pdf"
+                            required>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="submit-button">Request Certificate</button>
@@ -328,9 +334,9 @@
             </div>
         </section>
         <!-- scroll top button -->
-      <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
-        <i class="fas fa-chevron-up"></i>
-      </button>
+        <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
+            <i class="fas fa-chevron-up"></i>
+        </button>
 
     </main>
 
@@ -394,9 +400,9 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
-    <script src="scroll.js"></script>
-    
+    <script src="app.js?v=1.1"></script>
+    <script src="scroll.js?v=1.1"></script>
+
 
 </body>
 

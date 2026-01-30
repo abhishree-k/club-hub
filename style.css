@@ -2797,9 +2797,55 @@ button:focus-visible,
   color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
   transition: var(--transition);
+  z-index: 10;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.toggle-password:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-password i {
+  pointer-events: none;
+  user-select: none;
 }
 
 .toggle-password:hover {
+  color: var(--accent-color);
+}
+
+.toggle-confirm-password {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: var(--transition);
+  z-index: 10;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.toggle-confirm-password:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-confirm-password i {
+  pointer-events: none;
+  user-select: none;
+}
+
+.toggle-confirm-password:hover {
   color: var(--accent-color);
 }
 
@@ -3043,6 +3089,12 @@ button:focus-visible,
   background: rgba(255, 255, 255, 0.15);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Add extra padding to password inputs with toggle buttons */
+.form-group input[type="password"],
+.form-group input[type="password"]:focus {
+  padding-right: 2.5rem !important;
 }
 
 /* Placeholder styling (different from user text) */

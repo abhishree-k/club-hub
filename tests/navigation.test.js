@@ -15,7 +15,7 @@ describe('Navigation', () => {
                         <li><a href="#home">Home</a></li>
                         <li><a href="#events">Events</a></li>
                     </ul>
-                    <div class="nav-hamburger">
+                    <div class="mobile-menu-toggle nav-hamburger">
                         <div class="line"></div>
                         <div class="line"></div>
                         <div class="line"></div>
@@ -26,43 +26,43 @@ describe('Navigation', () => {
 
         test('should toggle nav-links active class when hamburger is clicked', () => {
             initNavigation();
-            
+
             const hamburger = document.querySelector('.nav-hamburger');
             const navLinks = document.querySelector('.nav-links');
-            
+
             // Initially should not have active class
             expect(navLinks.classList.contains('active')).toBe(false);
-            
+
             // Click hamburger
             hamburger.click();
-            
+
             // Should now have active class
             expect(navLinks.classList.contains('active')).toBe(true);
-            
+
             // Click again
             hamburger.click();
-            
+
             // Should remove active class
             expect(navLinks.classList.contains('active')).toBe(false);
         });
 
         test('should toggle hamburger active class when clicked', () => {
             initNavigation();
-            
+
             const hamburger = document.querySelector('.nav-hamburger');
-            
+
             expect(hamburger.classList.contains('active')).toBe(false);
-            
+
             hamburger.click();
             expect(hamburger.classList.contains('active')).toBe(true);
-            
+
             hamburger.click();
             expect(hamburger.classList.contains('active')).toBe(false);
         });
 
         test('should handle missing elements gracefully', () => {
             document.body.innerHTML = '<div></div>'; // No navigation elements
-            
+
             // Should not throw error
             expect(() => {
                 initNavigation();
@@ -79,7 +79,7 @@ describe('Navigation', () => {
                         <li><a href="#section2">Section 2</a></li>
                         <li><a href="#">Empty Link</a></li>
                     </ul>
-                    <div class="nav-hamburger">
+                    <div class="mobile-menu-toggle nav-hamburger">
                         <div class="line"></div>
                     </div>
                 </nav>
@@ -94,36 +94,36 @@ describe('Navigation', () => {
 
         test('should call scrollTo when clicking anchor link', () => {
             initNavigation();
-            
+
             const link = document.querySelector('a[href="#section1"]');
             link.click();
-            
+
             expect(window.scrollTo).toHaveBeenCalled();
         });
 
         test('should not scroll when clicking empty hash', () => {
             initNavigation();
-            
+
             const emptyLink = document.querySelector('a[href="#"]');
             emptyLink.click();
-            
+
             expect(window.scrollTo).not.toHaveBeenCalled();
         });
 
         test('should close mobile menu after navigation', () => {
             initNavigation();
-            
+
             const hamburger = document.querySelector('.nav-hamburger');
             const navLinks = document.querySelector('.nav-links');
             const link = document.querySelector('a[href="#section1"]');
-            
+
             // Open mobile menu
             hamburger.click();
             expect(navLinks.classList.contains('active')).toBe(true);
-            
+
             // Click navigation link
             link.click();
-            
+
             // Mobile menu should be closed
             expect(navLinks.classList.contains('active')).toBe(false);
             expect(hamburger.classList.contains('active')).toBe(false);

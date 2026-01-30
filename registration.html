@@ -1,670 +1,409 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registration | DSCE Clubs</title>
-    <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <script type="text/javascript" src="darkmode.js" defer></script>
-  </head>
 
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration | DSCE Clubs</title>
+    <link rel="stylesheet" href="style.css?v=1.1">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script type="text/javascript" src="darkmode.js?v=1.1" defer></script>
+</head>
+
+<body>
     <div class="stars-background"></div>
 
     <nav class="cosmic-nav">
-      <div class="nav-logo">
-        <span class="logo-icon">🌌</span>
-        <span class="logo-text">DSCE Clubs</span>
-      </div>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="events.html">Events</a></li>
-        <li><a href="past-events.html">Past Events</a></li>
-        <li><a href="registration.html" class="active">Registration</a></li>
-        <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
-        <li><a href="admin-login.html">Admin</a></li>
-        <li id="nav-login">
-          <a href="registration.html#student-login">Login</a>
-        </li>
-        <li id="nav-logout" class="hidden">
-          <a href="#" id="student-logout-btn">Logout</a>
-        </li>
-        <button id="theme-switch">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e3e3e3"
-          >
-            <path
-              d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z"
-            />
-          </svg>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#e3e3e3"
-          >
-            <path
-              d="M480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Z"
-            />
-          </svg>
-        </button>
-      </ul>
-      <div class="nav-hamburger">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-      </div>
+        <div class="nav-logo">
+            <span class="logo-icon">🌌</span>
+            <span class="logo-text">DSCE Clubs</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="past-events.html">Past Events</a></li>
+            <li><a href="registration.html" class="active">Registration</a></li>
+            <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
+            <li><a href="admin-login.html">Admin</a></li>
+            <li id="nav-login"><a href="registration.html#student-login">Login</a></li>
+            <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
+        </ul>
+        <div class="nav-hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
     </nav>
 
     <header class="registration-hero">
-      <div class="hero-content">
-        <h1 class="hero-title">
-          Join the <span class="text-gradient">Community</span>
-        </h1>
-        <p class="hero-subtitle">Register for clubs, events, and more</p>
-      </div>
+        <div class="hero-content">
+            <h1 class="hero-title">Join the <span class="text-gradient">Community</span></h1>
+            <p class="hero-subtitle">Register for clubs, events, and more</p>
+        </div>
     </header>
 
     <main class="registration-main">
-      <section class="registration-tabs">
-        <div class="tab-buttons" role="tablist">
-          <button
-            class="tab-button active"
-            data-tab="club-registration"
-            role="tab"
-            aria-selected="true"
-            aria-controls="club-registration"
-          >
-            Club Membership
-          </button>
-          <button
-            class="tab-button"
-            data-tab="event-registration"
-            role="tab"
-            aria-selected="false"
-            aria-controls="event-registration"
-          >
-            Event Registration
-          </button>
-          <button
-            class="tab-button"
-            data-tab="e-certificate"
-            role="tab"
-            aria-selected="false"
-            aria-controls="e-certificate"
-          >
-            E-Certificate
-          </button>
-          <button
-            class="tab-button"
-            data-tab="student-login"
-            id="student-login-tab-btn"
-            role="tab"
-            aria-selected="false"
-            aria-controls="student-login"
-          >
-            Student Login
-          </button>
-        </div>
-
-        <div class="tab-content" id="student-login" role="tabpanel">
-          <h2 class="section-title">
-            Student <span class="text-gradient">Login</span>
-          </h2>
-          <p style="text-align: center; margin-bottom: 2rem">
-            Login to access 'My Hub' and manage your club memberships and event
-            registrations.
-          </p>
-          <form
-            id="student-login-form"
-            class="registration-form"
-            style="max-width: 500px; margin: 0 auto"
-          >
-            <div class="form-group">
-              <label for="login-student-name">Full Name</label>
-              <input
-                type="text"
-                id="login-student-name"
-                name="full_name"
-                placeholder="Enter your full name"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="login-student-id">Student ID</label>
-              <input
-                type="text"
-                id="login-student-id"
-                name="student_id"
-                placeholder="Enter your student ID"
-                required
-              />
-            </div>
-            <div class="form-actions">
-              <button type="submit" class="submit-button">Login</button>
-            </div>
-            <p
-              id="login-message"
-              style="
-                text-align: center;
-                margin-top: 1rem;
-                color: var(--accent-color);
-              "
-            ></p>
-          </form>
-        </div>
-
-        <div class="tab-content active" id="club-registration" role="tabpanel">
-          <h2 class="section-title">
-            Join a <span class="text-gradient">Club</span>
-          </h2>
-          <div id="club-success-message" class="success-message hidden">
-            <i class="fas fa-check-circle"></i>
-            <p id="club-success-text">
-              Club registration submitted successfully!
-            </p>
-          </div>
-          <form id="club-registration-form" class="registration-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="club-first-name">First Name</label>
-                <input
-                  type="text"
-                  id="club-first-name"
-                  name="first_name"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="club-last-name">Last Name</label>
-                <input
-                  type="text"
-                  id="club-last-name"
-                  name="last_name"
-                  required
-                />
-              </div>
+        <section class="registration-tabs">
+            <div class="tab-buttons" role="tablist">
+                <button class="tab-button active" data-tab="club-registration" role="tab" aria-selected="true"
+                    aria-controls="club-registration">Club Membership</button>
+                <button class="tab-button" data-tab="event-registration" role="tab" aria-selected="false"
+                    aria-controls="event-registration">Event Registration</button>
+                <button class="tab-button" data-tab="e-certificate" role="tab" aria-selected="false"
+                    aria-controls="e-certificate">E-Certificate</button>
+                <button class="tab-button" data-tab="student-login" id="student-login-tab-btn" role="tab"
+                    aria-selected="false" aria-controls="student-login">Student Login</button>
             </div>
 
-            <div class="form-group">
-              <label for="club-email">Email</label>
-              <input type="email" id="club-email" name="email" required />
+            <div class="tab-content" id="student-login" role="tabpanel">
+                <h2 class="section-title">Student <span class="text-gradient">Login</span></h2>
+                <p style="text-align: center; margin-bottom: 2rem;">Login to access 'My Hub' and manage your club
+                    memberships and event registrations.</p>
+                <form id="student-login-form" class="registration-form" style="max-width: 500px; margin: 0 auto;">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="password" placeholder="Enter your password"
+                            required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="submit-button">Login</button>
+                    </div>
+                    <p id="login-message" style="text-align: center; margin-top: 1rem; color: var(--accent-color);"></p>
+                </form>
             </div>
 
-            <div class="form-group">
-              <label for="club-student-id">Student ID</label>
-              <input
-                type="text"
-                id="club-student-id"
-                name="student_id"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="club-major">Major</label>
-              <input type="text" id="club-major" name="major" required />
-            </div>
-
-            <div class="form-group">
-              <label for="club-year">Year of Study</label>
-              <select id="club-year" name="year" required>
-                <option value="">Select Year</option>
-                <option value="freshman">1st YEAR</option>
-                <option value="sophomore">2nd YEAR</option>
-                <option value="junior">3rd YEAR</option>
-                <option value="senior">4th YEAR</option>
-                <option value="graduate">Post Graduate</option>
-              </select>
-            </div>
-
-            <div class="checkbox-group">
-              <label class="checkbox-item" for="club-tech-society">
-                <input
-                  type="checkbox"
-                  id="club-tech-society"
-                  name="clubs[]"
-                  value="tech-society"
-                />
-                <span class="checkmark"></span>
-                <span class="checkbox-text">Tech Society</span>
-              </label>
-
-              <label class="checkbox-item" for="club-creative-arts">
-                <input
-                  type="checkbox"
-                  id="club-creative-arts"
-                  name="clubs[]"
-                  value="creative-arts"
-                />
-                <span class="checkmark"></span>
-                <span class="checkbox-text">Creative Arts</span>
-              </label>
-
-              <label class="checkbox-item" for="club-debate-club">
-                <input
-                  type="checkbox"
-                  id="club-debate-club"
-                  name="clubs[]"
-                  value="debate-club"
-                />
-                <span class="checkmark"></span>
-                <span class="checkbox-text">Debate Club</span>
-              </label>
-
-              <label class="checkbox-item" for="club-music-society">
-                <input
-                  type="checkbox"
-                  id="club-music-society"
-                  name="clubs[]"
-                  value="music-society"
-                />
-                <span class="checkmark"></span>
-                <span class="checkbox-text">Music Society</span>
-              </label>
-
-              <label class="checkbox-item" for="club-sports-club">
-                <input
-                  type="checkbox"
-                  id="club-sports-club"
-                  name="clubs[]"
-                  value="sports-club"
-                />
-                <span class="checkmark"></span>
-                <span class="checkbox-text">Sports Club</span>
-              </label>
-
-              <label class="checkbox-item" for="club-dance-club">
-                <input
-                  type="checkbox"
-                  id="club-dance-club"
-                  name="clubs[]"
-                  value="dance-club"
-                />
-                <span class="checkmark"></span>
-                <span class="checkbox-text">Dance Club</span>
-              </label>
-            </div>
-
-            <div class="form-group">
-              <label for="club-reason"
-                >Why do you want to join these clubs? (Optional)</label
-              >
-              <textarea id="club-reason" name="reason" rows="3"></textarea>
-            </div>
-
-            <div class="form-actions">
-              <button type="submit" class="submit-button">
-                Submit Application
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <div class="tab-content" id="event-registration" role="tabpanel">
-          <h2 class="section-title">
-            Register for <span class="text-gradient">Events</span>
-          </h2>
-          <div class="event-selection">
-            <div class="event-filters">
-              <div class="filter-group">
-                <label for="event-club-filter">Filter by Club:</label>
-                <select id="event-club-filter">
-                  <option value="all">All Clubs</option>
-                  <option value="tech">Tech Society</option>
-                  <option value="arts">Creative Arts</option>
-                  <option value="debate">Debate Club</option>
-                  <option value="music">Music Society</option>
-                  <option value="sports">Sports Club</option>
-                  <option value="dance">Dance Club</option>
-                </select>
-              </div>
-              <div class="filter-group">
-                <label for="event-date-filter">Filter by Date:</label>
-                <select id="event-date-filter">
-                  <option value="all">All Dates</option>
-                  <option value="this-week">This Week</option>
-                  <option value="this-month">This Month</option>
-                  <option value="next-month">Next Month</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="event-list">
-              <div
-                class="event-card"
-                data-club="tech"
-                data-date="2026-02-01"
-                data-days-offset="7"
-              >
-                <div class="event-card-header">
-                  <span class="event-club tech">Tech Society</span>
-                  <span class="event-date">Loading...</span>
+            <div class="tab-content active" id="club-registration" role="tabpanel">
+                <h2 class="section-title">Join a <span class="text-gradient">Club</span></h2>
+                <div id="club-success-message" class="success-message hidden">
+                    <i class="fas fa-check-circle"></i>
+                    <p id="club-success-text">Club registration submitted successfully!</p>
                 </div>
-                <h3 class="event-title">AI Workshop Series</h3>
-                <p class="event-description">
-                  Hands-on sessions on machine learning fundamentals and
-                  applications.
-                </p>
-                <div class="event-details">
-                  <span><i class="fas fa-clock"></i> 2:00 PM - 5:00 PM</span>
-                  <span
-                    ><i class="fas fa-map-marker-alt"></i> CS Building, Room
-                    101</span
-                  >
-                </div>
-                <button class="register-button">Register</button>
-              </div>
+                <form id="club-registration-form" class="registration-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="club-first-name">First Name</label>
+                            <input type="text" id="club-first-name" name="first_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="club-last-name">Last Name</label>
+                            <input type="text" id="club-last-name" name="last_name" required>
+                        </div>
+                    </div>
 
-              <div
-                class="event-card"
-                data-club="arts"
-                data-date="2026-02-08"
-                data-days-offset="14"
-              >
-                <div class="event-card-header">
-                  <span class="event-club arts">Creative Arts</span>
-                  <span class="event-date">Loading...</span>
-                </div>
-                <h3 class="event-title">Digital Art Masterclass</h3>
-                <p class="event-description">
-                  Learn advanced techniques in digital painting and
-                  illustration.
-                </p>
-                <div class="event-details">
-                  <span><i class="fas fa-clock"></i> 4:00 PM - 7:00 PM</span>
-                  <span
-                    ><i class="fas fa-map-marker-alt"></i> Arts Center, Studio
-                    3</span
-                  >
-                </div>
-                <button class="register-button">Register</button>
-              </div>
+                    <div class="form-group">
+                        <label for="club-email">Email</label>
+                        <input type="email" id="club-email" name="email" required>
+                    </div>
 
-              <div
-                class="event-card"
-                data-club="debate"
-                data-date="2026-02-15"
-                data-days-offset="21"
-              >
-                <div class="event-card-header">
-                  <span class="event-club debate">Debate Club</span>
-                  <span class="event-date">Loading...</span>
-                </div>
-                <h3 class="event-title">Public Speaking Workshop</h3>
-                <p class="event-description">
-                  Improve your public speaking and presentation skills.
-                </p>
-                <div class="event-details">
-                  <span><i class="fas fa-clock"></i> 3:00 PM - 6:00 PM</span>
-                  <span
-                    ><i class="fas fa-map-marker-alt"></i> Humanities Building,
-                    Room 205</span
-                  >
-                </div>
-                <button class="register-button">Register</button>
-              </div>
+                    <div class="form-group">
+                        <label for="club-student-id">Student ID</label>
+                        <input type="text" id="club-student-id" name="student_id" required>
+                    </div>
 
-              <div class="event-card" data-club="music" data-date="2026-02-22">
-                <div class="event-card-header">
-                  <span class="event-club music">Music Society</span>
-                  <span class="event-date">Loading...</span>
-                </div>
-                <h3 class="event-title">Music Jam Session</h3>
-                <p class="event-description">Open mic and jam session.</p>
-                <div class="event-details">
-                  <span><i class="fas fa-clock"></i> 3:00 PM - 5:00 PM</span>
-                  <span><i class="fas fa-map-marker-alt"></i> Auditorium</span>
-                </div>
-                <button class="register-button">Register</button>
-              </div>
+                    <div class="form-group">
+                        <label for="club-major">Major</label>
+                        <input type="text" id="club-major" name="major" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="club-year">Year of Study</label>
+                        <select id="club-year" name="year" required>
+                            <option value="">Select Year</option>
+                            <option value="freshman">1st YEAR</option>
+                            <option value="sophomore">2nd YEAR</option>
+                            <option value="junior">3rd YEAR</option>
+                            <option value="senior">4th YEAR</option>
+                            <option value="graduate">Post Graduate</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="checkbox-item" for="club-tech-society">
+                            <input type="checkbox" id="club-tech-society" name="clubs[]" value="tech-society">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Tech Society</span>
+                        </label>
+
+                        <label class="checkbox-item" for="club-creative-arts">
+                            <input type="checkbox" id="club-creative-arts" name="clubs[]" value="creative-arts">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Creative Arts</span>
+                        </label>
+
+                        <label class="checkbox-item" for="club-debate-club">
+                            <input type="checkbox" id="club-debate-club" name="clubs[]" value="debate-club">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Debate Club</span>
+                        </label>
+
+                        <label class="checkbox-item" for="club-music-society">
+                            <input type="checkbox" id="club-music-society" name="clubs[]" value="music-society">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Music Society</span>
+                        </label>
+
+                        <label class="checkbox-item" for="club-sports-club">
+                            <input type="checkbox" id="club-sports-club" name="clubs[]" value="sports-club">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Sports Club</span>
+                        </label>
+
+                        <label class="checkbox-item" for="club-dance-club">
+                            <input type="checkbox" id="club-dance-club" name="clubs[]" value="dance-club">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-text">Dance Club</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="club-reason">Why do you want to join these clubs? (Optional)</label>
+                        <textarea id="club-reason" name="reason" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-button">Submit Application</button>
+                    </div>
+                </form>
             </div>
-          </div>
 
-          <div id="event-registration-form-container" class="hidden">
-            <form id="event-registration-form" class="registration-form">
-              <h3 id="event-registration-title">
-                Register for: <span id="selected-event-name"></span>
-              </h3>
+            <div class="tab-content" id="event-registration" role="tabpanel">
+                <h2 class="section-title">Register for <span class="text-gradient">Events</span></h2>
+                <div class="event-selection">
+                    <div class="event-filters">
+                        <div class="filter-group">
+                            <label for="event-club-filter">Filter by Club:</label>
+                            <select id="event-club-filter">
+                                <option value="all">All Clubs</option>
+                                <option value="tech">Tech Society</option>
+                                <option value="arts">Creative Arts</option>
+                                <option value="debate">Debate Club</option>
+                                <option value="music">Music Society</option>
+                                <option value="sports">Sports Club</option>
+                                <option value="dance">Dance Club</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="event-date-filter">Filter by Date:</label>
+                            <select id="event-date-filter">
+                                <option value="all">All Dates</option>
+                                <option value="this-week">This Week</option>
+                                <option value="this-month">This Month</option>
+                                <option value="next-month">Next Month</option>
+                            </select>
+                        </div>
+                    </div>
 
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="event-first-name">First Name</label>
-                  <input
-                    type="text"
-                    id="event-first-name"
-                    name="first_name"
-                    required
-                  />
+                    <div class="event-list">
+                        <div class="event-card" data-club="tech" data-date="2026-02-01" data-days-offset="7">
+                            <div class="event-card-header">
+                                <span class="event-club tech">Tech Society</span>
+                                <span class="event-date">Loading...</span>
+                            </div>
+                            <h3 class="event-title">AI Workshop Series</h3>
+                            <p class="event-description">Hands-on sessions on machine learning fundamentals and
+                                applications.</p>
+                            <div class="event-details">
+                                <span><i class="fas fa-clock"></i> 2:00 PM - 5:00 PM</span>
+                                <span><i class="fas fa-map-marker-alt"></i> CS Building, Room 101</span>
+                            </div>
+                            <button class="register-button">Register</button>
+                        </div>
+
+                        <div class="event-card" data-club="arts" data-date="2026-02-08" data-days-offset="14">
+                            <div class="event-card-header">
+                                <span class="event-club arts">Creative Arts</span>
+                                <span class="event-date">Loading...</span>
+                            </div>
+                            <h3 class="event-title">Digital Art Masterclass</h3>
+                            <p class="event-description">Learn advanced techniques in digital painting and illustration.
+                            </p>
+                            <div class="event-details">
+                                <span><i class="fas fa-clock"></i> 4:00 PM - 7:00 PM</span>
+                                <span><i class="fas fa-map-marker-alt"></i> Arts Center, Studio 3</span>
+                            </div>
+                            <button class="register-button">Register</button>
+                        </div>
+
+                        <div class="event-card" data-club="debate" data-date="2026-02-15" data-days-offset="21">
+                            <div class="event-card-header">
+                                <span class="event-club debate">Debate Club</span>
+                                <span class="event-date">Loading...</span>
+                            </div>
+                            <h3 class="event-title">Public Speaking Workshop</h3>
+                            <p class="event-description">Improve your public speaking and presentation skills.</p>
+                            <div class="event-details">
+                                <span><i class="fas fa-clock"></i> 3:00 PM - 6:00 PM</span>
+                                <span><i class="fas fa-map-marker-alt"></i> Humanities Building, Room 205</span>
+                            </div>
+                            <button class="register-button">Register</button>
+                        </div>
+
+                        <div class="event-card" data-club="music" data-date="2026-02-22">
+                            <div class="event-card-header">
+                                <span class="event-club music">Music Society</span>
+                                <span class="event-date">Loading...</span>
+                            </div>
+                            <h3 class="event-title">Music Jam Session</h3>
+                            <p class="event-description">Open mic and jam session.</p>
+                            <div class="event-details">
+                                <span><i class="fas fa-clock"></i> 3:00 PM - 5:00 PM</span>
+                                <span><i class="fas fa-map-marker-alt"></i> Auditorium</span>
+                            </div>
+                            <button class="register-button">Register</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                  <label for="event-last-name">Last Name</label>
-                  <input
-                    type="text"
-                    id="event-last-name"
-                    name="last_name"
-                    required
-                  />
+
+                <div id="event-registration-form-container" class="hidden">
+                    <form id="event-registration-form" class="registration-form">
+                        <h3 id="event-registration-title">Register for: <span id="selected-event-name"></span></h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="event-first-name">First Name</label>
+                                <input type="text" id="event-first-name" name="first_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="event-last-name">Last Name</label>
+                                <input type="text" id="event-last-name" name="last_name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="event-email">Email</label>
+                            <input type="email" id="event-email" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="event-student-id">Student ID</label>
+                            <input type="text" id="event-student-id" name="student_id" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="event-dietary">Dietary Restrictions (for events with food)</label>
+                            <input type="text" id="event-dietary" name="dietary"
+                                placeholder="None, Vegetarian, Vegan, Allergies, etc.">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="event-accessibility">Accessibility Requirements</label>
+                            <textarea id="event-accessibility" name="accessibility" rows="2"
+                                placeholder="Please let us know if you have any accessibility needs"></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" id="cancel-event-registration" class="cancel-button">Cancel</button>
+                            <button type="submit" class="submit-button">Complete Registration</button>
+                        </div>
+                    </form>
                 </div>
-              </div>
-
-              <div class="form-group">
-                <label for="event-email">Email</label>
-                <input type="email" id="event-email" name="email" required />
-              </div>
-
-              <div class="form-group">
-                <label for="event-student-id">Student ID</label>
-                <input
-                  type="text"
-                  id="event-student-id"
-                  name="student_id"
-                  required
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="event-dietary"
-                  >Dietary Restrictions (for events with food)</label
-                >
-                <input
-                  type="text"
-                  id="event-dietary"
-                  name="dietary"
-                  placeholder="None, Vegetarian, Vegan, Allergies, etc."
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="event-accessibility"
-                  >Accessibility Requirements</label
-                >
-                <textarea
-                  id="event-accessibility"
-                  name="accessibility"
-                  rows="2"
-                  placeholder="Please let us know if you have any accessibility needs"
-                ></textarea>
-              </div>
-
-              <div class="form-actions">
-                <button
-                  type="button"
-                  id="cancel-event-registration"
-                  class="cancel-button"
-                >
-                  Cancel
-                </button>
-                <button type="submit" class="submit-button">
-                  Complete Registration
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div class="tab-content" id="e-certificate" role="tabpanel">
-          <h2 class="section-title">
-            Request <span class="text-gradient">E-Certificate</span>
-          </h2>
-          <form id="certificate-form" class="registration-form">
-            <div class="form-group">
-              <label for="certificate-student-id">Student ID</label>
-              <input
-                type="text"
-                id="certificate-student-id"
-                name="student_id"
-                required
-              />
             </div>
-            <div class="form-group">
-              <label for="certificate-event">Event Name</label>
-              <select id="certificate-event" name="event" required>
-                <option value="">Select Event</option>
-                <option value="AI Workshop Series">AI Workshop Series</option>
-                <option value="Digital Art Masterclass">
-                  Digital Art Masterclass
-                </option>
-                <option value="Public Speaking Workshop">
-                  Public Speaking Workshop
-                </option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="certificate-file">Upload Proof (if any)</label>
-              <input
-                type="file"
-                id="certificate-file"
-                name="proof_file"
-                accept="image/*,application/pdf"
-                required
-              />
-            </div>
-            <div class="form-actions">
-              <button type="submit" class="submit-button">
-                Request Certificate
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
-      <!-- scroll top button -->
-      <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
-        <i class="fas fa-chevron-up"></i>
-      </button>
 
-      <!-- scroll translate top button -->
-    <button id="showTranslateBtn" title="Translate Page">
-      <i id="google_translate_element"></i>
-    </button>
+            <div class="tab-content" id="e-certificate" role="tabpanel">
+                <h2 class="section-title">Request <span class="text-gradient">E-Certificate</span></h2>
+                <form id="certificate-form" class="registration-form">
+                    <div class="form-group">
+                        <label for="certificate-student-id">Student ID</label>
+                        <input type="text" id="certificate-student-id" name="student_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="certificate-event">Event Name</label>
+                        <select id="certificate-event" name="event" required>
+                            <option value="">Select Event</option>
+                            <option value="AI Workshop Series">AI Workshop Series</option>
+                            <option value="Digital Art Masterclass">Digital Art Masterclass</option>
+                            <option value="Public Speaking Workshop">Public Speaking Workshop</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="certificate-file">Upload Proof (if any)</label>
+                        <input type="file" id="certificate-file" name="proof_file" accept="image/*,application/pdf"
+                            required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="submit-button">Request Certificate</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <!-- scroll top button -->
+        <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+
     </main>
 
     <footer class="cosmic-footer">
-      <div class="footer-bottom">
-        <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
-      </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
+        </div>
     </footer>
 
     <!-- Conflict Warning Modal -->
-    <div id="conflict-modal" class="conflict-modal" style="display: none">
-      <div class="modal-content conflict-modal-content">
-        <span class="close-modal close-conflict-modal">&times;</span>
-        <div class="conflict-header">
-          <h2>
-            <i class="fas fa-exclamation-triangle"></i> Scheduling Conflict
-            Detected
-          </h2>
-          <span id="conflict-type-badge" class="conflict-type-badge"></span>
+    <div id="conflict-modal" class="conflict-modal" style="display: none;">
+        <div class="modal-content conflict-modal-content">
+            <span class="close-modal close-conflict-modal">&times;</span>
+            <div class="conflict-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Scheduling Conflict Detected</h2>
+                <span id="conflict-type-badge" class="conflict-type-badge"></span>
+            </div>
+            <div class="conflict-body">
+                <p>You are attempting to register for <strong><span id="conflict-new-event-name"></span></strong>, which
+                    overlaps with an existing registration:</p>
+
+                <div class="conflict-details-box">
+                    <div class="conflict-event existing">
+                        <h4>Existing Event</h4>
+                        <div id="conflict-existing-details"></div>
+                    </div>
+                    <div class="conflict-separator">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="conflict-event new">
+                        <h4>New Event</h4>
+                        <div id="conflict-new-details"></div>
+                    </div>
+                </div>
+
+                <p id="conflict-overlap-text" class="conflict-overlap-text"></p>
+
+                <div class="conflict-timeline">
+                    <div class="conflict-timeline-track">
+                        <div id="conflict-timeline-existing" class="conflict-timeline-bar existing"></div>
+                        <div id="conflict-timeline-new" class="conflict-timeline-bar new"></div>
+                    </div>
+                    <div class="conflict-timeline-legend">
+                        <span><span class="legend existing"></span> Existing event</span>
+                        <span><span class="legend new"></span> New event</span>
+                    </div>
+                </div>
+
+                <div class="alternatives-section">
+                    <h4><i class="far fa-lightbulb"></i> Suggested Alternatives</h4>
+                    <div id="conflict-alternatives-list" class="alternatives-list">
+                        <!-- Alternatives injected here -->
+                    </div>
+                </div>
+            </div>
+            <div class="conflict-footer">
+                <button id="conflict-cancel-btn" class="action-button secondary">Keep Existing Event</button>
+                <button id="conflict-swap-btn" class="action-button">Swap to New Event</button>
+                <button id="conflict-proceed-btn" class="action-button secondary">Register Anyway</button>
+            </div>
         </div>
-        <div class="conflict-body">
-          <p>
-            You are attempting to register for
-            <strong><span id="conflict-new-event-name"></span></strong>, which
-            overlaps with an existing registration:
-          </p>
-
-          <div class="conflict-details-box">
-            <div class="conflict-event existing">
-              <h4>Existing Event</h4>
-              <div id="conflict-existing-details"></div>
-            </div>
-            <div class="conflict-separator">
-              <i class="fas fa-exchange-alt"></i>
-            </div>
-            <div class="conflict-event new">
-              <h4>New Event</h4>
-              <div id="conflict-new-details"></div>
-            </span>
-          </div>
-
-          <p id="conflict-overlap-text" class="conflict-overlap-text"></p>
-
-          <div class="conflict-timeline">
-            <div class="conflict-timeline-track">
-              <div
-                id="conflict-timeline-existing"
-                class="conflict-timeline-bar existing"
-              ></div>
-              <div
-                id="conflict-timeline-new"
-                class="conflict-timeline-bar new"
-              ></div>
-            </div>
-            <div class="conflict-timeline-legend">
-              <span><span class="legend existing"></span> Existing event</span>
-              <span><span class="legend new"></span> New event</span>
-            </div>
-          </div>
-
-          <div class="alternatives-section">
-            <h4><i class="far fa-lightbulb"></i> Suggested Alternatives</h4>
-            <div id="conflict-alternatives-list" class="alternatives-list">
-              <!-- Alternatives injected here -->
-            </div>
-          </div>
-        </div>
-        <div class="conflict-footer">
-          <button id="conflict-cancel-btn" class="action-button secondary">
-            Keep Existing Event
-          </button>
-          <button id="conflict-swap-btn" class="action-button">
-            Swap to New Event
-          </button>
-          <button id="conflict-proceed-btn" class="action-button secondary">
-            Register Anyway
-          </button>
-        </div>
-      </div>
     </div>
 
-    <script src="app.js"></script>
-    <script src="scroll.js"></script>
+    <script src="app.js?v=1.1"></script>
+    <script src="scroll.js?v=1.1"></script>
 
-     <!-- script for swithc the themes -->
-    <script>
-      function themes() {
-        const body = document.body;
-        const currentTheme = body.getAttribute("data-theme");
 
-        if (currentTheme === "dark") {
-          body.setAttribute("data-theme", "light");
-        } else {
-          body.setAttribute("data-theme", "dark");
-        }
-      }
-    </script>
-  </body>
+</body>
+
 </html>

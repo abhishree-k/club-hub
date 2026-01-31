@@ -59,7 +59,7 @@
         <section class="calendar-section">
             <div class="calendar-controls">
                 <button id="prev-month" class="calendar-nav"><i class="fas fa-chevron-left"></i></button>
-                <h2 id="current-month" class="section-title">October 2025</h2>
+                <h2 id="current-month" class="section-title">January 2026</h2>
                 <button id="next-month" class="calendar-nav"><i class="fas fa-chevron-right"></i></button>
             </div>
 
@@ -86,11 +86,11 @@
                 </select>
 
                 <button id="jump-to-date" class="calendar-jump-btn"><i class="fas fa-arrow-right"></i> Jump</button>
-                <button id="today-btn" class="calendar-jump-btn today"><i class="fas fa-calendar-today"></i>
+                <button id="today-btn" class="calendar-jump-btn today"><i class="fas fa-calendar-day"></i>
                     Today</button>
             </div>
 
-            <div class="calendar-grid">
+            <div class="calendar-grid" id="calendar-grid">
                 <div class="calendar-header">Sun</div>
                 <div class="calendar-header">Mon</div>
                 <div class="calendar-header">Tue</div>
@@ -98,8 +98,6 @@
                 <div class="calendar-header">Thu</div>
                 <div class="calendar-header">Fri</div>
                 <div class="calendar-header">Sat</div>
-
-                <!-- Calendar days will be populated by JavaScript -->
             </div>
 
             <div class="calendar-legend">
@@ -338,7 +336,6 @@
     <script src="app.js?v=1.1"></script>
     <script src="scroll.js?v=1.1"></script>
     <script>
-        // Event Search Functionality
         document.getElementById("eventSearch").addEventListener("keyup", function () {
             const searchValue = this.value.toLowerCase();
             const events = document.querySelectorAll(".event-card");
@@ -353,6 +350,128 @@
                 }
             });
         });
+
+        const events = [
+            { date: '2026-01-05', title: 'Hackathon', type: 'tech' },
+            { date: '2026-01-10', title: 'Art Exhibition', type: 'arts' },
+            { date: '2026-01-15', title: 'Debate Competition', type: 'debate' },
+            { date: '2026-01-20', title: 'Music Fest', type: 'music' },
+            { date: '2026-01-25', title: 'Sports Day', type: 'sports' },
+            { date: '2026-01-28', title: 'Dance Workshop', type: 'science' },
+            { date: '2026-02-08', title: 'Tech Talk', type: 'tech' },
+            { date: '2026-02-14', title: 'Valentine Concert', type: 'music' },
+        ];
+
+        let currentDate = new Date();
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+
+        function populateYearPicker() {
+            const yearPicker = document.getElementById('year-picker');
+            const currentYear = new Date().getFullYear();
+
+            yearPicker.innerHTML = '';
+
+            for (let year = 2020; year <= 2035; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                if (year === currentYear) {
+                    option.selected = true;
+                }
+                yearPicker.appendChild(option);
+            }
+        }
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            document.getElementById('current-month').textContent = `${monthNames[month]} ${year}`;
+
+            document.getElementById('month-picker').value = month;
+            document.getElementById('year-picker').value = year;
+
+            const calendarGrid = document.getElementById('calendar-grid');
+            const headers = calendarGrid.querySelectorAll('.calendar-header');
+            calendarGrid.innerHTML = '';
+            headers.forEach(header => calendarGrid.appendChild(header));
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                const dayElement = createDayElement(day, true);
+                calendarGrid.appendChild(dayElement);
+            }
+
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = day === today.getDate() &&
+                    month === today.getMonth() &&
+                    year === today.getFullYear();
+                const dayElement = createDayElement(day, false, isToday);
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayEvents = events.filter(e => e.date === dateStr);
+
+                dayEvents.forEach(event => {
+                    const eventDiv = document.createElement('div');
+                    eventDiv.className = `event-indicator ${event.type}`;
+                    eventDiv.textContent = event.title;
+                    eventDiv.title = event.title;
+                    dayElement.appendChild(eventDiv);
+                });
+
+                calendarGrid.appendChild(dayElement);
+            }
+
+            const remainingCells = 42 - (firstDay + daysInMonth);
+            for (let day = 1; day <= remainingCells; day++) {
+                const dayElement = createDayElement(day, true);
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        function createDayElement(day, isOtherMonth, isToday = false) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            if (isOtherMonth) dayElement.classList.add('other-month');
+            if (isToday) dayElement.classList.add('today');
+
+            const dayNumber = document.createElement('div');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = day;
+            dayElement.appendChild(dayNumber);
+
+            return dayElement;
+        }
+
+        document.getElementById('prev-month').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        });
+
+        document.getElementById('next-month').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        document.getElementById('jump-to-date').addEventListener('click', () => {
+            const month = parseInt(document.getElementById('month-picker').value);
+            const year = parseInt(document.getElementById('year-picker').value);
+            currentDate = new Date(year, month, 1);
+            renderCalendar();
+        });
+
+        document.getElementById('today-btn').addEventListener('click', () => {
+            currentDate = new Date();
+            renderCalendar();
+        });
+
+        populateYearPicker();
+        renderCalendar();
 
     </script>
 

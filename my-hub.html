@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Hub | DSCE Clubs</title>
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="style.css?v=2.0">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
@@ -96,6 +96,11 @@
             <li><a href="admin-login.html">Admin</a></li>
             <li id="nav-login" class="hidden"><a href="registration.html#student-login">Login</a></li>
             <li id="nav-logout"><a href="#" id="student-logout-btn">Logout</a></li>
+            <li>
+                <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-meteor"></i>
+                </button>
+            </li>
         </ul>
         <div class="nav-hamburger">
             <div class="line"></div>
@@ -142,7 +147,8 @@
         </div>
     </footer>
 
-    <script src="app.js?v=1.1"></script>
+    <script src="app.js?v=2.0"></script>
+    <script src="darkmode.js?v=2.0"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // This is handled by initStudentSession() and a specific hub init in app.js

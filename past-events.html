@@ -5,13 +5,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Past Events | DSCE Clubs</title>
-  <link rel="stylesheet" href="style.css?v=1.1" />
+  <link rel="stylesheet" href="style.css?v=2.2" />
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
   <style>
+    /* OLED Mode Override for Past Events Page */
+    html body.oled-mode .timeline-content {
+      background: #000000 !important;
+      border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    /* Light Mode Text Fix */
+    html body.light-mode .timeline-content * {
+      color: #2d3436 !important;
+    }
+
+    html body.light-mode .timeline-date {
+      color: #6c5ce7 !important;
+    }
+
+    html body.light-mode .timeline-description {
+      color: #636e72 !important;
+    }
+
     html body .timeline-section {
       display: block !important;
       position: relative !important;
@@ -320,6 +339,11 @@
       <li id="nav-logout" class="hidden">
         <a href="#" id="student-logout-btn">Logout</a>
       </li>
+      <li>
+        <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
+          <i class="fas fa-meteor"></i>
+        </button>
+      </li>
     </ul>
     <div class="nav-hamburger">
       <div class="line"></div>
@@ -534,13 +558,13 @@
     </div>
     <div class="footer-bottom">
       <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
-      <link rel="stylesheet" href="style.css?v=1.1" />
+      <link rel="stylesheet" href="style.css?v=2.2" />
     </div>
   </footer>
 
-  <script src="app.js?v=1.1"></script>
-  <script src="scroll.js?v=1.1"></script>
-
+  <script src="app.js?v=2.0"></script>
+  <script src="scroll.js?v=2.0"></script>
+  <script src="darkmode.js?v=2.0"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const yearEl = document.getElementById("year");

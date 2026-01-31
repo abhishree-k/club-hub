@@ -3469,6 +3469,177 @@ button:focus-visible,
 }
 
 /* ===========================
+   EVENT FEEDBACK MODAL STYLES
+   =========================== */
+
+/* Base Styles (Cosmic Dark Theme) */
+.feedback-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.feedback-modal-content {
+  background: rgba(15, 23, 42, 0.95);
+  padding: 30px;
+  width: 420px;
+  max-width: 90%;
+  border-radius: 16px;
+  color: #fff;
+  border: 1px solid rgba(108, 92, 231, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.feedback-close-btn {
+  float: right;
+  cursor: pointer;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.feedback-close-btn:hover {
+  color: #fd79a8;
+  transform: scale(1.1);
+}
+
+.feedback-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.feedback-label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.feedback-form-field {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0 12px 0;
+  background: rgba(108, 92, 231, 0.1) !important;
+  border: 1px solid rgba(108, 92, 231, 0.3) !important;
+  color: white !important;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.feedback-form-field:focus {
+  outline: none;
+  border-color: var(--accent-color) !important;
+  background: rgba(108, 92, 231, 0.2) !important;
+}
+
+.feedback-form-field::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.feedback-textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.feedback-submit-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6c5ce7, #fd79a8);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feedback-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+}
+
+.feedback-response {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* ===========================
+   Light Mode - Feedback Modal
+   =========================== */
+body.light-mode .feedback-modal-content {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #2d3436;
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+body.light-mode .feedback-close-btn {
+  color: #636e72;
+}
+
+body.light-mode .feedback-close-btn:hover {
+  color: #d63031;
+}
+
+body.light-mode .feedback-title {
+  color: #2d3436;
+}
+
+body.light-mode .feedback-label {
+  color: #2d3436;
+}
+
+body.light-mode .feedback-form-field {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  color: #2d3436 !important;
+}
+
+body.light-mode .feedback-form-field:focus {
+  border-color: var(--primary-color) !important;
+  background: white !important;
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+body.light-mode .feedback-form-field::placeholder {
+  color: #b2bec3;
+}
+
+/* ===========================
+   OLED Mode - Feedback Modal
+   =========================== */
+body.oled-mode .feedback-modal-content {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+body.oled-mode .feedback-form-field {
+  background: #1a1a1a !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+body.oled-mode .feedback-form-field:focus {
+  background: #222 !important;
+  border-color: var(--accent-color) !important;
+}
+
+/* ===========================
    THEME MODES
    1. Original (Default) - Cosmic Dark
    2. Light Mode - Creamy
@@ -3476,19 +3647,58 @@ button:focus-visible,
    =========================== */
 
 /* --- Light Mode (Creamy) --- */
-/* FIX: Invert stars for Light Mode so they appear as dark dots */
+/* Clouds and Sun for Light Mode */
 body.light-mode .stars-background {
   opacity: 1;
   visibility: visible;
-  background: transparent;
-  /* Remove dark gradient */
+  background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 30%, #fcfbf7 60%);
+  overflow: hidden;
 }
 
 body.light-mode .stars-background::before {
-  opacity: 0.2;
-  /* Subtle dark dots */
-  filter: invert(1);
-  /* Invert white dots to black */
+  content: "";
+  position: absolute;
+  top: 20px;
+  right: 80px;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, #FFD700 0%, #FFA500 50%, transparent 70%);
+  border-radius: 50%;
+  box-shadow: 0 0 60px 20px rgba(255, 215, 0, 0.4), 0 0 100px 40px rgba(255, 165, 0, 0.2);
+  animation: none;
+  filter: none;
+  opacity: 1;
+}
+
+/* Cloud animations container */
+body.light-mode .stars-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background-image:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"><ellipse cx="50" cy="35" rx="25" ry="12" fill="white" opacity="0.9"/><ellipse cx="35" cy="30" rx="18" ry="10" fill="white" opacity="0.9"/><ellipse cx="65" cy="32" rx="15" ry="9" fill="white" opacity="0.9"/><ellipse cx="45" cy="25" rx="12" ry="8" fill="white" opacity="0.9"/></svg>'),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 40"><ellipse cx="40" cy="28" rx="20" ry="10" fill="white" opacity="0.85"/><ellipse cx="28" cy="24" rx="14" ry="8" fill="white" opacity="0.85"/><ellipse cx="52" cy="25" rx="12" ry="7" fill="white" opacity="0.85"/><ellipse cx="38" cy="20" rx="10" ry="6" fill="white" opacity="0.85"/></svg>'),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60"><ellipse cx="60" cy="42" rx="30" ry="14" fill="white" opacity="0.8"/><ellipse cx="42" cy="36" rx="22" ry="12" fill="white" opacity="0.8"/><ellipse cx="78" cy="38" rx="18" ry="10" fill="white" opacity="0.8"/><ellipse cx="55" cy="30" rx="15" ry="9" fill="white" opacity="0.8"/></svg>');
+  background-size: 200px 100px, 150px 75px, 250px 125px;
+  background-position: 0% 10%, 25% 25%, 60% 5%;
+  background-repeat: repeat-x;
+  animation: floatClouds 60s linear infinite;
+  opacity: 1;
+  filter: none;
+  pointer-events: none;
+}
+
+@keyframes floatClouds {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 body.light-mode {
@@ -3773,9 +3983,13 @@ body.light-mode .calendar-day.empty {
 }
 
 body.light-mode .modal-content {
-  background: white;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   color: #2d3436;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
 }
 
 body.light-mode .close-modal {

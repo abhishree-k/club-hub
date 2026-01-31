@@ -1,248 +1,260 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | DSCE Clubs</title>
-    <link rel="stylesheet" href="style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-    <div class="stars-background"></div>
 
-    <nav class="cosmic-nav" role="navigation" aria-label="Main navigation">
-      <div class="nav-logo">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home | DSCE Clubs</title>
+  <link rel="stylesheet" href="style.css?v=1.1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="stars-background"></div>
+
+  <nav class="cosmic-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-logo">
+      <span class="logo-icon">🌌</span>
+      <span class="logo-text">DSCE Clubs</span>
+    </div>
+    <ul class="nav-links" id="nav-links" aria-hidden="false">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="events.html">Live & Upcoming Events</a></li>
+      <li><a href="past-events.html">Past Events</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="registration.html">Registration</a></li>
+      <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
+      <li><a href="admin-login.html">Admin</a></li>
+      <li id="nav-login">
+        <a href="registration.html#student-login">Student Login</a>
+      </li>
+      <li id="nav-logout" class="hidden">
+        <a href="#" id="student-logout-btn">Logout</a>
+      </li>
+    </ul>
+    <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
+      aria-controls="nav-links" type="button">
+      <span class="hamburger-icon" aria-hidden="true">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </span>
+    </button>
+  </nav>
+
+  <header class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Explore Your <span class="text-gradient">Passions</span>
+      </h1>
+      <p class="hero-subtitle">
+        Join our vibrant community of clubs and societies
+      </p>
+      <a href="#clubs" class="hero-cta">Discover Clubs</a>
+    </div>
+    <div class="hero-planets">
+      <div class="planet planet-1"></div>
+      <div class="planet planet-2"></div>
+      <div class="planet planet-3"></div>
+    </div>
+  </header>
+
+  <main id="main-content" tabindex="-1">
+    <section id="clubs" class="clubs-section">
+      <h2 class="section-title">
+        Our <span class="text-gradient">Clubs</span>
+      </h2>
+      <div class="clubs-grid">
+        <div class="club-card" data-club="tech">
+          <div class="club-icon">💻</div>
+          <h3>Tech Society - POINT BLANK</h3>
+          <p>
+            Innovate, code, and build the future with fellow tech enthusiasts.
+          </p>
+          <div class="club-tags">
+            <span>Hackathons</span>
+            <span>Weekly Hustle</span>
+            <span>AI/ML</span>
+            <span>Cyber</span>
+          </div>
+          <button class="view-club-btn" data-club="tech">View Club</button>
+        </div>
+
+        <div class="club-card" data-club="arts">
+          <div class="club-icon">🎨</div>
+          <h3>Creative Arts - AALEKA</h3>
+          <p>
+            Express yourself through painting, sculpture, and digital art.
+          </p>
+          <div class="club-tags">
+            <span>Exhibitions</span>
+            <span>Live Demos</span>
+            <span>Collaborations</span>
+            <span>Competitions</span>
+          </div>
+          <button class="view-club-btn" data-club="arts">View Club</button>
+        </div>
+
+        <div class="club-card" data-club="debate">
+          <div class="club-icon">💬</div>
+          <h3>Debate Club - LITSOC</h3>
+          <p>Sharpen your rhetoric and critical thinking skills.</p>
+          <div class="club-tags">
+            <span>Tournaments</span>
+            <span>Public Speaking</span>
+            <span>Model UN</span>
+          </div>
+          <button class="view-club-btn" data-club="debate">View Club</button>
+        </div>
+
+        <div class="club-card" data-club="music">
+          <div class="club-icon">🎵</div>
+          <h3>Music Society</h3>
+          <p>Create, perform, and appreciate music in all its forms.</p>
+          <div class="club-tags">
+            <span>Concerts</span>
+            <span>Jam Sessions</span>
+            <span>Composition</span>
+            <span>Shayari</span>
+          </div>
+          <button class="view-club-btn" data-club="music">View Club</button>
+        </div>
+
+        <div class="club-card" data-club="sports">
+          <div class="club-icon">⚽</div>
+          <h3>Sports Club</h3>
+          <p>Stay active and compete in various sports activities.</p>
+          <div class="club-tags">
+            <span>Tournaments</span>
+            <span>Fitness</span>
+            <span>Team Building</span>
+          </div>
+          <button class="view-club-btn" data-club="sports">View Club</button>
+        </div>
+
+        <div class="club-card" data-club="science">
+          <div class="club-icon">💃</div>
+          <h3>Dance Club - ABCD</h3>
+          <p>"Let's move to the beat and make memories together!".</p>
+          <div class="club-tags">
+            <span>Live Performances</span>
+            <span>Cine stars meetups</span>
+            <span>Competitions</span>
+          </div>
+          <button class="view-club-btn" data-club="science">View Club</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials-section">
+      <h2 class="section-title">
+        Student <span class="text-gradient">Voices</span>
+      </h2>
+      <div class="testimonial-carousel">
+        <div class="testimonial-slide active">
+          <p>
+            "Joining the Tech Society transformed my college experience. I've
+            learned so much and made lifelong friends!"
+          </p>
+          <div class="testimonial-author">-ABM, Computer Science</div>
+        </div>
+        <div class="testimonial-slide">
+          <p>
+            "The Creative Arts club gave me the confidence to showcase my work
+            and connect with other artists."
+          </p>
+          <div class="testimonial-author">- Jamie, Fine Arts</div>
+        </div>
+        <div class="testimonial-slide">
+          <p>
+            "Through Debate Club, I've improved my public speaking and
+            critical thinking skills immensely."
+          </p>
+          <div class="testimonial-author">- Taylor, Political Science</div>
+        </div>
+      </div>
+      <div class="carousel-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </section>
+
+    <!-- Feedback / Contact Section -->
+    <section class="feedback-section" style="padding: 4rem 2rem; max-width: 800px; margin: 0 auto;">
+      <h2 class="section-title">We'd Love Your <span class="text-gradient">Feedback</span></h2>
+      <form id="feedback-form" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; gap: 1rem;">
+          <input type="text" id="feedback-name" placeholder="Your Name" required
+            style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white;">
+          <input type="email" id="feedback-email" placeholder="Your Email" required
+            style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white;">
+        </div>
+        <textarea id="feedback-message" rows="5" placeholder="Your Message" required
+          style="padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; resize: vertical;"></textarea>
+        <button type="submit" class="cta-button" style="align-self: flex-start; border: none; cursor: pointer;">Send
+          Feedback</button>
+      </form>
+      <div id="feedback-response" style="margin-top: 1rem; color: var(--success-color);"></div>
+    </section>
+
+    <!-- scroll top button -->
+    <!-- make the icon translucent -->
+    <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
+      <i class="fas fa-chevron-up"></i>
+    </button>
+  </main>
+
+  <footer class="cosmic-footer">
+    <div class="footer-content">
+      <div class="footer-logo">
         <span class="logo-icon">🌌</span>
         <span class="logo-text">DSCE Clubs</span>
       </div>
-      <ul class="nav-links" id="nav-links" aria-hidden="false">
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="events.html">Live & Upcoming Events</a></li>
-        <li><a href="past-events.html">Past Events</a></li>
-        <li><a href="faq.html">FAQ</a></li>
-        <li><a href="registration.html">Registration</a></li>
-        <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
-        <li><a href="admin-login.html">Admin</a></li>
-        <li id="nav-login">
-          <a href="registration.html#student-login">Student Login</a>
-        </li>
-        <li id="nav-logout" class="hidden">
-          <a href="#" id="student-logout-btn">Logout</a>
-        </li>
-      </ul>
-      <button
-        class="mobile-menu-toggle nav-hamburger"
-        aria-label="Toggle navigation menu"
-        aria-expanded="false"
-        aria-controls="nav-links"
-        type="button"
-      >
-        <span class="hamburger-icon" aria-hidden="true">
-          <span class="line"></span>
-          <span class="line"></span>
-          <span class="line"></span>
-        </span>
-      </button>
-    </nav>
-
-    <header class="hero-section">
-      <div class="hero-content">
-        <h1 class="hero-title">
-          Explore Your <span class="text-gradient">Passions</span>
-        </h1>
-        <p class="hero-subtitle">
-          Join our vibrant community of clubs and societies
-        </p>
-        <a href="#clubs" class="hero-cta">Discover Clubs</a>
-      </div>
-      <div class="hero-planets">
-        <div class="planet planet-1"></div>
-        <div class="planet planet-2"></div>
-        <div class="planet planet-3"></div>
-      </div>
-    </header>
-
-    <main id="main-content" tabindex="-1">
-      <section id="clubs" class="clubs-section">
-        <h2 class="section-title">
-          Our <span class="text-gradient">Clubs</span>
-        </h2>
-        <div class="clubs-grid">
-          <div class="club-card" data-club="tech">
-            <div class="club-icon">💻</div>
-            <h3>Tech Society - POINT BLANK</h3>
-            <p>
-              Innovate, code, and build the future with fellow tech enthusiasts.
-            </p>
-            <div class="club-tags">
-              <span>Hackathons</span>
-              <span>Weekly Hustle</span>
-              <span>AI/ML</span>
-              <span>Cyber</span>
-            </div>
-            <button class="view-club-btn" data-club="tech">View Club</button>
-          </div>
-
-          <div class="club-card" data-club="arts">
-            <div class="club-icon">🎨</div>
-            <h3>Creative Arts - AALEKA</h3>
-            <p>
-              Express yourself through painting, sculpture, and digital art.
-            </p>
-            <div class="club-tags">
-              <span>Exhibitions</span>
-              <span>Live Demos</span>
-              <span>Collaborations</span>
-              <span>Competitions</span>
-            </div>
-            <button class="view-club-btn" data-club="arts">View Club</button>
-          </div>
-
-          <div class="club-card" data-club="debate">
-            <div class="club-icon">💬</div>
-            <h3>Debate Club - LITSOC</h3>
-            <p>Sharpen your rhetoric and critical thinking skills.</p>
-            <div class="club-tags">
-              <span>Tournaments</span>
-              <span>Public Speaking</span>
-              <span>Model UN</span>
-            </div>
-            <button class="view-club-btn" data-club="debate">View Club</button>
-          </div>
-
-          <div class="club-card" data-club="music">
-            <div class="club-icon">🎵</div>
-            <h3>Music Society</h3>
-            <p>Create, perform, and appreciate music in all its forms.</p>
-            <div class="club-tags">
-              <span>Concerts</span>
-              <span>Jam Sessions</span>
-              <span>Composition</span>
-              <span>Shayari</span>
-            </div>
-            <button class="view-club-btn" data-club="music">View Club</button>
-          </div>
-
-          <div class="club-card" data-club="sports">
-            <div class="club-icon">⚽</div>
-            <h3>Sports Club</h3>
-            <p>Stay active and compete in various sports activities.</p>
-            <div class="club-tags">
-              <span>Tournaments</span>
-              <span>Fitness</span>
-              <span>Team Building</span>
-            </div>
-            <button class="view-club-btn" data-club="sports">View Club</button>
-          </div>
-
-          <div class="club-card" data-club="science">
-            <div class="club-icon">💃</div>
-            <h3>Dance Club - ABCD</h3>
-            <p>"Let's move to the beat and make memories together!".</p>
-            <div class="club-tags">
-              <span>Live Performances</span>
-              <span>Cine stars meetups</span>
-              <span>Competitions</span>
-            </div>
-            <button class="view-club-btn" data-club="science">View Club</button>
-          </div>
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="past-events.html">Past Events</a></li>
+          </ul>
         </div>
-      </section>
-
-      <section class="testimonials-section">
-        <h2 class="section-title">
-          Student <span class="text-gradient">Voices</span>
-        </h2>
-        <div class="testimonial-carousel">
-          <div class="testimonial-slide active">
-            <p>
-              "Joining the Tech Society transformed my college experience. I've
-              learned so much and made lifelong friends!"
-            </p>
-            <div class="testimonial-author">-ABM, Computer Science</div>
-          </div>
-          <div class="testimonial-slide">
-            <p>
-              "The Creative Arts club gave me the confidence to showcase my work
-              and connect with other artists."
-            </p>
-            <div class="testimonial-author">- Jamie, Fine Arts</div>
-          </div>
-          <div class="testimonial-slide">
-            <p>
-              "Through Debate Club, I've improved my public speaking and
-              critical thinking skills immensely."
-            </p>
-            <div class="testimonial-author">- Taylor, Political Science</div>
-          </div>
+        <div class="footer-column">
+          <h4>Get Involved</h4>
+          <ul>
+            <li><a href="registration.html">Register</a></li>
+            <li><a href="#">Volunteer</a></li>
+            <li><a href="#">Start a Club</a></li>
+          </ul>
         </div>
-        <div class="carousel-dots">
-          <span class="dot active"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </div>
-      </section>
-
-      <!-- scroll top button -->
-      <!-- make the icon translucent -->
-      <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
-        <i class="fas fa-chevron-up"></i>
-      </button>
-    </main>
-
-    <footer class="cosmic-footer">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <span class="logo-icon">🌌</span>
-          <span class="logo-text">DSCE Clubs</span>
-        </div>
-        <div class="footer-links">
-          <div class="footer-column">
-            <h4>Explore</h4>
-            <ul>
-              <li><a href="index.html">Home</a></li>
-              <li><a href="events.html">Events</a></li>
-              <li><a href="past-events.html">Past Events</a></li>
-            </ul>
-          </div>
-          <div class="footer-column">
-            <h4>Get Involved</h4>
-            <ul>
-              <li><a href="registration.html">Register</a></li>
-              <li><a href="#">Volunteer</a></li>
-              <li><a href="#">Start a Club</a></li>
-            </ul>
-          </div>
-          <div class="footer-column">
-            <h4>Connect</h4>
-            <ul>
-              <li>
-                <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
-              </li>
-              <li>
-                <a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
-              </li>
-              <li>
-                <a href="#"><i class="fab fa-discord"></i> Discord</a>
-              </li>
-            </ul>
-          </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li>
+              <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+            </li>
+            <li>
+              <a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
+            </li>
+            <li>
+              <a href="#"><i class="fab fa-discord"></i> Discord</a>
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
-      </div>
-    </footer>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
+    </div>
+  </footer>
 
-    <script src="app.js"></script>
-    <script src="scroll.js"></script>
-  </body>
+  <script src="app.js?v=1.1"></script>
+  <script src="scroll.js?v=1.1"></script>
+</body>
+
 </html>

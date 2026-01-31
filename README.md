@@ -108,7 +108,6 @@ club-hub/
 ├── admin.css
 ├── app.js
 ├── club.html
-├── clubs.json
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
 ├── events.html
@@ -122,6 +121,14 @@ club-hub/
 ├── registration.html
 ├── SECURITY.md
 ├── style.css
+└── backend/
+    ├── .env
+    ├── server.js
+    ├── database.sqlite
+    ├── add_admin.js
+    ├── controllers/
+    ├── models/
+    └── routes/
 └── assets/
   └── screenshots/
   ├── home.png
@@ -136,13 +143,36 @@ club-hub/
 ## ⚙️ Getting Started
 ### Prerequisites
 - Modern web browser (Chrome, Firefox, Edge, Safari)
-- No backend or database required
+- Node.js (v14 or higher)
+- npm
 
 ### Installation & Setup
+1. Clone the repository:
 ```bash
-- git clone https://github.com/<your-username>/club-hub.git
-- cd club-hub
-- open index.html
+git clone https://github.com/<your-username>/club-hub.git
+cd club-hub
+```
+
+2. Setup the Backend:
+```bash
+cd backend
+npm install
+npm start
+```
+
+3. Open `index.html` in your browser.
+
+### Running Tests
+To ensure the application is working correctly, you can run the pre-configured test suite:
+
+1. Install testing dependencies:
+```bash
+npm install
+```
+
+2. Run all tests:
+```bash
+npm test
 ```
 
 ---

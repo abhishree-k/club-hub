@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
-package-lock.json
+
+# Environment
+.env
+backend/.env
 
 # Test coverage
 coverage/
@@ -26,3 +29,7 @@ yarn-error.log*
 # Build outputs
 dist/
 build/
+
+# Database
+*.sqlite
+backend/database.sqlite

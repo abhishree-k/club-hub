@@ -17,11 +17,28 @@ A modern, lightweight, and open-source web platform for managing clubs, events, 
 
 ---
 
+## 📑 Table of Contents
+- [About The Project](#-about-the-project)
+- [Problem Statement](#-problem-statement)
+- [Solution](#-solution)
+- [Key Features](#-key-features)
+- [Screenshots](#-screenshots)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Usage Guide](#-usage-guide)
+- [Contributing](#-contributing)
+- [Accessibility](#-accessibility)
+- [Roadmap](#-roadmap)
+- [License](#-license)
+- [Acknowledgements](#-acknowledgements)
+
+---
+
 ## 📖 About The Project
 
-**DSCE Clubs** is a centralized, web-based platform designed to simplify **club management, event coordination, and campus communication** within educational institutions.
-
-It offers a **single, unified interface** for students, club leads, and faculty administrators—ensuring transparency, accessibility, and smooth coordination of campus activities.
+**DSCE Clubs** is a web-based platform designed to simplify **club management, event coordination, and campus communication** within educational institutions.  
+It provides a **single interface** for students, club leads, and faculty administrators—ensuring transparency and smooth coordination of campus activities.
 
 ---
 
@@ -36,7 +53,7 @@ Educational institutions often face:
 
 ### ✅ Solution
 
-**DSCE Clubs** brings all club-related activities under **one structured, accessible, and transparent system**.
+**DSCE Clubs** centralizes all club-related activities under **one accessible and transparent system**.
 
 ---
 
@@ -49,8 +66,8 @@ Educational institutions often face:
 - View upcoming and past events  
 - Register for events seamlessly  
 - Receive announcements and updates  
-- FAQ-frequently asked questions page
-- View club details
+- FAQ page for common questions  
+- View club details  
 - Add clubs to favourites ❤️
 
 </details>
@@ -79,10 +96,9 @@ Educational institutions often face:
 
 ## 🖼️ Screenshots
 
-> 📌 Uploaded screenshots inside: `assets/screenshots/
-
-
-
+![Home Page](assets/screenshots/home.png)
+![Clubs Page](assets/screenshots/clubs.png)
+![View Club](assets/screenshots/view-club.png)
 
 ---
 
@@ -93,9 +109,10 @@ Educational institutions often face:
 | Frontend | HTML5, CSS3 |
 | Scripting | Vanilla JavaScript |
 | Styling | Custom CSS |
+| Backend | Node.js, SQLite |
 | Version Control | Git & GitHub |
 
-> 🎯 Designed to be **lightweight, fast, and beginner-friendly**.
+> 🎯 Lightweight, fast, and beginner-friendly.
 
 ---
 
@@ -130,147 +147,113 @@ club-hub/
     ├── models/
     └── routes/
 └── assets/
-  └── screenshots/
-  ├── home.png
-  ├── clubs.png
-  ├── view-club.png
-  └── view-club.png
+    └── screenshots/
+        ├── home.png
+        ├── clubs.png
+        └── view-club.png
+⚙️ Getting Started
+Prerequisites
 
-```
----
+Modern web browser (Chrome, Firefox, Edge, Safari)
 
+Node.js (v14 or higher)
 
-## ⚙️ Getting Started
-### Prerequisites
-- Modern web browser (Chrome, Firefox, Edge, Safari)
-- Node.js (v14 or higher)
-- npm
+npm
 
-### Installation & Setup
-1. Clone the repository:
-```bash
+Installation & Setup
+
+Clone the repository:
+
 git clone https://github.com/<your-username>/club-hub.git
 cd club-hub
-```
 
-2. Setup the Backend:
-```bash
+
+Setup the backend:
+
 cd backend
 npm install
 npm start
-```
 
-3. Open `index.html` in your browser.
 
-### Running Tests
-To ensure the application is working correctly, you can run the pre-configured test suite:
+Open index.html in your browser (or use VS Code Live Server).
 
-1. Install testing dependencies:
-```bash
+Running Tests
 npm install
-```
-
-2. Run all tests:
-```bash
 npm test
-```
 
----
+🧪 Usage Guide
 
-## 🧪 Usage Guide 
-- Navigate through the UI as a student
-- Explore clubs & events
-- Access admin functionality
-- Extend features by modifying JS/CSS
+Navigate the UI as a student
 
- ---
+Explore clubs & events
 
-## 🤝 Contributing
+Access admin functionality
+
+Extend features by modifying JS/CSS
+
+🤝 Contributing
 
 We welcome contributions from all experience levels 💙
 
+Please read CONTRIBUTING.md
+ before contributing.
 
-📌 Please read **CONTRIBUTING.md** before contributing.
-
-## 🧑‍🤝‍🧑 Contributors
-
-Thanks to all the amazing people who have contributed to **DSCE Clubs** 💙
-
-<a href="https://github.com/abhishree-k/club-hub/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=abhishree-k/club-hub" />
-</a>
-
-Want to see you here?  
-Check out the **Contributing Guide** and start contributing 🚀
-
-
-### Contribution Flow
-```bash
+Contribution Flow
 git checkout -b feature/your-feature
 git commit -m "feat: meaningful description"
 git push origin feature/your-feature
-```
+
+
 Open a Pull Request 🚀
 
---- 
-## ♿ Accessibility
+♿ Accessibility
 
-This project has been enhanced to improve keyboard accessibility and focus visibility across the navigation UI to meet WCAG guidance (2.1.1, 2.1.2, 2.4.7).
+Added Skip to main content link for keyboard users
 
-Key changes:
-- Added a **Skip to main content** link (`.skip-link`) for keyboard users.
-- Mobile menu is now a proper button (`.mobile-menu-toggle`) with `aria-label`, `aria-expanded`, and `aria-controls`.
-- Navigation list (`#nav-links`) uses `aria-hidden` when closed and is reachable via `Tab` when opened.
-- Strong, visible focus styles added for keyboard users (`:focus-visible`) on links, buttons, and CTAs.
-- Keyboard handling implemented in `initNavigation()`:
-  - **Enter / Space** toggles the mobile menu
-  - **Escape** closes the menu and returns focus to the toggle
-  - **Tab / Shift+Tab** cycles focus within the open menu (focus trap)
-  - **Arrow keys (↑/↓/←/→)** move focus between menu items while the menu is open
+Mobile menu is a proper button with aria-label, aria-expanded, and aria-controls
 
-How to test (manual):
-1. Load the site and press Tab — the **Skip to main content** link should become visible. Press Enter to jump to the main area.
-2. Tab to the hamburger button, press Enter or Space to open the menu. Focus should move into the menu.
-3. Use Arrow keys to move between menu items. Press Esc to close the menu — focus returns to the toggle.
-4. Ensure visible focus outlines are present on focused interactive elements.
+Navigation list uses aria-hidden when closed, reachable via Tab when opened
 
----
+Strong focus styles for links, buttons, and CTAs
 
-## 🗺 Roadmap
+Keyboard handling: Enter/Space toggles menu, Esc closes it, Arrow keys navigate
 
-- Backend integration
-- Role-based authentication
-- Analytics dashboard
-- Mobile responsiveness
-- Accessibility improvements
- ---
+Manual testing: Tab through site, check visible focus, press Esc to close menu
 
-## 🏷 Open Source Program
-## #🌱 Social Winter of Code (SWoC) 2026
+🗺 Roadmap
 
-This project encourages:
-- Beginner-friendly issues
-- UI/UX improvements
-- Documentation contributions
-- Feature proposals
+Backend integration
 
---- 
+Role-based authentication
 
-## 📄 License
-Licensed under the repository’s license.
-All contributions follow the same terms.
+Analytics dashboard
 
---- 
+Mobile responsiveness
 
-## 🙌 Acknowledgements
-- SWoC 2026 mentors & maintainers
-- Open-source contributors
-- Student developer community
+Accessibility improvements
 
---- 
+🏷 Open Source Program
+🌱 Social Winter of Code (SWoC) 2026
 
-<div align="center">
-⭐ If you like this project, don’t forget to star the repository!
+Beginner-friendly issues
 
-Happy Contributing 🚀
-</div> 
+UI/UX improvements
+
+Documentation contributions
+
+Feature proposals
+
+📄 License
+
+Licensed under the repository’s LICENSE
+ file.
+
+🙌 Acknowledgements
+
+SWoC 2026 mentors & maintainers
+
+Open-source contributors
+
+Student developer community
+
+<div align="center"> ⭐ If you like this project, don’t forget to star the repository! Happy Contributing 🚀 </div> 

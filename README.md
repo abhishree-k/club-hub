@@ -96,9 +96,9 @@ Educational institutions often face:
 
 ## 🖼️ Screenshots
 
-![Home Page](assets/screenshots/home.png)
-![Clubs Page](assets/screenshots/clubs.png)
-![View Club](assets/screenshots/view-club.png)
+![Home Page](assets/screenshots/home_page.png)
+![Clubs Page](assets/screenshots/club.png)
+![View Club](assets/screenshots/view_club.png)
 
 ---
 

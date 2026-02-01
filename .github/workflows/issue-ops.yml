@@ -25,17 +25,38 @@ jobs:
             if (eventName === 'issues' && payload.action === 'assigned') {
                const assignee = payload.assignee.login;
                
-               // Add labels 'in-progress' and 'assigned'
-               try {
-                 await github.rest.issues.addLabels({
-                   owner: context.repo.owner,
-                   repo: context.repo.repo,
-                   issue_number: issue.number,
-                   labels: ['in-progress', 'assigned']
-                 });
-               } catch (e) {
-                 console.log('Could not add labels.');
-               }
+                // Ensure 'in-progress' label exists with correct color
+                try {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: 'in-progress',
+                    color: '69c71c',
+                    description: 'Issue is currently being worked on'
+                  });
+                } catch (e) {
+                  // Label exists, update color to match preference
+                  try {
+                    await github.rest.issues.updateLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      name: 'in-progress',
+                      color: '69c71c'
+                    });
+                  } catch (u) { console.log('Label update skipped.'); }
+                }
+
+                // Add label 'in-progress'
+                try {
+                  await github.rest.issues.addLabels({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    labels: ['in-progress']
+                  });
+                } catch (e) {
+                  console.log('Could not add label.');
+                }
 
                // Post Welcome Comment
                await github.rest.issues.createComment({
@@ -54,7 +75,7 @@ jobs:
                // Only remove labels if NO assignees are left 
                // (This prevents removing labels if one of multiple people is removed)
                if (issue.assignees.length === 0) {
-                  const labelsToRemove = ['in-progress', 'assigned'];
+                  const labelsToRemove = ['in-progress'];
                   for (const label of labelsToRemove) {
                     try {
                       await github.rest.issues.removeLabel({
@@ -103,7 +124,7 @@ jobs:
                });
 
                // Remove Labels
-               const labelsToRemove = ['in-progress', 'assigned'];
+               const labelsToRemove = ['in-progress'];
                for (const label of labelsToRemove) {
                  try {
                    await github.rest.issues.removeLabel({

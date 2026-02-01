@@ -57,7 +57,7 @@ Please follow the standard GitHub workflow outlined below:
 - Look for an issue that interests you and isn't already assigned.
 - Comment on the issue asking to be assigned (e.g., "I'd like to work on this").
 - **Wait for a maintainer** to assign you.
-- Once assigned, the system will automatically tag the issue as `in-progress` and `assigned`.
+- Once assigned, the system will automatically tag the issue as `in-progress`.
 - **Note**: Claims expire after **14 days** of inactivity.
 - To release an issue, comment `/unclaim` or `/unassign`.
 

@@ -88,7 +88,7 @@ jobs:
                          assignees: users
                        });
                        
-                       const labelsToRemove = ['in-progress', 'assigned'];
+                       const labelsToRemove = ['in-progress'];
                        for (const label of labelsToRemove) {
                          try {
                             await github.rest.issues.removeLabel({

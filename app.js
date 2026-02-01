@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.AuthService = {
         login: function (username, password) {
             // Admin Master Login
-            if (username === 'admin' && password === 'admin123') {
+            if (username === 'admin' && password === 'admin@123') {
                 const user = { username, role: ROLES.ADMIN, name: 'Super Admin' };
                 this.setCurrentUser(user);
                 return { success: true, user };
@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     return { success: true, user };
                 }
             } catch (e) { }
-            // Leader: leader_tech / tech123
+            // Leader: leader_tech / tech@123
             if (username.startsWith('leader_')) {
                 const club = username.split('_')[1];
-                if (password === `${club}123`) {
+                if (password === `${club}@123`) {
                     const user = { username, role: ROLES.LEADER, club: club, name: `${club.charAt(0).toUpperCase() + club.slice(1)} Leader` };
                     this.setCurrentUser(user);
                     return { success: true, user };
@@ -1891,13 +1891,22 @@ function initAdmin() {
     }
 
     function checkAdminCredentials(u, p) {
-        // 1. Default Hardcoded
-        if (u === 'admin' && p === 'admin123') return { success: true };
+        // 1. Super Admin (Generic)
+        if (u === 'admin' && p === 'admin@123') return { success: true, role: 'admin' };
 
-        // 2. Local Storage
+        // 2. Club Leader (Pattern)
+        // Format: Username "leader_tech", Password "tech@123"
+        if (u.startsWith('leader_')) {
+            const club = u.split('_')[1]; // e.g., "tech"
+            if (club && p === `${club}@123`) {
+                return { success: true, role: 'leader', club: club };
+            }
+        }
+
+        // 3. Local Storage
         const admins = JSON.parse(localStorage.getItem('adminUsers')) || [];
         const found = admins.find(user => user.username === u && user.password === p);
-        if (found) return { success: true };
+        if (found) return { success: true, role: 'admin' };
 
         return { success: false };
     }
@@ -2739,4 +2748,27 @@ function sendMessage() {
     setTimeout(() => chat.appendChild(botMsg), 400);
 
     input.value = "";
+}
+
+function initFavorites() {
+    document.querySelectorAll('.favorite-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const card = btn.closest('.club-card');
+            if (card) {
+                card.classList.toggle('favorited');
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    if (card.classList.contains('favorited')) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far'); // Assuming 'far' is the outline style
+                    }
+                }
+            }
+        });
+    });
 }

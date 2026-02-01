@@ -1,0 +1,124 @@
+name: Stale Claim Sweeper
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Run every 6 hours
+  workflow_dispatch:      # Allow manual run
+
+permissions:
+  issues: write
+
+jobs:
+  stale-sweeper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Unassign Stale Claims
+        uses: actions/github-script@v6
+        with:
+          script: |
+            // Configuration
+            const DAYS_BEFORE_WARNING = 7;
+            const DAYS_BEFORE_UNASSIGN = 14;
+            
+            const now = new Date();
+            
+            // Find issues with 'in-progress' label
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'in-progress'
+            });
+
+            console.log(`Found ${issues.length} 'in-progress' issues.`);
+
+            for (const issue of issues) {
+              const lastUpdate = new Date(issue.updated_at);
+              const timeDiff = now - lastUpdate;
+              const daysInactive = timeDiff / (1000 * 3600 * 24);
+              
+              console.log(`Issue #${issue.number} inactive for ${daysInactive.toFixed(2)} days.`);
+
+              // If inactive for less than 7 days, it's fine.
+              if (daysInactive < DAYS_BEFORE_WARNING) continue;
+
+              // It has been at least 7 days since *any* update (including bot comments).
+              // Let's check the last comment to see if WE sent it.
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                per_page: 1,
+                page: issue.comments // Last page roughly gets us close, but let's just sort descending if needed. Actually listComments returns list.
+                                     // Default behavior is oldest first.
+              });
+              
+              // We need the ACTUAL last comment. listComments limits to 30.
+              // A safer way is using iterator or assume we are on recently updated.
+              // Let's just fetch the last few comments.
+              const lastComments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                sort: 'created',
+                direction: 'desc',
+                per_page: 5
+              });
+              
+              if (lastComments.data.length === 0) continue; // Should have at least one (assignment)
+              
+              const lastComment = lastComments.data[0];
+              const isBot = lastComment.user.type === 'Bot' && lastComment.user.login === 'github-actions[bot]';
+              const isReminder = isBot && lastComment.body.includes('Friendly reminder');
+
+              if (isReminder) {
+                 // We already sent a reminder.
+                 // If it has been another 7 days since that reminder...
+                 if (daysInactive >= DAYS_BEFORE_WARNING) {
+                    // Total inactivity: 7 (before reminder) + 7 (after reminder) = 14 days.
+                    // TIME TO EXPIRE.
+                    console.log(`Issue #${issue.number} expired after reminder.`);
+                    
+                    if (issue.assignees.length > 0) {
+                       const users = issue.assignees.map(a => a.login);
+                       
+                       await github.rest.issues.removeAssignees({
+                         owner: context.repo.owner,
+                         repo: context.repo.repo,
+                         issue_number: issue.number,
+                         assignees: users
+                       });
+                       
+                       const labelsToRemove = ['in-progress', 'assigned'];
+                       for (const label of labelsToRemove) {
+                         try {
+                            await github.rest.issues.removeLabel({
+                              owner: context.repo.owner,
+                              repo: context.repo.repo,
+                              issue_number: issue.number,
+                              name: label
+                            });
+                         } catch (e) { /* Ignore */ }
+                       }
+                       
+                       await github.rest.issues.createComment({
+                         owner: context.repo.owner,
+                         repo: context.repo.repo,
+                         issue_number: issue.number,
+                         body: `📢 **Claim Expired**\n\nThis issue was claimed by @${users.join(', @')} but has seen no activity for over ${DAYS_BEFORE_UNASSIGN} days.\n\nThe claim has been automatically removed to allow others to contribute.`
+                       });
+                    }
+                 }
+              } else {
+                 // Last comment was NOT a reminder (it was user or assignment msg).
+                 // But inactive for > 7 days.
+                 console.log(`Issue #${issue.number} needs reminder.`);
+                 
+                 const users = issue.assignees.map(a => a.login).join(', @');
+                 await github.rest.issues.createComment({
+                   owner: context.repo.owner,
+                   repo: context.repo.repo,
+                   issue_number: issue.number,
+                   body: `⏳ **Friendly reminder** @${users}\n\nIt's been 7 days since the last activity on this issue. How is the progress going?\n\n- If you are still working on it, please leave a comment.\n- If you are stuck, let us know!\n- If you no longer have time, please release it using \`/unclaim\`.\n\n_This issue will be automatically unassigned in 7 days if there is no further activity._`
+                 });
+              }
+            }

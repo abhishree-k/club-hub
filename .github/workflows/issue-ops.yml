@@ -1,0 +1,102 @@
+name: Issue Operations
+on:
+  issues:
+    types: [assigned]
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+
+jobs:
+  issue-ops:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Manage Issue Assignments
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { payload, eventName } = context;
+            const issue = payload.issue;
+
+            // ========================================================
+            // 1. Handle New Assignment (Manual by Maintainer)
+            // ========================================================
+            if (eventName === 'issues' && payload.action === 'assigned') {
+               const assignee = payload.assignee.login;
+               
+               // Add labels 'in-progress' and 'assigned'
+               try {
+                 await github.rest.issues.addLabels({
+                   owner: context.repo.owner,
+                   repo: context.repo.repo,
+                   issue_number: issue.number,
+                   labels: ['in-progress', 'assigned']
+                 });
+               } catch (e) {
+                 console.log('Could not add labels.');
+               }
+
+               // Post Welcome Comment
+               await github.rest.issues.createComment({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+                 issue_number: issue.number,
+                 body: `👋 @${assignee} You have been assigned to this issue!\n\n- Labels have been updated.\n- Please submit a Pull Request within **14 days**.\n- Only original assignee can unclaim this issue using \`/unclaim\`.`
+               });
+               return;
+            }
+
+            // ========================================================
+            // 2. Handle Unclaim Commands (User Requests Release)
+            // ========================================================
+            if (eventName === 'issue_comment') {
+               const body = payload.comment.body.trim();
+               const user = payload.comment.user.login;
+               const lowerBody = body.toLowerCase();
+
+               const unclaimPhrases = ['/unclaim', '/unassign'];
+               const isUnclaim = unclaimPhrases.some(phrase => lowerBody.startsWith(phrase));
+
+               if (!isUnclaim) return;
+
+               // Check if user is actually assigned
+               const isAssigned = issue.assignees.some(a => a.login === user);
+               if (!isAssigned) {
+                 await github.rest.issues.createComment({
+                   owner: context.repo.owner,
+                   repo: context.repo.repo,
+                   issue_number: issue.number,
+                   body: `@${user} You cannot unclaim an issue you are not assigned to.`
+                 });
+                 return;
+               }
+
+               // Remove User
+               await github.rest.issues.removeAssignees({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+                 issue_number: issue.number,
+                 assignees: [user]
+               });
+
+               // Remove Labels
+               const labelsToRemove = ['in-progress', 'assigned'];
+               for (const label of labelsToRemove) {
+                 try {
+                   await github.rest.issues.removeLabel({
+                     owner: context.repo.owner,
+                     repo: context.repo.repo,
+                     issue_number: issue.number,
+                     name: label
+                   });
+                 } catch (e) { /* Ignore */ }
+               }
+               
+               await github.rest.issues.createComment({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+                 issue_number: issue.number,
+                 body: `@${user} You have unclaimed this issue. It is now open for others.`
+               });
+            }

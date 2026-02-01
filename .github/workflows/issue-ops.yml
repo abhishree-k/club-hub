@@ -1,7 +1,7 @@
 name: Issue Operations
 on:
   issues:
-    types: [assigned]
+    types: [assigned, unassigned]
   issue_comment:
     types: [created]
 
@@ -48,7 +48,29 @@ jobs:
             }
 
             // ========================================================
-            // 2. Handle Unclaim Commands (User Requests Release)
+            // 2. Handle Unassignment (Manual by Maintainer)
+            // ========================================================
+            if (eventName === 'issues' && payload.action === 'unassigned') {
+               // Only remove labels if NO assignees are left 
+               // (This prevents removing labels if one of multiple people is removed)
+               if (issue.assignees.length === 0) {
+                  const labelsToRemove = ['in-progress', 'assigned'];
+                  for (const label of labelsToRemove) {
+                    try {
+                      await github.rest.issues.removeLabel({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: issue.number,
+                        name: label
+                      });
+                    } catch (e) { /* Ignore */ }
+                  }
+               }
+               return;
+            }
+
+            // ========================================================
+            // 3. Handle Unclaim Commands (User Requests Release)
             // ========================================================
             if (eventName === 'issue_comment') {
                const body = payload.comment.body.trim();

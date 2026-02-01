@@ -2,7 +2,165 @@
  * Main Entry Point
  * All functionality is initialized here via modular functions.
  */
+// Initialize global events data
 document.addEventListener('DOMContentLoaded', function () {
+    // --- RBAC & AUTH SYSTEM START ---
+    const ROLES = {
+        ADMIN: 'admin',
+        LEADER: 'leader',
+        STUDENT: 'student'
+    };
+
+    const PERMISSIONS = {
+        admin: ['*'],
+        leader: [
+            'events:view', 'event:details:view', 'registrations:view:own', 'registrations:create:own', 'registrations:cancel:own', 'certificates:view:own', 'feedback:submit', 'profile:update:own',
+            'events:create', 'events:edit', 'events:delete', 'members:view', 'members:manage', 'attendance:view', 'attendance:export', 'announcements:send', 'club:update', 'club:analytics:view'
+        ],
+        student: [
+            'events:view', 'event:details:view', 'registrations:view:own', 'registrations:create:own', 'registrations:cancel:own', 'certificates:view:own', 'feedback:submit', 'profile:update:own'
+        ]
+    };
+
+    window.AuthService = {
+        login: function (username, password) {
+            // Admin Master Login
+            if (username === 'admin' && password === 'admin@123') {
+                const user = { username, role: ROLES.ADMIN, name: 'Super Admin' };
+                this.setCurrentUser(user);
+                return { success: true, user };
+            }
+            // Check dynamic users store (admin/leader)
+            try {
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const found = users.find(u => u.username === username && u.password === password);
+                if (found && (found.role === ROLES.ADMIN || found.role === ROLES.LEADER)) {
+                    const user = { username: found.username, role: found.role, name: found.name || found.username, club: found.club };
+                    this.setCurrentUser(user);
+                    return { success: true, user };
+                }
+            } catch (e) { }
+            // Leader: leader_tech / tech@123
+            if (username.startsWith('leader_')) {
+                const club = username.split('_')[1];
+                if (password === `${club}@123`) {
+                    const user = { username, role: ROLES.LEADER, club: club, name: `${club.charAt(0).toUpperCase() + club.slice(1)} Leader` };
+                    this.setCurrentUser(user);
+                    return { success: true, user };
+                }
+            }
+            return { success: false, message: 'Invalid credentials' };
+        },
+        logout: function () {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminUsername');
+            window.location.replace('index.html'); // Redirect to home with replace
+        },
+        setCurrentUser: function (user) {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            if (user.role !== ROLES.STUDENT) {
+                localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('currentAdminUser', user.username);
+            }
+            localStorage.setItem('loginTime', Date.now().toString());
+            this.logActivity(`User ${user.username} logged in`);
+        },
+        getCurrentUser: function () {
+            return JSON.parse(localStorage.getItem('currentUser'));
+        },
+        can: function (permission) {
+            const user = this.getCurrentUser();
+            if (!user) return false;
+            if (user.role === ROLES.ADMIN) return true;
+            const list = PERMISSIONS[user.role] || [];
+            if (list.includes('*')) return true;
+            return list.includes(permission);
+        },
+        logActivity: function (action) {
+            const logs = JSON.parse(localStorage.getItem('activityLogs')) || [];
+            logs.unshift({ timestamp: new Date().toISOString(), action });
+            localStorage.setItem('activityLogs', JSON.stringify(logs.slice(0, 50))); // Keep last 50
+        },
+        guardRoute: function () {
+            const fullPath = window.location.pathname;
+            const fileName = fullPath.split('/').pop() || 'index.html';
+            const user = this.getCurrentUser();
+
+            // Session Timeout (30 mins)
+            const loginTime = localStorage.getItem('loginTime');
+            if (user && loginTime && (Date.now() - parseInt(loginTime) > 30 * 60 * 1000)) {
+                alert('Session expired. Please login again.');
+                this.logout();
+                return false;
+            }
+
+            // Admin Dashboard Protection
+            if (fileName === 'admin-dashboard.html') {
+                if (!user || (user.role !== ROLES.ADMIN && user.role !== ROLES.LEADER)) {
+                    window.location.replace('admin-login.html');
+                    return false;
+                }
+
+                // UI Customization based on Role
+                this.customizeDashboard(user);
+            }
+
+            // Admin Login Page
+            if (fileName === 'admin-login.html' && user && (user.role === ROLES.ADMIN || user.role === ROLES.LEADER)) {
+                window.location.replace('admin-dashboard.html');
+                return false;
+            }
+
+            // Student-only My Hub
+            if (fileName === 'my-hub.html') {
+                const student = JSON.parse(localStorage.getItem('studentUser'));
+                if (!student) {
+                    window.location.replace('registration.html#student-login');
+                    return false;
+                }
+            }
+            return true;
+        },
+        customizeDashboard: function (user) {
+            // Hide elements not for valid role
+            if (user.role === ROLES.LEADER) {
+                // Hide Settings, maybe Reports if sensitive
+                const settingsLink = document.querySelector('a[href="#settings"]');
+                if (settingsLink) settingsLink.parentElement.style.display = 'none';
+
+                // Update Profile Info
+                const profileName = document.querySelector('.profile-info h3');
+                const profileRole = document.querySelector('.profile-info p');
+                if (profileName) profileName.textContent = user.name;
+                if (profileRole) profileRole.textContent = `Club Leader - ${user.club.toUpperCase()}`;
+            } else if (user.role === ROLES.ADMIN) {
+                const profileName = document.querySelector('.profile-info h3');
+                const profileRole = document.querySelector('.profile-info p');
+                if (profileName) profileName.textContent = user.name || user.username || 'Admin';
+                if (profileRole) profileRole.textContent = 'Administrator';
+            }
+        }
+    };
+
+    // Run Guard
+    window.AuthService.guardRoute();
+    // --- RBAC & AUTH SYSTEM END ---
+
+    // Initialize global events data
+    // Note: Using January 2026 dates (current date context) for easier testing
+    window.events = [
+        { id: 1, name: "AI Workshop Series", club: "tech", startDate: "2026-01-20", endDate: "2026-01-20", startTime: "14:00", endTime: "17:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning fundamentals and applications." },
+        { id: 2, name: "Digital Art Masterclass", club: "arts", startDate: "2026-01-22", endDate: "2026-01-22", startTime: "16:00", endTime: "18:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques in digital painting and illustration." },
+        { id: 3, name: "Public Speaking Workshop", club: "debate", startDate: "2026-01-24", endDate: "2026-01-24", startTime: "15:00", endTime: "17:00", location: "Humanities Building, Room 205", description: "Improve your public speaking and presentation skills." },
+        { id: 4, name: "Multi-Day Conference", club: "tech", startDate: "2026-02-01", endDate: "2026-02-03", startTime: "09:00", endTime: "17:00", location: "Main Auditorium", description: "Tech conference spanning multiple days." },
+        { id: 5, name: "Tech Seminar", club: "tech", startDate: "2026-01-20", endDate: "2026-01-20", startTime: "15:00", endTime: "17:00", location: "CS Building, Room 102", description: "Advanced tech topics discussion." },
+        { id: 6, name: "Music Jam Session", club: "music", startDate: "2026-01-20", endDate: "2026-01-20", startTime: "15:00", endTime: "17:00", location: "Music Hall, Studio A", description: "Live jam session with fellow musicians." },
+        { id: 7, name: "Web Development Bootcamp", club: "tech", startDate: "2026-01-25", endDate: "2026-01-25", startTime: "13:30", endTime: "15:30", location: "Lab Building, Room 305", description: "Intensive web development training." },
+        { id: 8, name: "Creative Writing Workshop", club: "arts", startDate: "2026-01-22", endDate: "2026-01-22", startTime: "17:00", endTime: "19:00", location: "Library Hall, Room 201", description: "Explore creative writing techniques and storytelling." },
+        { id: 9, name: "Debate Championship", club: "debate", startDate: "2026-01-28", endDate: "2026-01-28", startTime: "10:00", endTime: "15:00", location: "Auditorium, Main Hall", description: "Inter-club debate competition with prizes." }
+    ];
+
     initNavigation();
     initTestimonialsAndSliders();
     initTabsAndModals();
@@ -216,10 +374,74 @@ async function initMyHub() {
                 }
             }
         } else {
-            if (window.location.pathname.includes('my-hub.html')) {
-                localStorage.removeItem('studentToken');
-                window.location.href = 'registration.html#student-login';
-            }
+            eventsList.innerHTML = '';
+            // Sort by start date
+            registeredEvents.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
+            registeredEvents.forEach(event => {
+                const item = document.createElement('div');
+                item.classList.add('hub-item');
+                // Format date properly
+                const startDate = new Date(event.startDate);
+                const endDate = new Date(event.endDate || event.startDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const isPast = endDate < today;
+
+                const formattedDate = startDate.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                item.innerHTML = `
+                    <div class="hub-item-info">
+                        <h4>${event.name}</h4>
+                        <p><i class="far fa-calendar-alt"></i> ${formattedDate} | <i class="far fa-clock"></i> ${event.startTime} - ${event.endTime}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> ${event.location || 'TBA'}</p>
+                    </div>
+                    <div class="hub-item-actions">
+                        ${isPast
+                        ? `<button class="action-button small certificate-btn" data-id="${event.id}"><i class="fas fa-certificate"></i> Certificate</button>
+                               <button class="action-button small feedback-btn" data-id="${event.id}"><i class="fas fa-comment"></i> Feedback</button>`
+                        : `<button class="cancel-button small cancel-reg-btn" data-id="${event.id}"><i class="fas fa-times"></i> Cancel</button>`
+                    }
+                    </div>
+                `;
+                eventsList.appendChild(item);
+            });
+
+            // Bind Actions
+            eventsList.querySelectorAll('.cancel-reg-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.id);
+                    if (confirm('Are you sure you want to cancel this registration?')) {
+                        const updated = registeredEvents.filter(e => e.id !== id);
+                        localStorage.setItem(`events_${student.id}`, JSON.stringify(updated));
+                        initMyHub();
+                        alert('Registration cancelled.');
+                    }
+                });
+            });
+
+            eventsList.querySelectorAll('.certificate-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    alert('Generating your E-Certificate... Check your downloads in a moment.');
+                    // In a real app, this would trigger a PDF download
+                });
+            });
+
+            eventsList.querySelectorAll('.feedback-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const feedback = prompt('Please share your thoughts on this event:');
+                    if (feedback) {
+                        alert('Thank you for your feedback! It has been submitted to the organizers.');
+                        window.AuthService.logActivity(`Feedback submitted for event ${btn.dataset.id}`);
+                    }
+                });
+            });
         }
     } catch (err) {
         console.error("Failed to fetch user data:", err);
@@ -671,7 +893,52 @@ function initCalendar() {
                 dayEl.appendChild(evEl);
             });
 
-            calendarGrid.appendChild(dayEl);
+            dayEventsData.forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.classList.add('day-event', event.club);
+
+                // Check for conflicts
+                const student = JSON.parse(localStorage.getItem('studentUser'));
+                if (student) {
+                    const registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+                    const conflictEvent = registeredEvents.find(regEvent => {
+                        const type = getConflictType(regEvent, event);
+                        return type !== 'none';
+                    });
+
+                    if (conflictEvent) {
+                        const conflictType = getConflictType(conflictEvent, event);
+                        if (conflictType === 'direct') {
+                            eventElement.classList.add('conflict');
+                        } else if (conflictType === 'near') {
+                            eventElement.classList.add('near-conflict');
+                        }
+                    }
+                }
+
+                eventElement.textContent = event.name;
+                eventElement.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showEventDetails(event);
+                });
+                dayEvents.appendChild(eventElement);
+            });
+
+            dayElement.appendChild(dayEvents);
+
+            // Click day to add event
+            dayElement.addEventListener('click', function (e) {
+                if (e.target === this || e.target.classList.contains('day-number')) {
+                    const currentUser = window.AuthService.getCurrentUser();
+                    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'leader')) {
+                        alert('Only Admins and Club Leaders can create events.');
+                        return;
+                    }
+                    openEventModal(null, dateStr);
+                }
+            });
+
+            calendarGrid.appendChild(dayElement);
         }
     }
 
@@ -681,12 +948,251 @@ function initCalendar() {
         renderCalendar();
     });
 
-    if (nextMonthButton) nextMonthButton.addEventListener('click', () => {
-        currentMonth++;
-        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-        renderCalendar();
-    });
+        const currentUser = window.AuthService.getCurrentUser();
+        const canEdit = !!currentUser && (
+            currentUser.role === 'admin' || (currentUser.role === 'leader' && currentUser.club === event.club)
+        );
 
+        eventDetailsContainer.innerHTML = `
+            <div class="event-details">
+                <div class="event-header">
+                    <span class="event-club-badge ${event.club}">${getClubName(event.club)}</span>
+                    ${canEdit ? '<button id="edit-event" class="action-button"><i class="fas fa-edit"></i> Edit</button>' : ''}
+                </div>
+                <h2 class="event-title">${event.name}</h2>
+                <div class="event-date-time">
+                    <span><i class="far fa-calendar-alt"></i> ${formatDate(event.startDate, event.endDate)}</span>
+                    <span><i class="far fa-clock"></i> ${event.startTime} - ${event.endTime}</span>
+                </div>
+                <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</div>
+                <p class="event-description">${event.description}</p>
+                <div class="event-actions">
+                    <button id="register-for-event" class="action-button"><i class="fas fa-user-plus"></i> Register</button>
+                    <button id="share-event" class="action-button"><i class="fas fa-share-alt"></i> Share</button>
+                </div>
+            </div>
+        `;
+
+        // Bind dynamic buttons
+        const editBtn = document.getElementById('edit-event');
+        if (editBtn) editBtn.addEventListener('click', () => openEventModal(event));
+        document.getElementById('register-for-event').addEventListener('click', () => registerForEvent(event));
+        document.getElementById('share-event').addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
+    }
+
+    function openEventModal(event = null, date = null) {
+        if (!eventModal) return;
+        const currentUser = window.AuthService.getCurrentUser();
+        // Permission checks
+        if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'leader')) {
+            alert('You are not authorized to manage events.');
+            return;
+        }
+
+        if (event) {
+            if (currentUser.role === 'leader' && event.club !== currentUser.club) {
+                alert('Leaders can only manage events of their own club.');
+                return;
+            }
+            document.getElementById('modal-title').textContent = 'Edit Event';
+            document.getElementById('event-name').value = event.name;
+            document.getElementById('event-club').value = event.club;
+            document.getElementById('event-start-date').value = event.startDate;
+            document.getElementById('event-end-date').value = event.endDate;
+            document.getElementById('event-start-time').value = event.startTime;
+            document.getElementById('event-end-time').value = event.endTime;
+            document.getElementById('event-location').value = event.location;
+            document.getElementById('event-description').value = event.description;
+            if (deleteEventButton) deleteEventButton.style.display = 'block';
+            selectedEvent = event;
+        } else {
+            document.getElementById('modal-title').textContent = 'Add New Event';
+            eventForm.reset();
+            if (date) {
+                document.getElementById('event-start-date').value = date;
+                document.getElementById('event-end-date').value = date;
+            }
+            if (deleteEventButton) deleteEventButton.style.display = 'none';
+            selectedEvent = null;
+            // Leader scoping: lock club selector
+            const clubSelect = document.getElementById('event-club');
+            if (currentUser.role === 'leader' && clubSelect) {
+                clubSelect.value = currentUser.club;
+                clubSelect.disabled = true;
+            } else if (clubSelect) {
+                clubSelect.disabled = false;
+            }
+        }
+        eventModal.style.display = 'flex';
+    }
+
+    // Event Form Submit
+    if (eventForm) {
+        eventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const eventData = {
+                name: document.getElementById('event-name').value,
+                club: document.getElementById('event-club').value,
+                startDate: document.getElementById('event-start-date').value,
+                endDate: document.getElementById('event-end-date').value,
+                startTime: document.getElementById('event-start-time').value,
+                endTime: document.getElementById('event-end-time').value,
+                location: document.getElementById('event-location').value,
+                description: document.getElementById('event-description').value
+            };
+            const currentUser = window.AuthService.getCurrentUser();
+            if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'leader')) {
+                alert('You are not authorized to save events.');
+                return;
+            }
+            if (currentUser.role === 'leader' && eventData.club !== currentUser.club) {
+                alert('Leaders can only manage events of their own club.');
+                return;
+            }
+            if (selectedEvent) {
+                Object.assign(selectedEvent, eventData);
+                window.AuthService.logActivity(`Event updated: ${selectedEvent.name} (${selectedEvent.club})`);
+            } else {
+                eventData.id = events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1;
+                events.push(eventData);
+                selectedEvent = eventData;
+                window.AuthService.logActivity(`Event created: ${selectedEvent.name} (${selectedEvent.club})`);
+            }
+            renderCalendar();
+            showEventDetails(selectedEvent);
+            eventModal.style.display = 'none';
+        });
+    }
+
+    // Delete Event
+    if (deleteEventButton) {
+        deleteEventButton.addEventListener('click', function () {
+            if (selectedEvent && confirm('Are you sure you want to delete this event?')) {
+                const currentUser = window.AuthService.getCurrentUser();
+                if (!currentUser || (currentUser.role !== 'admin' && !(currentUser.role === 'leader' && currentUser.club === selectedEvent.club))) {
+                    alert('You are not authorized to delete this event.');
+                    return;
+                }
+                events = events.filter(e => e.id !== selectedEvent.id);
+                window.AuthService.logActivity(`Event deleted: ${selectedEvent.name} (${selectedEvent.club})`);
+                renderCalendar();
+                eventDetailsContainer.innerHTML = `<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>`;
+                eventModal.style.display = 'none';
+            }
+        });
+    }
+
+    // Month Navigation
+    if (prevMonthButton) {
+        prevMonthButton.addEventListener('click', function () {
+            currentMonth--;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        });
+    }
+
+    if (nextMonthButton) {
+        nextMonthButton.addEventListener('click', function () {
+            currentMonth++;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar();
+        });
+    }
+
+    // Date Picker Jump Functionality
+    const monthPicker = document.getElementById('month-picker');
+    const yearPicker = document.getElementById('year-picker');
+    const jumpToDateBtn = document.getElementById('jump-to-date');
+    const todayBtn = document.getElementById('today-btn');
+
+    // Populate year dropdown dynamically
+    if (yearPicker) {
+        const currentYear = new Date().getFullYear();
+        const startYear = 2020; // Start from 2020
+        const endYear = currentYear + 5; // Go 5 years into the future
+
+        for (let year = startYear; year <= endYear; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            if (year === currentYear) {
+                option.selected = true;
+            }
+            yearPicker.appendChild(option);
+        }
+    }
+
+    if (monthPicker && yearPicker && jumpToDateBtn) {
+        jumpToDateBtn.addEventListener('click', function () {
+            currentMonth = parseInt(monthPicker.value);
+            currentYear = parseInt(yearPicker.value);
+            renderCalendar();
+        });
+    }
+
+    if (todayBtn) {
+        todayBtn.addEventListener('click', function () {
+            const today = new Date();
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+
+            // Update pickers to reflect today
+            if (monthPicker) monthPicker.value = currentMonth;
+            if (yearPicker) yearPicker.value = currentYear;
+
+            renderCalendar();
+        });
+    }
+
+    // Update pickers when month/year changes
+    if (monthPicker && yearPicker) {
+        window.updateDatePickers = function () {
+            monthPicker.value = currentMonth;
+            yearPicker.value = currentYear;
+        };
+    }
+
+    // Filters (Club/Date)
+    function filterEvents() {
+        if (!clubFilter || !dateFilter) return;
+        const clubValue = clubFilter.value;
+        const dateValue = dateFilter.value;
+        const today = new Date();
+
+        // Date math for week/month filters
+        const currentWeekStart = new Date(today);
+        currentWeekStart.setDate(today.getDate() - today.getDay());
+        const currentWeekEnd = new Date(currentWeekStart);
+        currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
+        const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        const currentMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+        const nextMonthEnd = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+
+        eventCards.forEach(card => {
+            const cardClub = card.getAttribute('data-club');
+            const cardDateStr = card.getAttribute('data-date');
+            const cardDate = new Date(cardDateStr);
+
+            let clubMatch = clubValue === 'all' || cardClub === clubValue;
+            let dateMatch = true;
+
+            if (dateValue !== 'all') {
+                if (dateValue === 'this-week') dateMatch = cardDate >= currentWeekStart && cardDate <= currentWeekEnd;
+                else if (dateValue === 'this-month') dateMatch = cardDate >= currentMonthStart && cardDate <= currentMonthEnd;
+                else if (dateValue === 'next-month') dateMatch = cardDate >= nextMonthStart && cardDate <= nextMonthEnd;
+            }
+
+            card.style.display = (clubMatch && dateMatch) ? 'block' : 'none';
+        });
+    }
+
+    if (clubFilter && dateFilter) {
+        clubFilter.addEventListener('change', filterEvents);
+        dateFilter.addEventListener('change', filterEvents);
+    }
+
+    // Initialize View
     renderCalendar();
 }
 
@@ -696,6 +1202,84 @@ function initCalendar() {
 function initAdmin() {
     // 1. Admin Login
     const adminLoginForm = document.getElementById('admin-login-form');
+    const togglePassword = document.querySelector('.toggle-password');
+    const passwordInput = document.getElementById('admin-password');
+    const toggleConfirmPassword = document.querySelector('.toggle-confirm-password');
+    const confirmPasswordInput = document.getElementById('admin-confirm-password');
+    const confirmPasswordGroup = document.getElementById('confirm-password-group');
+    const tabLogin = document.getElementById('tab-login');
+    const tabSignup = document.getElementById('tab-signup');
+    const toggleModeLink = document.getElementById('toggle-mode');
+    const loginButton = document.querySelector('.login-button');
+    const footerText = document.getElementById('footer-text');
+    const forgotWrapper = document.getElementById('forgot-password-wrapper'); // <div> with Forgot password link
+
+    let isLoginMode = true;
+
+    function toggleMode(login) {
+        isLoginMode = login;
+
+        // Safety check: if essential container missing, stop UI updates but state is set
+        if (!confirmPasswordGroup) return;
+
+        if (login) {
+            // LOGIN MODE
+            confirmPasswordGroup.style.display = 'none';
+            if (loginButton) loginButton.textContent = 'Login';
+            if (tabLogin) tabLogin.classList.add('active');
+            if (tabSignup) tabSignup.classList.remove('active');
+            if (footerText) footerText.textContent = "Don't have an account?";
+            if (toggleModeLink) toggleModeLink.textContent = "Sign Up";
+            if (forgotWrapper) forgotWrapper.style.display = 'block';
+        } else {
+            // SIGNUP MODE
+            confirmPasswordGroup.style.display = 'block';
+            if (loginButton) loginButton.textContent = 'Create Account';
+            if (tabSignup) tabSignup.classList.add('active');
+            if (tabLogin) tabLogin.classList.remove('active');
+            if (footerText) footerText.textContent = "Already have an account?";
+            if (toggleModeLink) toggleModeLink.textContent = "Login";
+            if (forgotWrapper) forgotWrapper.style.display = 'none';
+        }
+    }
+
+    // Set initial mode (login)
+    if (confirmPasswordGroup) toggleMode(true);
+
+    if (tabLogin && tabSignup) {
+        tabLogin.addEventListener('click', () => toggleMode(true));
+        tabSignup.addEventListener('click', () => toggleMode(false));
+    }
+
+    if (toggleModeLink) {
+        toggleModeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMode(!isLoginMode);
+        });
+    }
+
+    // Password Toggle
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function () {
+
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+    }
+
+    // Password Toggle for confirm password field
+    if (toggleConfirmPassword && confirmPasswordInput) {
+        toggleConfirmPassword.addEventListener('click', function () {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+    }
+
+    // Login / Signup Submission
+
     if (adminLoginForm) {
         adminLoginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
@@ -709,32 +1293,86 @@ function initAdmin() {
                     body: JSON.stringify({ email: username, password })
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.user.role === 'admin') {
-                        localStorage.setItem('adminToken', data.token);
-                        window.location.href = 'admin-dashboard.html';
+            if (isLoginMode) {
+                // LOGIN LOGIC
+                // Check stored custom admins first, then hardcoded default
+                const result = window.AuthService.login(username, password);
+
+                if (result.success) {
+                    if (rememberMe) {
+                        localStorage.setItem('adminRemembered', 'true');
+                        localStorage.setItem('adminUsername', username);
                     } else {
                         alert('Access Denied: You are not an admin.');
                     }
+
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    localStorage.setItem('currentAdminUser', username);
+
+                    if (loginButton) {
+                        loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Logging in...</span>';
+                        loginButton.disabled = true;
+                    }
+                    // Immediate redirect instead of timeout to reduce "flicker/fluctuation"
+                    window.location.replace('admin-dashboard.html');
                 } else {
                     alert('Login failed');
                 }
-            } catch (error) {
-                console.error('Admin Login Error:', error);
-                alert('Login error');
+            } else {
+                // SIGN UP LOGIC
+                const confirmPass = confirmPasswordInput.value;
+                if (password !== confirmPass) {
+                    alert('Passwords do not match!');
+                    return;
+                }
+
+                // Check if user exists (unified users store)
+                const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+                if (username === 'admin' || existingUsers.some(u => u.username === username)) {
+                    alert('Username already exists. Please choose another.');
+                    return;
+                }
+
+                // Create new user
+                existingUsers.push({ username, password, role: 'admin' });
+                localStorage.setItem('users', JSON.stringify(existingUsers));
+
+                toggleMode(true);
             }
         });
     }
 
-    // 2. Dashboard Logic
+    function checkAdminCredentials(u, p) {
+        // 1. Super Admin (Generic)
+        if (u === 'admin' && p === 'admin@123') return { success: true, role: 'admin' };
+
+        // 2. Club Leader (Pattern)
+        // Format: Username "leader_tech", Password "tech@123"
+        if (u.startsWith('leader_')) {
+            const club = u.split('_')[1]; // e.g., "tech"
+            if (club && p === `${club}@123`) {
+                return { success: true, role: 'leader', club: club };
+            }
+        }
+
+        // 3. Local Storage
+        const admins = JSON.parse(localStorage.getItem('adminUsers')) || [];
+        const found = admins.find(user => user.username === u && user.password === p);
+        if (found) return { success: true, role: 'admin' };
+
+        return { success: false };
+    }
+
+    // 6b. Admin Dashboard Logic
     const adminDashboard = document.getElementById('admin-dashboard');
     if (adminDashboard) {
-        const token = localStorage.getItem('adminToken');
-        if (!token) {
-            window.location.href = 'admin-login.html';
-            return;
-        }
+        // Redundant check removed. guardRoute handles this globally.
+        // const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+        // if (!isLoggedIn) { ... }
+        if (true) {
+            // Init Sidebar Navigation
+            const sidebarLinks = document.querySelectorAll('.admin-menu a');
+            const sections = document.querySelectorAll('.admin-tab-content');
 
         // Sidebar Navigation
         const sidebarLinks = document.querySelectorAll('.admin-menu a');
@@ -749,10 +1387,9 @@ function initAdmin() {
                 document.querySelectorAll('.admin-menu li').forEach(li => li.classList.remove('active'));
                 link.parentElement.classList.add('active');
 
-                // Update Active Section
-                sections.forEach(sec => sec.style.display = 'none');
-                const targetSec = document.getElementById(targetId);
-                if (targetSec) targetSec.style.display = 'block';
+                        if (targetId === 'dashboard') {
+                            // setTimeout(initAnalytics, 100); // Removed: we use initDashboardCharts now
+                        }
 
                 // Load Data based on section
                 if (targetId === 'dashboard' || targetId === 'registrations') loadRegistrations();
@@ -818,10 +1455,18 @@ function initAdmin() {
             } catch (err) { console.error(err); }
         }
 
-        async function loadFeedbacks() {
-            try {
-                const res = await fetch('http://localhost:3000/api/admin/feedbacks', {
-                    headers: { 'Authorization': `Bearer ${token}` }
+            loadAdminDashboard();
+            initClubManagement();
+            initUserManagement();
+            // initAnalytics(); // upstream had it, but we have initDashboardCharts inside loadAdminDashboard now which uses Chart.js
+            // If upstream's initAnalytics is distinct and needed, we can keep it, but it seems redundant with our charts.
+            // Let's comment it out to rely on our new chart system, or check if it exists.
+            if (typeof initAnalytics === 'function') initAnalytics();
+            const logoutButton = document.getElementById('admin-logout');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function () {
+                    // Update: use AuthService.logout() for consistency
+                    window.AuthService.logout();
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -850,6 +1495,187 @@ function initAdmin() {
             } catch (err) { console.error(err); }
         }
     }
+
+    // Admin Event Management Form
+    const adminEventForm = document.getElementById('admin-event-form');
+    if (adminEventForm) {
+        adminEventForm.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', function () {
+                clearFieldError(this);
+            });
+        });
+
+        adminEventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-event-name').value;
+            alert(`Event "${name}" saved successfully!`);
+            this.reset();
+        });
+    }
+
+
+    function loadAdminDashboard() {
+        const currentUser = window.AuthService.getCurrentUser();
+        const isLeader = currentUser && currentUser.role === 'leader';
+        const userClub = isLeader ? currentUser.club : null;
+
+        // Helper
+        const getClubName = (id) => {
+            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD' };
+            return map[id] || id;
+        };
+
+
+        // Render Student Registrations
+        const registrationsTable = document.getElementById('registrations-table');
+        if (registrationsTable) {
+            registrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+            const registrations = [
+                { id: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', clubs: ['tech', 'debate'], registeredAt: '2023-10-15' },
+                { id: 2, name: 'Jane Smith', email: 'jane@example.com', studentId: 'S12346', clubs: ['arts', 'music'], registeredAt: '2023-10-16' },
+                { id: 3, name: 'Alex Johnson', email: 'alex@example.com', studentId: 'S1003', clubs: ['sports'], registeredAt: '2023-11-14' }
+            ];
+
+            // Filter for Leader
+            const filteredRegs = isLeader
+                ? registrations.filter(r => r.clubs.includes(userClub))
+                : registrations;
+
+            filteredRegs.forEach(reg => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td>
+                    <td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td>
+                    <td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
+                    <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+                        ${!isLeader ? `<button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button>` : ''}</td>
+                `;
+                registrationsTable.querySelector('tbody').appendChild(row);
+            });
+        }
+
+        // Render Event Registrations
+        // Mock data usually comes from localStorage but here it is hardcoded in original. 
+        // Initialize Charts
+        initDashboardCharts(isLeader, userClub);
+    }
+}
+
+function initDashboardCharts(isLeader, userClub) {
+    // 1. Event Participation Chart (Loaded)
+    const ctx1 = document.getElementById('eventParticipationChart')?.getContext('2d');
+    if (ctx1) {
+        // Destroy existing if any (simple cheat: replace canvas to prevent overlay issues or just assume fresh load)
+        // For simplicity in this vanilla JS, we'll create a new Chart each time or let Chart.js handle it.
+        // Ideally we track instances, but this is a quick fix.
+
+        const data = isLeader
+            ? [15, 25, 40, 10] // Mock data for specific club events
+            : [65, 59, 80, 81, 56, 55]; // Mock data for all
+
+        const labels = isLeader
+            ? ['Workshop', 'Meetup', 'Hackathon', 'Webinar']
+            : ['Tech', 'Arts', 'Debate', 'Music', 'Sports', 'Dance'];
+
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '# of Participants',
+                    data: data,
+                    backgroundColor: 'rgba(253, 121, 168, 0.5)',
+                    borderColor: 'rgba(253, 121, 168, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { labels: { color: 'white' } } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } },
+                    x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } }
+                }
+            }
+        });
+    }
+
+    // 2. Active Clubs Overview (Pie Chart)
+    const ctx2 = document.getElementById('activeClubsChart')?.getContext('2d');
+    if (ctx2 && !isLeader) {
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Tech', 'Arts', 'Sports', 'Music', 'Debate'],
+                datasets: [{
+                    data: [12, 19, 3, 5, 2],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { labels: { color: 'white' } } }
+            }
+        });
+    } else if (ctx2 && isLeader) {
+        // For leader, maybe show member status distribution
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active', 'Pending', 'Inactive'],
+                datasets: [{
+                    data: [85, 10, 5],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(255, 99, 132, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: 'white' } },
+                    title: { display: true, text: 'Member Status', color: 'white' }
+                }
+            }
+        });
+    }
+
+    // 3. Monthly Engagement (Line Chart)
+    const ctx3 = document.getElementById('monthlyEngagementChart')?.getContext('2d');
+    if (ctx3) {
+        new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Engagement Level',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { labels: { color: 'white' } } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } },
+                    x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } }
+                }
+            }
+        });
+    }
 }
 
 /**
@@ -876,11 +1702,31 @@ function initStudentSession() {
             e.preventDefault();
             localStorage.removeItem('studentToken');
             localStorage.removeItem('studentUser');
+            const cu = window.AuthService.getCurrentUser();
+            if (cu && cu.role === 'student') {
+                localStorage.removeItem('currentUser');
+            }
+            updateUIForStudent();
             window.location.href = 'index.html';
         });
     }
     updateUIForStudent();
 }
+
+// Ensure student login sets currentUser role for unified RBAC
+(function attachStudentLoginHook() {
+    const studentLoginForm = document.getElementById('student-login-form');
+    if (studentLoginForm) {
+        studentLoginForm.addEventListener('submit', function () {
+            const name = document.getElementById('login-student-name')?.value;
+            const id = document.getElementById('login-student-id')?.value;
+            if (name && id) {
+                const stuUser = { username: id, role: 'student', name };
+                window.AuthService.setCurrentUser(stuUser);
+            }
+        });
+    }
+})();
 
 function updateUIForStudent() {
     const token = localStorage.getItem('studentToken');
@@ -919,16 +1765,433 @@ function initClubDetails() {
     }
 }
 
-// Export for testing
+function updateEnrollmentStatus() {
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (!student) return;
+
+    const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
+    const registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+
+    // Update Club Cards
+    document.querySelectorAll('.club-card').forEach(card => {
+        const clubId = card.getAttribute('data-club');
+        if (joinedClubs.includes(clubId)) {
+            let statusBadge = card.querySelector('.enrolled-status');
+            if (!statusBadge) {
+                statusBadge = document.createElement('div');
+                statusBadge.classList.add('enrolled-status');
+                statusBadge.style.color = 'var(--success-color)';
+                statusBadge.style.fontWeight = 'bold';
+                statusBadge.style.marginTop = '1rem';
+                statusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Joined';
+                card.appendChild(statusBadge);
+            }
+        }
+    });
+
+    // Update Event Cards
+    document.querySelectorAll('.event-card').forEach(card => {
+        const eventTitle = card.querySelector('.event-title').textContent;
+        if (registeredEvents.some(e => e.name === eventTitle)) {
+            const regBtn = card.querySelector('.register-button');
+            if (regBtn) {
+                regBtn.textContent = 'Registered';
+                regBtn.disabled = true;
+                regBtn.style.background = 'var(--success-color)';
+                regBtn.style.cursor = 'default';
+            }
+        }
+    });
+}
+
+/**
+ * Export functions for testing
+ * Only exports if running in Node.js environment (for Jest tests)
+ */
+function initClubManagement() {
+    const tableBody = document.querySelector('#clubs-table tbody');
+    const addBtn = document.getElementById('add-club-member-btn');
+    const modal = document.getElementById('club-member-modal');
+    const form = document.getElementById('club-member-form');
+    const closeBtns = document.querySelectorAll('.close-club-modal');
+
+    // Make sure we are on the admin dashboard
+    if (!tableBody) return;
+
+    // 1. Initial Data Load & Mocking
+    let memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
+    if (memberships.length === 0) {
+        memberships = [
+            { id: 1, name: 'Alice Walker', studentId: 'S1001', club: 'tech', status: 'Active' },
+            { id: 2, name: 'Bob Builder', studentId: 'S1002', club: 'arts', status: 'Pending' },
+            { id: 3, name: 'Charlie Day', studentId: 'S1003', club: 'debate', status: 'Active' }
+        ];
+        localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
+    }
+
+    // 2. Render Table
+    function renderTable() {
+        tableBody.innerHTML = '';
+        memberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
+
+        const currentUser = window.AuthService.getCurrentUser();
+        const isLeader = currentUser && currentUser.role === 'leader';
+        const userClub = isLeader ? currentUser.club : null;
+
+        const getClubName = (code) => {
+            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Dance club- ABCD' };
+            return map[code] || code;
+        };
+
+        // Filter for Leader
+        const filteredMemberships = isLeader
+            ? memberships.filter(m => m.club === userClub)
+            : memberships;
+
+        filteredMemberships.forEach(m => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>#${m.id}</td>
+                <td>${m.name}</td>
+                <td>${m.studentId}</td>
+                <td>${getClubName(m.club)}</td>
+                <td><span class="status-${m.status.toLowerCase()}">${m.status}</span></td>
+                <td>
+                    <button class="admin-action edit-club" data-id="${m.id}"><i class="fas fa-edit"></i></button>
+                    <button class="admin-action delete-club" data-id="${m.id}"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    renderTable();
+
+    // 3. Modal Actions
+    function openModal(member = null) {
+        const title = document.getElementById('club-modal-title');
+        const idInput = document.getElementById('club-member-id');
+        const nameInput = document.getElementById('club-student-name');
+        const dbIdInput = document.getElementById('club-student-db-id');
+        const clubInput = document.getElementById('club-select');
+        const statusInput = document.getElementById('club-status');
+        const currentUser = window.AuthService.getCurrentUser();
+
+        if (member) {
+            title.textContent = 'Edit Club Member';
+            idInput.value = member.id;
+            nameInput.value = member.name;
+            dbIdInput.value = member.studentId;
+            clubInput.value = member.club;
+            statusInput.value = member.status;
+        } else {
+            title.textContent = 'Add Club Member';
+            form.reset();
+            idInput.value = '';
+        }
+        if (currentUser && currentUser.role === 'leader') {
+            clubInput.value = currentUser.club;
+            clubInput.disabled = true;
+        } else {
+            clubInput.disabled = false;
+        }
+        modal.style.display = 'block';
+    }
+
+    if (addBtn) addBtn.addEventListener('click', () => openModal());
+
+    closeBtns.forEach(btn => btn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    }));
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+
+    // 4. Form Submit
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const currentUser = window.AuthService.getCurrentUser();
+        const id = document.getElementById('club-member-id').value;
+        const name = document.getElementById('club-student-name').value;
+        const studentId = document.getElementById('club-student-db-id').value;
+        let club = document.getElementById('club-select').value;
+        const status = document.getElementById('club-status').value;
+
+        if (currentUser && currentUser.role === 'leader') {
+            club = currentUser.club;
+        }
+
+        if (id) {
+            // Edit
+            const index = memberships.findIndex(m => m.id == id);
+            if (index !== -1) {
+                memberships[index] = { id: parseInt(id), name, studentId, club, status };
+            }
+        } else {
+            // Add
+            const newId = memberships.length > 0 ? Math.max(...memberships.map(m => m.id)) + 1 : 1;
+            memberships.push({ id: newId, name, studentId, club, status });
+        }
+
+        localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
+        renderTable();
+        modal.style.display = 'none';
+    });
+
+    // 5. Table Actions (Edit/Delete)
+    tableBody.addEventListener('click', (e) => {
+        const btn = e.target.closest('.admin-action');
+        if (!btn) return;
+
+        const id = btn.getAttribute('data-id');
+        if (btn.classList.contains('edit-club')) {
+            const member = memberships.find(m => m.id == id);
+            const currentUser = window.AuthService.getCurrentUser();
+            if (currentUser && currentUser.role === 'leader' && member.club !== currentUser.club) {
+                alert('You are not authorized to edit members of other clubs.');
+                return;
+            }
+            openModal(member);
+        } else if (btn.classList.contains('delete-club')) {
+            const member = memberships.find(m => m.id == id);
+            const currentUser = window.AuthService.getCurrentUser();
+            if (currentUser && currentUser.role === 'leader' && member && member.club !== currentUser.club) {
+                alert('You are not authorized to delete members of other clubs.');
+                return;
+            }
+            if (confirm('Are you sure you want to remove this member?')) {
+                memberships = memberships.filter(m => m.id != id);
+                localStorage.setItem('allClubMemberships', JSON.stringify(memberships));
+                renderTable();
+            }
+        }
+    });
+}
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         showFieldError,
         clearFieldError,
         showFormSuccess,
         clearFormErrors,
+
+        // Main initialization functions
         initNavigation,
-        escapeHtml,
-        getFutureDate,
-        getCurrentMonthYear
+        initMyHub,
+        initTestimonialsAndSliders,
+        initTabsAndModals,
+        initCalendar,
+        initForms,
+        initAdmin,
+        initAnimations,
+        initStudentSession,
+        initDynamicEventDates,
+        initClubManagement, // Added this to the exports
+
+        // UI update functions
+        updateUIForStudent,
+        updateEnrollmentStatus
     };
+}
+
+// Admin-only: User & Role Management
+function initUserManagement() {
+    const settingsSection = document.getElementById('settings');
+    if (!settingsSection) return;
+
+    const currentUser = window.AuthService.getCurrentUser();
+    if (!currentUser || currentUser.role !== 'admin') {
+        // Hide entire section if not admin
+        settingsSection.style.display = 'none';
+        return;
+    }
+
+    // Elements
+    const addBtn = document.getElementById('add-user-btn');
+    const tableBody = document.querySelector('#users-table tbody');
+    const modal = document.getElementById('user-modal');
+    const form = document.getElementById('user-form');
+    const closeBtns = document.querySelectorAll('.close-user-modal');
+
+    if (!addBtn || !tableBody || !modal || !form) return;
+
+    function loadUsers() {
+        return JSON.parse(localStorage.getItem('users')) || [];
+    }
+    function saveUsers(users) {
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+    function renderTable() {
+        tableBody.innerHTML = '';
+        loadUsers().forEach((u, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${u.username}</td>
+                <td>${u.role}</td>
+                <td>${u.role === 'leader' ? (u.club || '-') : '-'}</td>
+                <td>
+                    <button class="admin-action edit-user" data-index="${idx}"><i class="fas fa-edit"></i></button>
+                    <button class="admin-action delete-user" data-index="${idx}"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    function openModal(user = null, index = null) {
+        modal.style.display = 'block';
+        document.getElementById('modal-user-index').value = index != null ? String(index) : '';
+        document.getElementById('user-username').value = user?.username || '';
+        document.getElementById('user-password').value = '';
+        document.getElementById('user-role').value = user?.role || 'leader';
+        document.getElementById('user-club').value = user?.club || '';
+        toggleClubField();
+    }
+
+    function closeModal() { modal.style.display = 'none'; }
+
+    function toggleClubField() {
+        const role = document.getElementById('user-role').value;
+        const clubField = document.getElementById('user-club-group');
+        if (clubField) clubField.style.display = role === 'leader' ? 'block' : 'none';
+    }
+
+    renderTable();
+    addBtn.addEventListener('click', () => openModal());
+    closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
+    window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.getElementById('user-role')?.addEventListener('change', toggleClubField);
+
+    tableBody.addEventListener('click', (e) => {
+        const btn = e.target.closest('.admin-action');
+        if (!btn) return;
+        const idx = parseInt(btn.getAttribute('data-index'));
+        const users = loadUsers();
+        if (btn.classList.contains('edit-user')) {
+            openModal(users[idx], idx);
+        } else if (btn.classList.contains('delete-user')) {
+            const toDelete = users[idx];
+            if (toDelete && toDelete.username === 'admin') {
+                alert('Cannot delete default admin.');
+                return;
+            }
+            if (confirm('Delete this user?')) {
+                users.splice(idx, 1);
+                saveUsers(users);
+                renderTable();
+                window.AuthService.logActivity(`User deleted: ${toDelete?.username}`);
+            }
+        }
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const idxStr = document.getElementById('modal-user-index').value;
+        const username = document.getElementById('user-username').value.trim();
+        const password = document.getElementById('user-password').value;
+        const role = document.getElementById('user-role').value;
+        const club = document.getElementById('user-club').value.trim();
+        if (!username || (!idxStr && !password)) {
+            alert('Username and password are required.');
+            return;
+        }
+        if (role === 'leader' && !club) {
+            alert('Leader must have a club.');
+            return;
+        }
+        const users = loadUsers();
+        const existingIndex = users.findIndex(u => u.username === username);
+        const editing = idxStr !== '';
+        const idx = editing ? parseInt(idxStr) : -1;
+        if ((!editing && existingIndex !== -1) || (editing && existingIndex !== -1 && existingIndex !== idx)) {
+            alert('Username already exists.');
+            return;
+        }
+        const newUser = { username, role, club: role === 'leader' ? club : undefined };
+        if (password) newUser.password = password;
+        if (editing) {
+            users[idx] = { ...users[idx], ...newUser };
+            saveUsers(users);
+            window.AuthService.logActivity(`User updated: ${username} (${role})`);
+        } else {
+            users.push(newUser);
+            saveUsers(users);
+            window.AuthService.logActivity(`User created: ${username} (${role})`);
+        }
+        renderTable();
+        closeModal();
+    });
+}
+// FAQ Toggle
+document.querySelectorAll(".faq-question").forEach(q => {
+    q.addEventListener("click", () => {
+        const ans = q.nextElementSibling;
+        ans.style.display = ans.style.display === "block" ? "none" : "block";
+    });
+});
+
+// Chatbot Toggle
+function toggleChat() {
+    const chat = document.getElementById("chatbot");
+    chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+}
+
+// Chatbot Logic
+function sendMessage() {
+    const input = document.getElementById("userInput");
+    const chat = document.getElementById("chatBody");
+
+    if (input.value.trim() === "") return;
+
+    const userMsg = document.createElement("div");
+    userMsg.className = "user";
+    userMsg.innerText = input.value;
+    chat.appendChild(userMsg);
+
+    let reply = "Please check the Events page for details.";
+
+    const text = input.value.toLowerCase();
+
+    if (text.includes("register"))
+        reply = "You can register from the Events page.";
+    else if (text.includes("event"))
+        reply = "All upcoming events are listed in the Events section.";
+    else if (text.includes("fee"))
+        reply = "Some events are free, some require payment.";
+    else if (text.includes("contact"))
+        reply = "You can contact organizers via Contact page.";
+    else if (text.includes("hello"))
+        reply = "Hello 👋 How can I help you?";
+
+    const botMsg = document.createElement("div");
+    botMsg.className = "bot";
+    botMsg.innerText = reply;
+
+    setTimeout(() => chat.appendChild(botMsg), 400);
+
+    input.value = "";
+}
+
+function initFavorites() {
+    document.querySelectorAll('.favorite-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const card = btn.closest('.club-card');
+            if (card) {
+                card.classList.toggle('favorited');
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    if (card.classList.contains('favorited')) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far'); // Assuming 'far' is the outline style
+                    }
+                }
+            }
+        });
+    });
 }

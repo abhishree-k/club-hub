@@ -799,16 +799,279 @@
 }
 
 .form-footer a {
-    color: #4facfe;
+    color: var(--accent-color);
     text-decoration: none;
 }
 
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
 .forgot-password-link {
-  color: #4facfe;
-  font-size: 0.85rem;
-  text-decoration: none;
+    color: #4facfe;
+    font-size: 0.85rem;
+    text-decoration: none;
 }
 
 .forgot-password-link:hover {
-  text-decoration: underline;
+    text-decoration: underline;
+}
+
+/* =========================================
+   THEME OVERRIDES FOR ADMIN DASHBOARD & LOGIN
+   ========================================= */
+
+/* --- Light Mode --- */
+body.light-mode .admin-sidebar {
+    background: #ffffff;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .profile-info h3,
+body.light-mode .profile-info p {
+    color: #2d3436;
+}
+
+body.light-mode .admin-menu li a {
+    color: #636e72;
+}
+
+body.light-mode .admin-menu li a:hover,
+body.light-mode .admin-menu li.active a {
+    background: rgba(108, 92, 231, 0.1);
+    color: var(--primary-color);
+}
+
+body.light-mode .admin-logout button {
+    background: rgba(214, 48, 49, 0.1);
+    color: #d63031;
+    border-color: rgba(214, 48, 49, 0.2);
+}
+
+body.light-mode .admin-main {
+    background: #fdfdfd;
+}
+
+body.light-mode .admin-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .admin-header h1 {
+    color: #2d3436;
+}
+
+body.light-mode .admin-search {
+    background: #f1f2f6;
+    color: #2d3436;
+}
+
+body.light-mode .admin-search input {
+    color: #2d3436;
+}
+
+body.light-mode .admin-search input::placeholder {
+    color: #b2bec3;
+}
+
+body.light-mode .admin-search button {
+    color: #636e72;
+}
+
+body.light-mode .admin-notifications button {
+    background: rgba(0, 0, 0, 0.05);
+    color: #2d3436;
+}
+
+body.light-mode .stat-card,
+body.light-mode .chart-container,
+body.light-mode .recent-activity,
+body.light-mode .quick-actions,
+body.light-mode .admin-section {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+body.light-mode .chart-container h3,
+body.light-mode .stat-info h3,
+body.light-mode .recent-activity h2,
+body.light-mode .quick-actions h2,
+body.light-mode .section-header h2 {
+    color: #2d3436;
+    border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .stat-info p,
+body.light-mode .activity-details p {
+    color: #636e72;
+}
+
+body.light-mode .activity-item:hover {
+    background: #f8f9fa;
+}
+
+body.light-mode .activity-time {
+    color: #b2bec3;
+}
+
+body.light-mode .action-btn {
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: #2d3436;
+}
+
+body.light-mode .action-btn:hover {
+    background: #f8f9fa;
+}
+
+body.light-mode .admin-table th {
+    background: #f1f2f6;
+    color: #2d3436;
+}
+
+body.light-mode .admin-table td {
+    color: #2d3436;
+    border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .admin-table tr:hover td {
+    background: #f8f9fa;
+    color: #2d3436;
+}
+
+body.light-mode .table-action {
+    color: #b2bec3;
+}
+
+body.light-mode .table-action:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #2d3436;
+}
+
+/* Light Mode Admin Login */
+body.light-mode .admin-login-container,
+body.light-mode .login-container .modal-content {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .admin-login-title,
+body.light-mode .form-group label,
+body.light-mode .toggle-btn {
+    color: #2d3436;
+}
+
+body.light-mode .toggle-btn:hover {
+    color: var(--primary-color);
+}
+
+body.light-mode .toggle-btn.active {
+    color: var(--primary-color);
+}
+
+body.light-mode .form-group input {
+    background: #fdfdfd;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #2d3436;
+}
+
+body.light-mode .form-footer {
+    color: #636e72;
+}
+
+/* Light Mode Modals */
+body.light-mode .modal-content {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #2d3436;
+}
+
+body.light-mode .modal-header h2 {
+    color: #2d3436;
+}
+
+body.light-mode .close-modal {
+    color: #b2bec3;
+}
+
+body.light-mode .close-modal:hover {
+    color: #2d3436;
+}
+
+body.light-mode .btn-cancel {
+    background: #f1f2f6;
+    color: #2d3436;
+}
+
+body.light-mode .btn-cancel:hover {
+    background: #dfe6e9;
+}
+
+
+/* --- OLED Mode --- */
+body.oled-mode .admin-sidebar {
+    background: #000000;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.oled-mode .admin-main {
+    background: #000000;
+}
+
+body.oled-mode .admin-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.oled-mode .admin-search {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+body.oled-mode .admin-notifications button {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+body.oled-mode .stat-card,
+body.oled-mode .chart-container,
+body.oled-mode .recent-activity,
+body.oled-mode .quick-actions,
+body.oled-mode .admin-section {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: none;
+}
+
+body.oled-mode .admin-table th {
+    background: #000000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+body.oled-mode .admin-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.oled-mode .admin-table tr:hover td {
+    background: #111;
+}
+
+body.oled-mode .action-btn {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+body.oled-mode .admin-login-container,
+body.oled-mode .modal-content,
+body.oled-mode .login-container .modal-content {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+body.oled-mode .form-group input {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
 }

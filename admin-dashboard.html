@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | DSCE Clubs</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="style.css?v=2.2">
+    <link rel="stylesheet" href="admin.css?v=2.0">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
@@ -28,9 +28,14 @@
             <li><a href="past-events.html">Past Events</a></li>
             <li><a href="registration.html">Registration</a></li>
             <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
-            <li><a href="admin-login.html" class="active">Admin</a></li>
+            <li><a href="admin-dashboard.html" class="active">Admin</a></li>
             <li id="nav-login"><a href="registration.html#student-login">Login</a></li>
             <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
+            <li>
+                <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-meteor"></i>
+                </button>
+            </li>
         </ul>
         <div class="nav-hamburger">
             <div class="line"></div>
@@ -82,6 +87,12 @@
                         <a href="#clubs">
                             <i class="fas fa-chess-rook"></i>
                             <span>Club Management</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#feedbacks">
+                            <i class="fas fa-comment-alt"></i>
+                            <span>Feedbacks</span>
                         </a>
                     </li>
                     <li>
@@ -368,31 +379,56 @@
                             </tbody>
                         </table>
                     </div>
-                </section>    <!-- Settings: User & Role Management (Admin only) -->
-    <section id="settings" class="admin-section admin-tab-content" style="display: none;">
-        <div class="section-header">
-            <h2>User & Role Management</h2>
-            <button class="action-btn" id="add-user-btn">
-                <i class="fas fa-user-plus"></i> Add User
-            </button>
-        </div>
-        <div class="table-container">
-            <table class="admin-table" id="users-table">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Club</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Populated by JS -->
-                </tbody>
-            </table>
-        </div>
-    </section>
+                </section>
 
+                <!-- Settings: User & Role Management (Admin only) -->
+                <section id="settings" class="admin-section admin-tab-content" style="display: none;">
+                    <div class="section-header">
+                        <h2>User & Role Management</h2>
+                        <button class="action-btn" id="add-user-btn">
+                            <i class="fas fa-user-plus"></i> Add User
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="admin-table" id="users-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Club</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Feedback Section -->
+                <section id="feedbacks" class="admin-section admin-tab-content" style="display: none;">
+                    <div class="section-header">
+                        <h2>User Feedback</h2>
+                    </div>
+                    <div class="table-container">
+                        <table class="admin-table" id="feedbacks-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Name</th>
+                                    <th>Email / Event</th>
+                                    <th>Rating</th>
+                                    <th>Message</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </div>
         </main>
     </div>
@@ -473,7 +509,7 @@
         </div>
     </div>
 
-        <!-- User Management Modal (Admin only) -->
+    <!-- User Management Modal (Admin only) -->
     <div id="user-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -508,7 +544,8 @@
             </form>
         </div>
     </div>
-<script src="app.js"></script>
+    <script src="app.js?v=2.0"></script>
+    <script src="darkmode.js?v=2.0"></script>
 </body>
 
 </html>

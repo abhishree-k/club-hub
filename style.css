@@ -4116,3 +4116,10 @@ body.oled-mode .timeline-date {
 body.oled-mode .timeline-event {
   color: white !important;
 }
+.logo-icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}

@@ -227,26 +227,104 @@ async function initMyHub() {
 }
 
 /**
- * 2. Testimonials & Image Sliders
+ * 2. Testimonials & Image Sliders - UPDATED WITH ARROW NAVIGATION
  */
 function initTestimonialsAndSliders() {
     const testimonialSlides = document.querySelectorAll('.testimonial-slide');
-    const dots = document.querySelectorAll('.dot');
-    if (testimonialSlides.length > 0) {
-        let currentSlide = 0;
-        function showSlide(index) {
-            testimonialSlides.forEach(slide => slide.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
-            testimonialSlides[index].classList.add('active');
-            dots[index].classList.add('active');
-            currentSlide = index;
-        }
-        dots.forEach((dot, index) => dot.addEventListener('click', () => showSlide(index)));
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % testimonialSlides.length;
-            showSlide(currentSlide);
-        }, 5000);
+    const dots = document.querySelectorAll('.carousel-dots .dot');
+    const prevBtn = document.getElementById('prev-testimonial');
+    const nextBtn = document.getElementById('next-testimonial');
+    
+    if (testimonialSlides.length === 0) return;
+
+    let currentSlide = 0;
+    let autoPlayInterval;
+
+    function showSlide(index) {
+        // Remove active class from all slides and dots
+        testimonialSlides.forEach(slide => slide.classList.remove('active'));
+        dots.forEach(dot => dot.classList.remove('active'));
+
+        // Add active class to current slide and dot
+        testimonialSlides[index].classList.add('active');
+        if (dots[index]) dots[index].classList.add('active');
+        
+        currentSlide = index;
     }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % testimonialSlides.length;
+        showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + testimonialSlides.length) % testimonialSlides.length;
+        showSlide(currentSlide);
+    }
+
+    function resetAutoPlay() {
+        clearInterval(autoPlayInterval);
+        startAutoPlay();
+    }
+
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+    }
+
+    // Event listeners for arrow buttons
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            resetAutoPlay();
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            resetAutoPlay();
+        });
+    }
+
+    // Event listeners for dots
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            showSlide(index);
+            resetAutoPlay();
+        });
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        // Only handle arrow keys when not in an input field
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        
+        if (e.key === 'ArrowLeft') {
+            prevSlide();
+            resetAutoPlay();
+        } else if (e.key === 'ArrowRight') {
+            nextSlide();
+            resetAutoPlay();
+        }
+    });
+
+    // Pause auto-play on hover
+    const testimonialSection = document.querySelector('.testimonials-section');
+    if (testimonialSection) {
+        testimonialSection.addEventListener('mouseenter', () => {
+            clearInterval(autoPlayInterval);
+        });
+
+        testimonialSection.addEventListener('mouseleave', () => {
+            startAutoPlay();
+        });
+    }
+
+    // Start auto-play
+    startAutoPlay();
+
+    // Initialize first slide
+    showSlide(0);
 }
 
 /**
@@ -514,7 +592,7 @@ function initForms() {
             }
         });
     }
-    // 5. Feedback Form
+
     // 5. Feedback Form
     const feedbackForm = document.getElementById('feedback-form');
     if (feedbackForm) {

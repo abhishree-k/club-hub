@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Hub | DSCE Clubs</title>
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="style.css?v=2.2">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
@@ -50,6 +50,11 @@
             padding-bottom: 0.5rem;
         }
 
+        .hub-section h2 i {
+            color: #fd79a8;
+            margin-right: 8px;
+        }
+
         .hub-item {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
@@ -76,6 +81,32 @@
             padding: 2rem;
             color: rgba(255, 255, 255, 0.5);
         }
+
+        .hero-content {
+            animation: fadeUp 0.8s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .hub-section {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hub-section:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
     </style>
 </head>
 
@@ -96,6 +127,11 @@
             <li><a href="admin-login.html">Admin</a></li>
             <li id="nav-login" class="hidden"><a href="registration.html#student-login">Login</a></li>
             <li id="nav-logout"><a href="#" id="student-logout-btn">Logout</a></li>
+            <li>
+                <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-meteor"></i>
+                </button>
+            </li>
         </ul>
         <div class="nav-hamburger">
             <div class="line"></div>
@@ -104,7 +140,7 @@
         </div>
     </nav>
 
-    <header class="registration-hero" style="height: 40vh;">
+    <header class="registration-hero" style="height: 40vh; margin-top: 80px; padding-top: 1rem;">
         <div class="hero-content">
             <h1 class="hero-title">My <span class="text-gradient">Hub</span></h1>
             <p class="hero-subtitle" id="hub-welcome-msg">Welcome back!</p>
@@ -113,13 +149,6 @@
 
     <main class="hub-container">
         <div class="hub-grid">
-            <section class="hub-section" style="grid-column:1 / -1;">
-                <h2><i class="fas fa-star"></i> Favorite Clubs</h2>
-                <div id="favorites-list">
-                    <!-- Dynamic Content: favorite clubs will be injected here -->
-                </div>
-            </section>
-
             <section class="hub-section">
                 <h2><i class="fas fa-users"></i> Clubs I've Joined</h2>
                 <div id="joined-clubs-list">
@@ -138,16 +167,24 @@
 
     <footer class="cosmic-footer">
         <div class="footer-bottom">
-            <p>&copy; 2025 DSCE Clubs. All rights reserved.</p>
+            <p>&copy; 2025 ClubsDSCE. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="app.js?v=1.1"></script>
+    <script src="app.js?v=2.0"></script>
+    <script src="darkmode.js?v=2.0"></script>
     <script>
+        // TEMP LOGIN FIX (for project/demo)
+        if (!localStorage.getItem("studentLoggedIn")) {
+            localStorage.setItem("studentLoggedIn", "true");
+            localStorage.setItem("studentName", "Student");
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
-            // This is handled by initStudentSession() and a specific hub init in app.js
             if (typeof initMyHub === 'function') {
                 initMyHub();
+            } else {
+                console.warn("initMyHub() function not found");
             }
         });
     </script>

@@ -10,11 +10,9 @@
   --danger-color: #d63031;
   --text-color: #2d3436;
   --text-light: #636e72;
-  --gradient: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--accent-color)
-  );
+  --gradient: linear-gradient(135deg,
+      var(--primary-color),
+      var(--accent-color));
   --font-main: "Montserrat", sans-serif;
   --font-heading: "Playfair Display", serif;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -182,6 +180,7 @@ img {
   z-index: 1001;
   transition: top 0.18s ease;
 }
+
 .skip-link:focus {
   top: 0;
   outline: 3px solid #0066cc;
@@ -214,6 +213,7 @@ button:focus-visible,
   background-color: rgba(0, 102, 204, 0.08);
   border-radius: 6px;
 }
+
 /* Ensure primary CTAs also have strong focus */
 .hero-cta:focus-visible {
   outline: 3px solid #ffd166;
@@ -232,8 +232,10 @@ button:focus-visible,
 
 @media (max-width: 768px) {
   .nav-hamburger {
-    display: flex; /* ensure button visible on mobile */
+    display: flex;
+    /* ensure button visible on mobile */
   }
+
   .nav-links {
     position: absolute;
     top: 100%;
@@ -247,9 +249,11 @@ button:focus-visible,
     display: none;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
+
   .nav-links.active {
     display: flex;
   }
+
   .nav-links a {
     display: block;
     padding: 0.6rem 0.8rem;
@@ -346,6 +350,7 @@ button:focus-visible,
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
@@ -430,6 +435,7 @@ button:focus-visible,
   box-shadow: 0 18px 36px rgba(253, 121, 168, 0.12);
   border-color: rgba(253, 121, 168, 0.45);
 }
+
 .club-card.favorited .favorite-toggle {
   color: var(--accent-color);
 }
@@ -484,17 +490,28 @@ button:focus-visible,
   box-shadow: 0 5px 15px rgba(253, 121, 168, 0.3);
 }
 
-/* Testimonials */
+/* Testimonials Section */
 .testimonials-section {
   padding: 6rem 5%;
   text-align: center;
+  position: relative;
+}
+
+.testimonial-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto 2rem;
+  position: relative;
 }
 
 .testimonial-carousel {
+  flex: 1;
   max-width: 800px;
-  margin: 0 auto 2rem;
   position: relative;
-  height: 200px;
+  height: 250px;
   overflow: hidden;
 }
 
@@ -505,48 +522,204 @@ button:focus-visible,
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 0.5s ease;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   color: white;
+  padding: 2rem;
 }
 
 .testimonial-slide.active {
   opacity: 1;
+  visibility: visible;
+}
+
+.testimonial-slide blockquote {
+  margin: 0;
+  padding: 0;
 }
 
 .testimonial-slide p {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-style: italic;
-  margin-bottom: 1rem;
-  max-width: 80%;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  max-width: 90%;
+  color: rgba(255, 255, 255, 0.95);
+  position: relative;
+}
+
+.testimonial-slide p::before {
+  font-size: 3rem;
+  color: var(--accent-color);
+  position: absolute;
+  top: -20px;
+  left: -30px;
+  opacity: 0.5;
 }
 
 .testimonial-author {
   font-weight: 600;
-  color: var(--accent-color);
+  font-size: 1rem;
 }
 
+.author-name {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.author-course {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Navigation Arrows */
+.testimonial-arrow {
+  background: rgba(139, 92, 246, 0.2);
+  border: 2px solid rgba(139, 92, 246, 0.5);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.testimonial-arrow:hover {
+  background: rgba(139, 92, 246, 0.4);
+  border-color: rgba(139, 92, 246, 0.8);
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+}
+
+.testimonial-arrow:active {
+  transform: scale(0.95);
+}
+
+.testimonial-arrow:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* Carousel Dots */
 .carousel-dots {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
 }
 
 .dot {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.3);
+  border: none;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.15);
 }
 
 .dot.active {
   background: var(--accent-color);
+  width: 30px;
+  border-radius: 7px;
 }
+
+.dot:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .testimonial-container {
+    gap: 1rem;
+  }
+  
+  .testimonial-arrow {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 1rem;
+  }
+  
+  .testimonial-slide p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  
+  .testimonial-carousel {
+    height: 280px;
+  }
+}
+
+@media (max-width: 576px) {
+  .testimonial-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .testimonial-arrows-mobile {
+    display: flex;
+    gap: 1rem;
+    order: 2;
+  }
+  
+  .testimonial-arrow {
+    position: static;
+  }
+  
+  .testimonial-slide p {
+    font-size: 1rem;
+  }
+  
+  .testimonial-carousel {
+    height: 300px;
+  }
+}
+
+/* Light Mode Adjustments */
+body.light-mode .testimonial-slide p,
+body.light-mode .testimonial-author {
+  color: #2d3436;
+}
+
+body.light-mode .author-course {
+  color: #636e72;
+}
+
+body.light-mode .testimonial-arrow {
+  background: rgba(108, 92, 231, 0.1);
+  border-color: rgba(108, 92, 231, 0.3);
+  color: #2d3436;
+}
+
+body.light-mode .testimonial-arrow:hover {
+  background: rgba(108, 92, 231, 0.2);
+  border-color: var(--primary-color);
+}
+
+body.light-mode .dot {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .dot:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
 
 /* Footer */
 .cosmic-footer {
@@ -1832,12 +2005,12 @@ button:focus-visible,
 }
 
 /* Checked state */
-.checkbox-item input:checked + .checkmark {
+.checkbox-item input:checked+.checkmark {
   background: #fd79a8;
   border-color: #fd79a8;
 }
 
-.checkbox-item input:checked + .checkmark::after {
+.checkbox-item input:checked+.checkmark::after {
   display: block;
 }
 
@@ -1847,11 +2020,11 @@ button:focus-visible,
   align-items: center;
 }
 
-.checkbox-container:hover input ~ .checkmark {
+.checkbox-container:hover input~.checkmark {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.checkbox-container input:checked ~ .checkmark {
+.checkbox-container input:checked~.checkmark {
   background: var(--accent-color);
   border-color: var(--accent-color);
 }
@@ -1862,7 +2035,7 @@ button:focus-visible,
   display: none;
 }
 
-.checkbox-container input:checked ~ .checkmark:after {
+.checkbox-container input:checked~.checkmark:after {
   display: block;
 }
 
@@ -2369,6 +2542,7 @@ button:focus-visible,
 }
 
 @keyframes bounce {
+
   0%,
   20%,
   50%,
@@ -2901,7 +3075,7 @@ button:focus-visible,
   transition: var(--transition);
 }
 
-.remember-me input:checked ~ .checkmark {
+.remember-me input:checked~.checkmark {
   background: var(--accent-color);
   border-color: var(--accent-color);
 }
@@ -2919,7 +3093,7 @@ button:focus-visible,
   transform: rotate(45deg);
 }
 
-.remember-me input:checked ~ .checkmark:after {
+.remember-me input:checked~.checkmark:after {
   display: block;
 }
 
@@ -3150,6 +3324,7 @@ button:focus-visible,
   color: #ff7675;
   border: 1px solid rgba(214, 48, 49, 0.6);
 }
+
 /* =========================
    FAQ SECTION
 ========================= */
@@ -3214,7 +3389,8 @@ button:focus-visible,
   padding: 14px;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 99999; /* 🔥 VERY IMPORTANT */
+  z-index: 99999;
+  /* 🔥 VERY IMPORTANT */
   box-shadow: 0 0 15px rgba(253, 121, 168, 0.6);
 }
 
@@ -3229,7 +3405,8 @@ button:focus-visible,
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
   display: none;
   flex-direction: column;
-  z-index: 99999; /* 🔥 FIX */
+  z-index: 99999;
+  /* 🔥 FIX */
   overflow: hidden;
 }
 
@@ -3299,6 +3476,7 @@ button:focus-visible,
     font-size: 2.3rem;
   }
 }
+
 /* ===========================
    FAQ VISIBILITY FIX
  */
@@ -3330,6 +3508,7 @@ button:focus-visible,
   color: #e5e7eb;
   background: rgba(255, 255, 255, 0.12);
 }
+
 .navbar {
   background: rgba(15, 23, 42, 0.9);
 }
@@ -3533,5 +3712,691 @@ button:focus-visible,
   display: none;
   transition: all 0.35s ease;
   z-index: 999;
+}
+
+/* Realistic Theme Switch Button */
+.theme-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(108, 92, 231, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+.theme-btn:hover {
+  transform: scale(1.1) rotate(15deg);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 20px rgba(108, 92, 231, 0.4);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.theme-btn i {
+  font-size: 1.2rem;
+  color: #ffd700;
+  /* Gold for sun/moon */
+  transition: all 0.4s ease;
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+}
+
+.theme-btn:active {
+  transform: scale(0.95);
+}
+
+/* ===========================
+   EVENT FEEDBACK MODAL STYLES
+   =========================== */
+
+/* Base Styles (Cosmic Dark Theme) */
+.feedback-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.feedback-modal-content {
+  background: rgba(15, 23, 42, 0.95);
+  padding: 30px;
+  width: 420px;
+  max-width: 90%;
+  border-radius: 16px;
+  color: #fff;
+  border: 1px solid rgba(108, 92, 231, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.feedback-close-btn {
+  float: right;
+  cursor: pointer;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.feedback-close-btn:hover {
+  color: #fd79a8;
+  transform: scale(1.1);
+}
+
+.feedback-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.feedback-label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.feedback-form-field {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0 12px 0;
+  background: rgba(108, 92, 231, 0.1) !important;
+  border: 1px solid rgba(108, 92, 231, 0.3) !important;
+  color: white !important;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.feedback-form-field:focus {
+  outline: none;
+  border-color: var(--accent-color) !important;
+  background: rgba(108, 92, 231, 0.2) !important;
+}
+
+.feedback-form-field::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.feedback-textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.feedback-submit-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6c5ce7, #fd79a8);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feedback-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+}
+
+.feedback-response {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* ===========================
+   Light Mode - Feedback Modal
+   =========================== */
+body.light-mode .feedback-modal-content {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #2d3436;
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+body.light-mode .feedback-close-btn {
+  color: #636e72;
+}
+
+body.light-mode .feedback-close-btn:hover {
+  color: #d63031;
+}
+
+body.light-mode .feedback-title {
+  color: #2d3436;
+}
+
+body.light-mode .feedback-label {
+  color: #2d3436;
+}
+
+body.light-mode .feedback-form-field {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  color: #2d3436 !important;
+}
+
+body.light-mode .feedback-form-field:focus {
+  border-color: var(--primary-color) !important;
+  background: white !important;
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+body.light-mode .feedback-form-field::placeholder {
+  color: #b2bec3;
+}
+
+/* ===========================
+   OLED Mode - Feedback Modal
+   =========================== */
+body.oled-mode .feedback-modal-content {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+body.oled-mode .feedback-form-field {
+  background: #1a1a1a !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+body.oled-mode .feedback-form-field:focus {
+  background: #222 !important;
+  border-color: var(--accent-color) !important;
+}
+
+/* ===========================
+   THEME MODES
+   1. Original (Default) - Cosmic Dark
+   2. Light Mode - Creamy
+   3. OLED Mode - Pitch Black
+   =========================== */
+
+/* --- Light Mode (Creamy) --- */
+/* Clouds and Sun for Light Mode */
+body.light-mode .stars-background {
+  opacity: 1;
+  visibility: visible;
+  background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 30%, #fcfbf7 60%);
+  overflow: hidden;
+}
+
+body.light-mode .stars-background::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  right: 80px;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, #FFD700 0%, #FFA500 50%, transparent 70%);
+  border-radius: 50%;
+  box-shadow: 0 0 60px 20px rgba(255, 215, 0, 0.4), 0 0 100px 40px rgba(255, 165, 0, 0.2);
+  animation: none;
+  filter: none;
+  opacity: 1;
+}
+
+/* Cloud animations container */
+body.light-mode .stars-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background-image:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"><ellipse cx="50" cy="35" rx="25" ry="12" fill="white" opacity="0.9"/><ellipse cx="35" cy="30" rx="18" ry="10" fill="white" opacity="0.9"/><ellipse cx="65" cy="32" rx="15" ry="9" fill="white" opacity="0.9"/><ellipse cx="45" cy="25" rx="12" ry="8" fill="white" opacity="0.9"/></svg>'),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 40"><ellipse cx="40" cy="28" rx="20" ry="10" fill="white" opacity="0.85"/><ellipse cx="28" cy="24" rx="14" ry="8" fill="white" opacity="0.85"/><ellipse cx="52" cy="25" rx="12" ry="7" fill="white" opacity="0.85"/><ellipse cx="38" cy="20" rx="10" ry="6" fill="white" opacity="0.85"/></svg>'),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60"><ellipse cx="60" cy="42" rx="30" ry="14" fill="white" opacity="0.8"/><ellipse cx="42" cy="36" rx="22" ry="12" fill="white" opacity="0.8"/><ellipse cx="78" cy="38" rx="18" ry="10" fill="white" opacity="0.8"/><ellipse cx="55" cy="30" rx="15" ry="9" fill="white" opacity="0.8"/></svg>');
+  background-size: 200px 100px, 150px 75px, 250px 125px;
+  background-position: 0% 10%, 25% 25%, 60% 5%;
+  background-repeat: repeat-x;
+  animation: floatClouds 60s linear infinite;
+  opacity: 1;
+  filter: none;
+  pointer-events: none;
+}
+
+@keyframes floatClouds {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+body.light-mode {
+  background-color: #fcfbf7;
+  /* Creamy White */
+  color: #2d3436;
+}
+
+body.light-mode .cosmic-nav {
+  background: rgba(252, 251, 247, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+/* FIX: Override !important from earlier CSS */
+body.light-mode .nav-logo,
+body.light-mode .nav-links a {
+  color: #2d3436 !important;
+}
+
+body.light-mode .nav-hamburger .line {
+  background: #2d3436;
+}
+
+body.light-mode .hero-title,
+body.light-mode .section-title,
+body.light-mode h1,
+body.light-mode h2,
+body.light-mode h3,
+body.light-mode h4,
+body.light-mode h5,
+body.light-mode h6 {
+  color: #2d3436;
+  /* Ensure all headings are dark */
+}
+
+body.light-mode .hero-subtitle,
+body.light-mode .club-card p,
+body.light-mode p {
+  color: #636e72;
+}
+
+body.light-mode .club-card {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: #2d3436;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .club-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-color);
+}
+
+body.light-mode .club-tags span {
+  background: rgba(108, 92, 231, 0.1);
+  color: var(--primary-color);
+}
+
+body.light-mode .favorite-toggle {
+  color: #b2bec3;
+}
+
+body.light-mode .favorite-toggle:hover {
+  color: var(--accent-color);
+}
+
+body.light-mode .cosmic-footer {
+  background: #f1f2f6;
+  color: #2d3436;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .footer-column a {
+  color: #636e72 !important;
+}
+
+body.light-mode .footer-column a:hover {
+  color: var(--primary-color) !important;
+}
+
+body.light-mode .footer-bottom {
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  color: #b2bec3;
+}
+
+/* Form Elements Light Mode */
+body.light-mode input:not([type="submit"]),
+body.light-mode textarea,
+body.light-mode select {
+  background: white !important;
+  color: #2d3436 !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light-mode input::placeholder,
+body.light-mode textarea::placeholder {
+  color: #b2bec3;
+}
+
+/* Admin Dashboard & Tables Light Mode */
+body.light-mode .admin-sidebar {
+  background: #fff;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .admin-sidebar .profile-info h3,
+body.light-mode .admin-sidebar .profile-info p {
+  color: #2d3436;
+}
+
+body.light-mode .admin-menu li a {
+  color: #636e72;
+}
+
+body.light-mode .admin-menu li.active a,
+body.light-mode .admin-menu li a:hover {
+  background: rgba(108, 92, 231, 0.1);
+  color: var(--primary-color);
+}
+
+body.light-mode .stat-card,
+body.light-mode .chart-container,
+body.light-mode .dashboard-grid>div {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #2d3436;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .admin-table {
+  background: white;
+  color: #2d3436;
+}
+
+body.light-mode .admin-table th {
+  background: #f1f2f6;
+  color: #2d3436;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .admin-table td {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  color: #2d3436;
+}
+
+body.light-mode .admin-table tr:hover {
+  background: #f8f9fa;
+}
+
+
+/* Button & Icon Colors for Light Mode */
+body.light-mode .theme-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .theme-btn i {
+  color: #f39c12;
+  /* Sun */
+}
+
+/* FIX: Timeline & Event Actions in Light Mode */
+body.light-mode .timeline-line {
+  background: rgba(45, 52, 54, 0.3) !important;
+}
+
+body.light-mode .timeline-content {
+  background: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #2d3436 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .timeline-description {
+  color: #636e72 !important;
+}
+
+body.light-mode .timeline-date {
+  color: var(--primary-color) !important;
+}
+
+body.light-mode .action-button {
+  background: white;
+  color: #2d3436;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .action-button:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .highlight-card {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #2d3436;
+}
+
+body.light-mode .highlight-content p {
+  color: #636e72;
+}
+
+/* FIX: Universal Light Mode Text Visibility */
+body.light-mode .tab-button {
+  color: #636e72;
+}
+
+body.light-mode .tab-button.active {
+  color: var(--primary-color);
+}
+
+body.light-mode .checkbox-item {
+  color: #2d3436;
+}
+
+body.light-mode .form-group label {
+  color: #2d3436;
+}
+
+body.light-mode .event-card {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .event-date {
+  color: #636e72;
+}
+
+body.light-mode .event-title {
+  color: #2d3436;
+}
+
+body.light-mode .event-description {
+  color: #636e72;
+}
+
+/* FIX: Timeline Event Title in Light Mode */
+body.light-mode .timeline-date {
+  color: var(--primary-color) !important;
+}
+
+body.light-mode .timeline-event {
+  color: #2d3436 !important;
+}
+
+body.light-mode .highlight-content h3 {
+  color: #2d3436 !important;
+}
+
+
+body.light-mode .event-details {
+  color: #636e72;
+}
+
+body.light-mode .no-event-selected {
+  color: #b2bec3;
+}
+
+body.light-mode .calendar-header {
+  color: #2d3436;
+  font-weight: bold;
+}
+
+body.light-mode .calendar-day {
+  background: rgba(0, 0, 0, 0.02);
+  color: #2d3436;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .calendar-day:hover {
+  background: rgba(108, 92, 231, 0.1);
+}
+
+body.light-mode .calendar-day.empty {
+  background: transparent;
+  border: none;
+}
+
+body.light-mode .modal-content {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #2d3436;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+}
+
+body.light-mode .close-modal {
+  color: #636e72;
+}
+
+body.light-mode .close-modal:hover {
+  color: #2d3436;
+}
+
+body.light-mode .modal-header h2,
+body.light-mode #modal-title {
+  color: #2d3436;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode textarea {
+  background: white !important;
+  color: #2d3436 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+
+/* --- OLED Mode (Pitch Black) --- */
+/* --- OLED Mode (Pitch Black) --- */
+/* FIX: Show Stars in OLED Mode, but ensure background is black */
+body.oled-mode .stars-background {
+  opacity: 1;
+  visibility: visible;
+  /* Use simple black background for OLED, removing the gradient but keeping stars */
+  background: #000000;
+}
+
+/* Ensure the ::before pseudo element (which has the SVG stars) is visible */
+body.oled-mode .stars-background::before {
+  opacity: 1;
+  /* Make stars fully opaque for better visibility */
+  filter: none;
+  /* Ensure no inversion */
+}
+
+body.oled-mode {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+body.oled-mode .cosmic-nav {
+  background: rgba(0, 0, 0, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* OLED Mode Cards - Slight lift from pure black to be visible */
+body.oled-mode .clubs-section,
+body.oled-mode .club-card,
+body.oled-mode .event-card,
+body.oled-mode .highlight-card,
+body.oled-mode .timeline-content,
+body.oled-mode .testimonials-section,
+body.oled-mode .calendar-section,
+body.oled-mode .event-details-section,
+body.oled-mode .registration-tabs,
+body.oled-mode .event-selection,
+body.oled-mode .calendar-container,
+body.oled-mode .event-popup-content,
+body.oled-mode .admin-login-card,
+body.oled-mode .faq-card,
+body.oled-mode .admin-login-container,
+body.oled-mode .modal-content,
+body.oled-mode .login-container .modal-content,
+body.oled-mode .cosmic-footer {
+  background: #000000;
+  /* Pitch black for OLED */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: none;
+}
+
+body.oled-mode .club-card:hover,
+body.oled-mode .event-card:hover,
+body.oled-mode .highlight-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 15px rgba(253, 121, 168, 0.2);
+  transform: translateY(-5px);
+  background: #111;
+}
+
+/* OLED Mode Inputs - Make them distinct from card background */
+body.oled-mode input,
+body.oled-mode textarea,
+body.oled-mode select {
+  background: #1a1a1a !important;
+  /* Visible dark grey input background */
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+body.oled-mode input::placeholder,
+body.oled-mode textarea::placeholder {
+  color: #888;
+}
+
+body.oled-mode input:focus,
+body.oled-mode textarea:focus,
+body.oled-mode select:focus {
+  border-color: var(--accent-color) !important;
+  background: #222 !important;
+}
+
+body.oled-mode .theme-btn {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: #111;
+}
+
+body.oled-mode .theme-btn i {
+  color: #ffffff;
+  /* Moon */
+}
+
+/* Ensure timeline dates and headers are white/bright in OLED */
+body.oled-mode .timeline-date {
+  color: var(--accent-color) !important;
+}
+
+body.oled-mode .timeline-event {
+  color: white !important;
 }
 

@@ -709,10 +709,74 @@ function initCalendar() {
     const prevMonthButton = document.getElementById('prev-month');
     const nextMonthButton = document.getElementById('next-month');
     const eventModal = document.getElementById('event-modal');
+<<<<<<< HEAD
+=======
+
+    const eventForm = document.getElementById('event-form');
+    const saveEventButton = document.getElementById('save-event'); // Kept variable, though used in form submit
+    const deleteEventButton = document.getElementById('delete-event');
+    const eventDetailsContainer = document.getElementById('event-details-container');
+    const clubFilter = document.getElementById('event-club-filter');
+    const dateFilter = document.getElementById('event-date-filter');
+    const eventCards = document.querySelectorAll('.event-card');
+    const eventSearch = document.getElementById('eventSearch');
+    const searchBtn = document.getElementById('search-btn');
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
+    const eventSearch = document.getElementById('eventSearch');
+    const searchBtn = document.getElementById('search-btn');
 
     let currentDate = new Date();
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
+<<<<<<< HEAD
+
+    // Mock Events for Calendar Display
+    const events = [
+        { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", description: "Hands-on session." },
+        { id: 2, name: "Digital Art", club: "arts", date: getFutureDate(14), time: "16:00", description: "Art Masterclass." },
+        { id: 3, name: "Debate", club: "debate", date: getFutureDate(21), time: "15:00", description: "Public Speaking." }
+=======
+
+    let selectedEvent = null;
+    let searchTerm = '';
+
+
+    // Sample events data - using dynamic dates for current/future events
+    let events = [
+        { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
+        { id: 2, name: "Digital Art Masterclass", club: "arts", date: getFutureDate(14), time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
+        { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." },
+        { id: 4, name: "Tech Talk: AI Ethics", club: "tech", date: "2025-10-15", time: "15:00", location: "Auditorium", description: "Discussion on ethical AI development." },
+        { id: 5, name: "Photography Workshop", club: "arts", date: "2025-10-20", time: "14:00", location: "Media Lab", description: "Learn basic photography techniques." }
+    ];
+    // Ensure initial save if empty
+    if (!localStorage.getItem('allEvents')) {
+        localStorage.setItem('allEvents', JSON.stringify(events));
+    } else {
+        events = JSON.parse(localStorage.getItem('allEvents'));
+    }
+    let searchTerm = '';
+
+
+    // Sample events data - using dynamic dates for current/future events
+    let events = [
+        { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
+        { id: 2, name: "Digital Art Masterclass", club: "arts", date: getFutureDate(14), time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
+        { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." },
+        { id: 4, name: "Tech Talk: AI Ethics", club: "tech", date: "2025-10-15", time: "15:00", location: "Auditorium", description: "Discussion on ethical AI development." },
+        { id: 5, name: "Photography Workshop", club: "arts", date: "2025-10-20", time: "14:00", location: "Media Lab", description: "Learn basic photography techniques." }
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+    ];
+
+<<<<<<< HEAD
+=======
+    // Helper: Get Club Name
+    function getClubName(clubId) {
+        const clubs = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Science Guild' };
+        return clubs[clubId] || 'Club';
+    }
+
 
     // Mock Events for Calendar Display
     const events = [
@@ -721,6 +785,7 @@ function initCalendar() {
         { id: 3, name: "Debate", club: "debate", date: getFutureDate(21), time: "15:00", description: "Public Speaking." }
     ];
 
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
     function renderCalendar() {
         calendarGrid.innerHTML = '';
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -728,12 +793,456 @@ function initCalendar() {
 
         const firstDay = new Date(currentYear, currentMonth, 1).getDay();
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+<<<<<<< HEAD
+=======
+
+        const today = new Date();
+        const isCurrentMonth = currentMonth === today.getMonth() && currentYear === today.getFullYear();
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
 
         for (let i = 0; i < firstDay; i++) {
             const empty = document.createElement('div');
             empty.className = 'calendar-day empty';
             calendarGrid.appendChild(empty);
         }
+
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dayEl = document.createElement('div');
+            dayEl.className = 'calendar-day';
+            dayEl.innerHTML = `<div class="day-number">${i}</div>`;
+
+            const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+            const dayEvents = events.filter(e => e.date === dateStr);
+
+<<<<<<< HEAD
+            dayEvents.forEach(ev => {
+                const evEl = document.createElement('div');
+                evEl.className = `day-event ${ev.club}`;
+                evEl.textContent = ev.name;
+                dayEl.appendChild(evEl);
+=======
+            // Events for day
+            const dayEvents = document.createElement('div');
+            dayEvents.classList.add('day-events');
+            const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+            const dayEventsData = events.filter(event => {
+                const matchesDate = event.date === dateStr;
+
+                const matchesSearch = searchTerm === '' ||
+                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesDate && matchesSearch;
+            const dayEventsData = events.filter(event => {
+                const matchesDate = event.date === dateStr;
+                const matchesSearch = searchTerm === '' || 
+                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesDate && matchesSearch;
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+            });
+
+            calendarGrid.appendChild(dayEl);
+        }
+    }
+
+<<<<<<< HEAD
+    if (prevMonthButton) prevMonthButton.addEventListener('click', () => {
+        currentMonth--;
+        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+=======
+    function showEventDetails(event) {
+        if (!eventDetailsContainer) return;
+        selectedEvent = event;
+
+        // Sanitize all event data before rendering
+        // Sanitize all event data before rendering
+        eventDetailsContainer.innerHTML = `
+            <div class="event-details">
+                <div class="event-header">
+                    <span class="event-club-badge ${escapeHtml(event.club)}">${escapeHtml(getClubName(event.club))}</span>
+                    <span class="event-club-badge ${escapeHtml(event.club)}">${escapeHtml(getClubName(event.club))}</span>
+                    <button id="edit-event" class="action-button"><i class="fas fa-edit"></i> Edit</button>
+                </div>
+                <h2 class="event-title">${escapeHtml(event.name)}</h2>
+                <h2 class="event-title">${escapeHtml(event.name)}</h2>
+                <div class="event-date-time">
+                    <span><i class="far fa-calendar-alt"></i> ${escapeHtml(formatDate(event.date))}</span>
+                    <span><i class="far fa-clock"></i> ${escapeHtml(event.time)}</span>
+                    <span><i class="far fa-calendar-alt"></i> ${escapeHtml(formatDate(event.date))}</span>
+                    <span><i class="far fa-clock"></i> ${escapeHtml(event.time)}</span>
+                </div>
+                <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location)}</div>
+                <p class="event-description">${escapeHtml(event.description)}</p>
+                <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location)}</div>
+                <p class="event-description">${escapeHtml(event.description)}</p>
+                <div class="event-actions">
+                    <button id="register-for-event" class="action-button"><i class="fas fa-user-plus"></i> Register</button>
+                    <button id="share-event" class="action-button"><i class="fas fa-share-alt"></i> Share</button>
+                </div>
+            </div>
+        `;
+
+        // Bind dynamic buttons
+        document.getElementById('edit-event').addEventListener('click', () => openEventModal(event));
+        document.getElementById('register-for-event').addEventListener('click', () => alert(`Registered for ${event.name}`));
+        document.getElementById('register-for-event').addEventListener('click', () => alert(`Registered for ${event.name}`));
+        document.getElementById('share-event').addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
+    }
+
+    function openEventModal(event = null, date = null) {
+        
+        if (!eventModal) return;
+
+        if (event) {
+            document.getElementById('modal-title').textContent = 'Edit Event';
+            document.getElementById('event-name').value = event.name;
+            document.getElementById('event-club').value = event.club;
+            document.getElementById('event-date').value = event.date;
+            document.getElementById('event-time').value = event.time;
+            document.getElementById('event-date').value = event.date;
+            document.getElementById('event-time').value = event.time;
+            document.getElementById('event-location').value = event.location;
+            document.getElementById('event-description').value = event.description;
+            if (deleteEventButton) deleteEventButton.style.display = 'block';
+            selectedEvent = event;
+        } else {
+            document.getElementById('modal-title').textContent = 'Add New Event';
+            eventForm.reset();
+            if (date) document.getElementById('event-date').value = date;
+            if (date) document.getElementById('event-date').value = date;
+            if (deleteEventButton) deleteEventButton.style.display = 'none';
+            selectedEvent = null;
+        }
+        eventModal.style.display = 'flex';
+    }
+
+    // Event Form Submit
+    if (eventForm) {
+        eventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const eventData = {
+                name: document.getElementById('event-name').value,
+                club: document.getElementById('event-club').value,
+                date: document.getElementById('event-date').value,
+                time: document.getElementById('event-time').value,
+                date: document.getElementById('event-date').value,
+                time: document.getElementById('event-time').value,
+                location: document.getElementById('event-location').value,
+                description: document.getElementById('event-description').value
+            };
+
+            if (selectedEvent) {
+                Object.assign(selectedEvent, eventData);
+            } else {
+                eventData.id = events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1;
+                events.push(eventData);
+                selectedEvent = eventData;
+            }
+            // Save to LocalStorage
+            localStorage.setItem('allEvents', JSON.stringify(events));
+            // Save to LocalStorage
+            localStorage.setItem('allEvents', JSON.stringify(events));
+            renderCalendar();
+            showEventDetails(selectedEvent);
+            eventModal.style.display = 'none';
+        });
+    }
+
+    // Delete Event
+    if (deleteEventButton) {
+        deleteEventButton.addEventListener('click', function () {
+            if (selectedEvent && confirm('Are you sure you want to delete this event?')) {
+                events = events.filter(e => e.id !== selectedEvent.id);
+                localStorage.setItem('allEvents', JSON.stringify(events));
+                localStorage.setItem('allEvents', JSON.stringify(events));
+                renderCalendar();
+                eventDetailsContainer.innerHTML = `<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>`;
+                eventModal.style.display = 'none';
+            }
+        });
+    }
+
+    // Month Navigation
+    if (prevMonthButton) {
+        prevMonthButton.addEventListener('click', function () {
+            currentMonth--;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        });
+    }
+
+    if (nextMonthButton) {
+        nextMonthButton.addEventListener('click', function () {
+            currentMonth++;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar();
+        });
+    }
+
+    // Search Functionality
+    function handleSearch() {
+        const newSearchTerm = eventSearch.value.trim();
+
+        
+        if (newSearchTerm !== searchTerm) {
+            searchTerm = newSearchTerm;
+            
+            if (searchTerm !== '') {
+                // Find the first event that matches the search
+                const matchingEvent = events.find(event => 
+                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                
+
+
+        if (newSearchTerm !== searchTerm) {
+            searchTerm = newSearchTerm;
+
+            if (searchTerm !== '') {
+                // Find the first event that matches the search
+                const matchingEvent = events.find(event =>
+                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+
+
+                if (matchingEvent) {
+                    // Navigate to the month and year of the matching event
+                    const eventDate = new Date(matchingEvent.date);
+                    currentMonth = eventDate.getMonth();
+                    currentYear = eventDate.getFullYear();
+                }
+            }
+        }
+
+        
+        renderCalendar();
+    }
+
+    if (eventSearch) {
+        eventSearch.addEventListener('input', handleSearch);
+    }
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
+    }
+
+    // Filters (Club/Date)
+    function filterEvents() {
+        if (!clubFilter || !dateFilter) return;
+        const clubValue = clubFilter.value;
+        const dateValue = dateFilter.value;
+        const today = new Date();
+
+
+        renderCalendar();
+    }
+
+    if (eventSearch) {
+        eventSearch.addEventListener('input', handleSearch);
+    }
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
+    // Search Functionality
+    function handleSearch() {
+        const newSearchTerm = eventSearch.value.trim();
+        
+        if (newSearchTerm !== searchTerm) {
+            searchTerm = newSearchTerm;
+            
+            if (searchTerm !== '') {
+                // Find the first event that matches the search
+                const matchingEvent = events.find(event => 
+                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    event.description.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                
+                if (matchingEvent) {
+                    // Navigate to the month and year of the matching event
+                    const eventDate = new Date(matchingEvent.date);
+                    currentMonth = eventDate.getMonth();
+                    currentYear = eventDate.getFullYear();
+                }
+            }
+        }
+        
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+        renderCalendar();
+    });
+
+    if (nextMonthButton) nextMonthButton.addEventListener('click', () => {
+        currentMonth++;
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        renderCalendar();
+    });
+
+    renderCalendar();
+}
+
+/**
+ * 6. Admin
+ */
+function initAdmin() {
+    // 1. Admin Login
+    const adminLoginForm = document.getElementById('admin-login-form');
+<<<<<<< HEAD
+    if (adminLoginForm) {
+        adminLoginForm.addEventListener('submit', async function (e) {
+=======
+    const togglePassword = document.querySelector('.toggle-password');
+    const passwordInput = document.getElementById('admin-password');
+    const confirmPasswordGroup = document.getElementById('confirm-password-group');
+    const confirmPasswordInput = document.getElementById('admin-confirm-password');
+    const tabLogin = document.getElementById('tab-login');
+    const tabSignup = document.getElementById('tab-signup');
+    const toggleModeLink = document.getElementById('toggle-mode');
+    const loginButton = document.querySelector('.login-button');
+    const footerText = document.getElementById('footer-text');
+    const forgotWrapper = document.getElementById('forgot-password-wrapper'); // <div> with Forgot password link
+    const forgotWrapper = document.getElementById('forgot-password-wrapper'); // <div> with Forgot password link
+
+    let isLoginMode = true;
+
+    function toggleMode(login) {
+        isLoginMode = login;
+
+
+        if (login) {
+            // LOGIN MODE
+            // LOGIN MODE
+            confirmPasswordGroup.style.display = 'none';
+            loginButton.textContent = 'Login';
+            tabLogin.classList.add('active');
+            tabSignup.classList.remove('active');
+            footerText.textContent = "Don't have an account?";
+            toggleModeLink.textContent = "Sign Up";
+            if (forgotWrapper) forgotWrapper.style.display = 'block';  // show only in login
+            if (forgotWrapper) forgotWrapper.style.display = 'block';  // show only in login
+        } else {
+            // SIGNUP MODE
+            // SIGNUP MODE
+            confirmPasswordGroup.style.display = 'block';
+            loginButton.textContent = 'Create Account';
+            tabSignup.classList.add('active');
+            tabLogin.classList.remove('active');
+            footerText.textContent = "Already have an account?";
+            toggleModeLink.textContent = "Login";
+            if (forgotWrapper) forgotWrapper.style.display = 'none';   // hide in signup
+            if (forgotWrapper) forgotWrapper.style.display = 'none';   // hide in signup
+        }
+    }
+
+    // Set initial mode (login)
+    toggleMode(true);
+
+    // Set initial mode (login)
+    toggleMode(true);
+
+    if (tabLogin && tabSignup) {
+        tabLogin.addEventListener('click', () => toggleMode(true));
+        tabSignup.addEventListener('click', () => toggleMode(false));
+    }
+
+    if (toggleModeLink) {
+        toggleModeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMode(!isLoginMode);
+        });
+    }
+
+    // Password Toggle
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+    }
+
+
+
+    if (adminLoginForm) {
+        // Auto-fill if remembered
+        if (localStorage.getItem('adminRemembered') === 'true') {
+            const remembered = localStorage.getItem('adminUsername');
+            if (remembered) {
+                document.getElementById('admin-username').value = remembered;
+                const remCheckbox = document.getElementById('remember-me');
+                if (remCheckbox) remCheckbox.checked = true;
+            }
+        }
+
+        // Clear errors on input
+        adminLoginForm.querySelectorAll('input').forEach(field => {
+            field.addEventListener('input', function () {
+                clearFieldError(this);
+            });
+        });
+
+        // Clear errors on input
+        adminLoginForm.querySelectorAll('input').forEach(field => {
+            field.addEventListener('input', function () {
+                clearFieldError(this);
+            });
+        });
+
+        adminLoginForm.addEventListener('submit', function (e) {
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+            e.preventDefault();
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+
+<<<<<<< HEAD
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: username, password })
+                });
+
+=======
+            const usernameField = document.getElementById('admin-username');
+            const passwordField = document.getElementById('admin-password');
+            const username = usernameField.value.trim();
+            const password = passwordField.value.trim();
+            clearFormErrors(this);
+
+            const usernameField = document.getElementById('admin-username');
+            const passwordField = document.getElementById('admin-password');
+            const username = usernameField.value.trim();
+            const password = passwordField.value.trim();
+            const rememberMe = document.getElementById('remember-me')?.checked;
+
+            let isValid = true;
+
+            if (!username) {
+                showFieldError(usernameField, 'Username is required');
+                isValid = false;
+            }
+
+            if (!password) {
+                showFieldError(passwordField, 'Password is required');
+                isValid = false;
+            }
+
+            if (!isValid) {
+            let isValid = true;
+
+
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'calendar-day empty';
+            calendarGrid.appendChild(empty);
+        }
+
 
         for (let i = 1; i <= daysInMonth; i++) {
             const dayEl = document.createElement('div');
@@ -788,6 +1297,7 @@ function initAdmin() {
                     body: JSON.stringify({ email: username, password })
                 });
 
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
                 if (response.ok) {
                     const data = await response.json();
                     if (data.user.role === 'admin') {
@@ -812,13 +1322,34 @@ function initAdmin() {
         const token = localStorage.getItem('adminToken');
         if (!token) {
             window.location.href = 'admin-login.html';
+<<<<<<< HEAD
             return;
         }
+=======
+
+   
+        } 
+        else {
+            // Init Sidebar Navigation
+            const sidebarLinks = document.querySelectorAll('.admin-menu a');
+            const sections = document.querySelectorAll('.admin-tab-content');
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
 
         // Sidebar Navigation
         const sidebarLinks = document.querySelectorAll('.admin-menu a');
         const sections = document.querySelectorAll('.admin-tab-content');
 
+<<<<<<< HEAD
+=======
+            return;
+        }
+
+
+        // Sidebar Navigation
+        const sidebarLinks = document.querySelectorAll('.admin-menu a');
+        const sections = document.querySelectorAll('.admin-tab-content');
+
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
         sidebarLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -871,8 +1402,77 @@ function initAdmin() {
                     }
                 }
             } catch (err) { console.error(err); }
+<<<<<<< HEAD
         }
 
+=======
+        }
+
+    }
+
+    // Admin Event Management Form
+    const adminEventForm = document.getElementById('admin-event-form');
+
+
+    adminEventForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = document.getElementById('admin-event-name').value;
+
+
+
+        adminEventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-event-name').value;
+
+        adminEventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-event-name').value;
+            alert(`Event "${name}" saved successfully!`);
+            this.reset();
+        });
+    });
+    });
+
+    function loadAdminDashboard() {
+        // Helper
+        const getClubName = (id) => {
+            const map = { 'tech': 'Tech Society', 'arts': 'Creative Arts' };
+            return map[id] || id;
+        };
+
+
+
+                    <><td>${reg.id}</td><td>${reg.name}</td><td>${reg.email}</td><td>${reg.studentId}</td><td>${reg.clubs.map(c => getClubName(c)).join(', ')}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td><td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+            <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td></>
+                ;
+            registrationsTable.querySelector('tbody').appendChild(row);
+        }
+
+        const registrationsTable = document.getElementById('registrations-table');
+        const allMemberships = JSON.parse(localStorage.getItem('allClubMemberships')) || [];
+
+        if (registrationsTable && allMemberships.length > 0) {
+            const tbody = registrationsTable.querySelector('tbody');
+            tbody.innerHTML = '';
+            allMemberships.forEach(reg => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reg.id}</td>
+                    <td>${reg.name}</td>
+                    <td>${reg.email}</td>
+                    <td>${reg.studentId}</td>
+                    <td>${getClubName(reg.club)}</td>
+                    <td>${new Date(reg.joinedAt).toLocaleDateString()}</td>
+                    <td>
+                        <button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+                        <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
         async function loadClubMemberships() {
             try {
                 const res = await fetch('http://localhost:3000/api/admin/club-memberships', {
@@ -895,7 +1495,45 @@ function initAdmin() {
                     }
                 }
             } catch (err) { console.error(err); }
+<<<<<<< HEAD
         }
+=======
+
+        }
+
+
+
+    // Render Event Registrations
+    const eventRegistrationsTable = document.getElementById('event-registrations-table');
+    if (eventRegistrationsTable) {
+        eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const eventRegs = [
+            { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
+        ];
+        eventRegs.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+    // Render Event Registrations
+    const eventRegistrationsTable = document.getElementById('event-registrations-table');
+    if (eventRegistrationsTable) {
+        eventRegistrationsTable.querySelector('tbody').innerHTML = ''; // Clear existing rows
+        const eventRegs = [
+            { id: 1, eventId: 1, name: 'John Doe', email: 'john@example.com', studentId: 'S12345', registeredAt: '2023-10-18' }
+        ];
+        eventRegs.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                    <td>${reg.id}</td><td>Event ${reg.eventId}</td><td>${reg.name}</td><td>${reg.email}</td>
+                    <td>${reg.studentId}</td><td>${new Date(reg.registeredAt).toLocaleDateString()}</td>
+                    <td><button class="admin-action view" data-id="${reg.id}"><i class="fas fa-eye"></i></button>
+                        <button class="admin-action delete" data-id="${reg.id}"><i class="fas fa-trash"></i></button></td>
+                `;
+            eventRegistrationsTable.querySelector('tbody').appendChild(row);
+        });
+    }
+            eventRegistrationsTable.querySelector('tbody').appendChild(row);
+        });
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
 
         async function loadFeedbacks() {
             try {
@@ -928,6 +1566,10 @@ function initAdmin() {
                 }
             } catch (err) { console.error(err); }
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
     }
 }
 
@@ -976,6 +1618,458 @@ function updateUIForStudent() {
         if (navLogin) navLogin.classList.remove('hidden');
         if (navLogout) navLogout.classList.add('hidden');
     }
+
+
+    if (adminLink && isAdminLoggedIn) {
+        adminLink.href = 'admin-dashboard.html';
+        adminLink.textContent = 'Admin Dashboard';
+    }
+}
+
+<<<<<<< HEAD
+=======
+function updateEnrollmentStatus() {
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (!student) return;
+
+    const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
+    const registeredEvents = JSON.parse(localStorage.getItem(`events_${student.id}`)) || [];
+
+    // Update Club Cards
+    document.querySelectorAll('.club-card').forEach(card => {
+        const clubId = card.getAttribute('data-club');
+        if (joinedClubs.includes(clubId)) {
+            let statusBadge = card.querySelector('.enrolled-status');
+            if (!statusBadge) {
+                statusBadge = document.createElement('div');
+                statusBadge.classList.add('enrolled-status');
+                statusBadge.style.color = 'var(--success-color)';
+                statusBadge.style.fontWeight = 'bold';
+                statusBadge.style.marginTop = '1rem';
+                statusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Joined';
+                card.appendChild(statusBadge);
+            }
+        }
+    });
+
+    // Update Event Cards
+    document.querySelectorAll('.event-card').forEach(card => {
+        const eventTitle = card.querySelector('.event-title').textContent;
+        if (registeredEvents.some(e => e.name === eventTitle)) {
+            const regBtn = card.querySelector('.register-button');
+            if (regBtn) {
+                regBtn.textContent = 'Registered';
+                regBtn.disabled = true;
+                regBtn.style.background = 'var(--success-color)';
+                regBtn.style.cursor = 'default';
+            }
+        }
+    });
+}
+
+// FAQ Toggle
+document.querySelectorAll(".faq-question").forEach(q => {
+  q.addEventListener("click", () => {
+    const ans = q.nextElementSibling;
+    ans.style.display = ans.style.display === "block" ? "none" : "block";
+  });
+});
+
+// Chatbot Toggle
+function toggleChat() {
+  const chat = document.getElementById("chatbot");
+  chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+/**
+
+}
+// FAQ Toggle
+document.querySelectorAll(".faq-question").forEach(q => {
+  q.addEventListener("click", () => {
+    const ans = q.nextElementSibling;
+    ans.style.display = ans.style.display === "block" ? "none" : "block";
+  });
+});
+
+// Chatbot Toggle
+function toggleChat() {
+  const chat = document.getElementById("chatbot");
+  chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+}
+
+// Chatbot Logic
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const chat = document.getElementById("chatBody");
+
+  if (input.value.trim() === "") return;
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "user";
+  userMsg.innerText = input.value;
+  chat.appendChild(userMsg);
+
+  let reply = "Please check the Events page for details.";
+
+  const text = input.value.toLowerCase();
+
+  if (text.includes("register"))
+    reply = "You can register from the Events page.";
+  else if (text.includes("event"))
+    reply = "All upcoming events are listed in the Events section.";
+  else if (text.includes("fee"))
+    reply = "Some events are free, some require payment.";
+  else if (text.includes("contact"))
+    reply = "You can contact organizers via Contact page.";
+  else if (text.includes("hello"))
+    reply = "Hello 👋 How can I help you?";
+
+  const botMsg = document.createElement("div");
+  botMsg.className = "bot";
+  botMsg.innerText = reply;
+
+  setTimeout(() => chat.appendChild(botMsg), 400);
+
+  input.value = "";
+}
+
+/**
+ * Initialize Club Buttons
+ * Adds event listeners to view club buttons
+ */
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+function initClubButtons() {
+    document.querySelectorAll('.view-club-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const clubId = this.getAttribute('data-club');
+            window.location.href = `club.html?club=${clubId}`;
+        });
+    });
+}
+
+function initClubDetails() {
+    if (window.location.pathname.includes('club.html')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const clubId = urlParams.get('club');
+        if (clubId) {
+            // Load club details logic
+            document.title = `${clubId.charAt(0).toUpperCase() + clubId.slice(1)} Club - details`;
+        }
+    }
+}
+
+// Export for testing
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        showFieldError,
+        clearFieldError,
+        showFormSuccess,
+        clearFormErrors,
+        initNavigation,
+        escapeHtml,
+        getFutureDate,
+        getCurrentMonthYear
+    };
+}
+<<<<<<< HEAD
+=======
+
+/**
+ * Fetch Club Details from Backend
+ * Simulates API call to get club data
+ */
+function fetchClubDetailsFromBackend(clubId) {
+    return new Promise((resolve, reject) => {
+        // Simulate network delay
+        setTimeout(() => {
+            const clubsData = {
+                'tech': {
+                    name: 'Tech Society - POINT BLANK',
+                    icon: '💻',
+                    subtitle: 'Innovate, code, and build the future',
+                    description: 'Join our vibrant tech community where innovation meets implementation. From hackathons to AI workshops, we provide the platform to turn your ideas into reality.',
+                    activities: [
+                        'Weekly coding sessions and hackathons',
+                        'AI/ML workshops and seminars',
+                        'Cybersecurity training programs',
+                        'Tech talks by industry experts',
+                        'Project development and collaboration'
+                    ],
+                    benefits: [
+                        'Access to cutting-edge technology resources',
+                        'Networking with tech professionals',
+                        'Skill development and certification opportunities',
+                        'Participation in national and international competitions',
+                        'Mentorship from senior developers'
+                    ],
+                    contact: {
+                        coordinator: 'Tech Coordinator',
+                        email: 'tech@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'arts': {
+                    name: 'Creative Arts - AALEKA',
+                    icon: '🎨',
+                    subtitle: 'Express yourself through art',
+                    description: 'Unleash your creativity in our artistic sanctuary. Whether you\'re a painter, sculptor, or digital artist, find your voice and showcase your talent.',
+                    activities: [
+                        'Art exhibitions and galleries',
+                        'Live drawing and painting sessions',
+                        'Digital art workshops',
+                        'Collaborative art projects',
+                        'Competitions and showcases'
+                    ],
+                    benefits: [
+                        'Access to art supplies and studio space',
+                        'Exhibition opportunities',
+                        'Skill development workshops',
+                        'Networking with artists and designers',
+                        'Portfolio development support'
+                    ],
+                    contact: {
+                        coordinator: 'Arts Coordinator',
+                        email: 'arts@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'debate': {
+                    name: 'Debate Club - LITSOC',
+                    icon: '💬',
+                    subtitle: 'Sharpen your mind through debate',
+                    description: 'Hone your rhetorical skills and critical thinking in our debate society. Engage in intellectual discourse and prepare for real-world challenges.',
+                    activities: [
+                        'Weekly debate sessions',
+                        'Model United Nations simulations',
+                        'Public speaking workshops',
+                        'Inter-college debate tournaments',
+                        'Guest lectures by renowned speakers'
+                    ],
+                    benefits: [
+                        'Improved communication and critical thinking skills',
+                        'Leadership development opportunities',
+                        'Participation in national debate competitions',
+                        'Networking with professionals',
+                        'Confidence building through public speaking'
+                    ],
+                    contact: {
+                        coordinator: 'Debate Coordinator',
+                        email: 'debate@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'music': {
+                    name: 'Music Society',
+                    icon: '🎵',
+                    subtitle: 'Create and perform music',
+                    description: 'Join our musical community to create, perform, and appreciate music in all its forms. From concerts to jam sessions, let the rhythm guide you.',
+                    activities: [
+                        'Concert performances and shows',
+                        'Jam sessions and open mics',
+                        'Music composition workshops',
+                        'Shayari and poetry sessions',
+                        'Music production training'
+                    ],
+                    benefits: [
+                        'Access to musical instruments and equipment',
+                        'Performance opportunities',
+                        'Music theory and production training',
+                        'Collaboration with musicians',
+                        'Recording studio access'
+                    ],
+                    contact: {
+                        coordinator: 'Music Coordinator',
+                        email: 'music@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'sports': {
+                    name: 'Sports Club',
+                    icon: '⚽',
+                    subtitle: 'Stay active and competitive',
+                    description: 'Maintain your physical fitness and competitive spirit through various sports activities. Teamwork, discipline, and victory await you.',
+                    activities: [
+                        'Inter-college sports tournaments',
+                        'Fitness training sessions',
+                        'Team building activities',
+                        'Sports workshops and clinics',
+                        'Recreational sports events'
+                    ],
+                    benefits: [
+                        'Access to sports facilities and equipment',
+                        'Fitness assessment and training programs',
+                        'Team sports participation',
+                        'Leadership development',
+                        'Health and wellness support'
+                    ],
+                    contact: {
+                        coordinator: 'Sports Coordinator',
+                        email: 'sports@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                },
+                'science': {
+                    name: 'Dance Club - ABCD',
+                    icon: '💃',
+                    subtitle: 'Move to the beat and create memories',
+                    description: 'Express yourself through dance and movement. Join our energetic dance community for performances, competitions, and unforgettable experiences.',
+                    activities: [
+                        'Dance performances and shows',
+                        'Choreography workshops',
+                        'Dance competitions',
+                        'Celebrity meetups and interactions',
+                        'Dance fitness sessions'
+                    ],
+                    benefits: [
+                        'Professional dance training',
+                        'Performance opportunities',
+                        'Fitness and health benefits',
+                        'Creative expression development',
+                        'Social connections and friendships'
+                    ],
+                    contact: {
+                        coordinator: 'Dance Coordinator',
+                        email: 'dance@dsce.edu',
+                        phone: '+91-XXXX-XXXXXX'
+                    }
+                }
+            };
+
+            const clubData = clubsData[clubId];
+            if (clubData) {
+                resolve(clubData);
+            } else {
+                reject(new Error('Club not found'));
+            }
+        }, 500); // Simulate 500ms network delay
+    });
+}
+
+/**
+ * Display Club Details
+ * Updates the DOM with club information
+ */
+function displayClubDetails(clubData) {
+    document.getElementById('club-title').textContent = clubData.name;
+    document.getElementById('club-subtitle').textContent = clubData.subtitle;
+    document.getElementById('club-icon').textContent = clubData.icon;
+    document.getElementById('club-name').textContent = clubData.name;
+    document.getElementById('club-description').textContent = clubData.description;
+
+    // Activities
+    const activitiesList = document.getElementById('club-activities-list');
+    activitiesList.innerHTML = '';
+    clubData.activities.forEach(activity => {
+        const li = document.createElement('li');
+        li.textContent = activity;
+        activitiesList.appendChild(li);
+    });
+
+    // Benefits
+    const benefitsList = document.getElementById('club-benefits-list');
+    benefitsList.innerHTML = '';
+    clubData.benefits.forEach(benefit => {
+        const li = document.createElement('li');
+        li.textContent = benefit;
+        benefitsList.appendChild(li);
+    });
+
+    // Contact
+    const contactInfo = document.getElementById('club-contact-info');
+    contactInfo.innerHTML = `
+        <p><strong>Coordinator:</strong> ${clubData.contact.coordinator}</p>
+        <p><strong>Email:</strong> <a href="mailto:${clubData.contact.email}" style="color: var(--accent-color);">${clubData.contact.email}</a></p>
+        <p><strong>Phone:</strong> ${clubData.contact.phone}</p>
+    `;
+
+    // Join button functionality
+    const joinBtn = document.getElementById('join-club-btn');
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (student) {
+        const joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
+        const clubId = new URLSearchParams(window.location.search).get('club');
+        if (joinedClubs.includes(clubId)) {
+            joinBtn.textContent = 'Already Joined';
+            joinBtn.disabled = true;
+            joinBtn.style.background = 'var(--success-color)';
+        } else {
+            joinBtn.addEventListener('click', function() {
+                joinClub(clubId);
+            });
+        }
+    } else {
+        joinBtn.textContent = 'Login to Join';
+        joinBtn.addEventListener('click', function() {
+            window.location.href = 'registration.html#student-login';
+        });
+    }
+}
+
+/**
+ * Join Club
+ * Adds club to student's joined clubs
+ */
+function joinClub(clubId) {
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (!student) return;
+
+    let joinedClubs = JSON.parse(localStorage.getItem(`clubs_${student.id}`)) || [];
+    if (!joinedClubs.includes(clubId)) {
+        joinedClubs.push(clubId);
+        localStorage.setItem(`clubs_${student.id}`, JSON.stringify(joinedClubs));
+        
+        const joinBtn = document.getElementById('join-club-btn');
+        joinBtn.textContent = 'Joined!';
+        joinBtn.disabled = true;
+        joinBtn.style.background = 'var(--success-color)';
+        
+        // Update enrollment status
+        updateEnrollmentStatus();
+    }
+}
+
+/**
+ * Display Club Error
+ * Shows error message when club data fails to load
+ */
+function displayClubError() {
+    document.getElementById('club-title').textContent = 'Club Not Found';
+    document.getElementById('club-subtitle').textContent = 'The requested club could not be found.';
+    document.getElementById('club-description').textContent = 'Please check the club ID or return to the home page.';
+// Chatbot Logic
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const chat = document.getElementById("chatBody");
+
+  if (input.value.trim() === "") return;
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "user";
+  userMsg.innerText = input.value;
+  chat.appendChild(userMsg);
+
+  let reply = "Please check the Events page for details.";
+
+  const text = input.value.toLowerCase();
+
+  if (text.includes("register"))
+    reply = "You can register from the Events page.";
+  else if (text.includes("event"))
+    reply = "All upcoming events are listed in the Events section.";
+  else if (text.includes("fee"))
+    reply = "Some events are free, some require payment.";
+  else if (text.includes("contact"))
+    reply = "You can contact organizers via Contact page.";
+  else if (text.includes("hello"))
+    reply = "Hello 👋 How can I help you?";
+
+  const botMsg = document.createElement("div");
+  botMsg.className = "bot";
+  botMsg.innerText = reply;
+
+  setTimeout(() => chat.appendChild(botMsg), 400);
+
+  input.value = "";
+
 }
 
 function initClubButtons() {
@@ -1011,3 +2105,4 @@ if (typeof module !== 'undefined' && module.exports) {
         getCurrentMonthYear
     };
 }
+>>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772

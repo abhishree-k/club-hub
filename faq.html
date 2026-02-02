@@ -1,254 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="FAQ section for DSCE Clubs event management system">
-  <title>FAQ | College Events</title>
-
-  <style>
-    /* ================= GLOBAL ================= */
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-    body{
-      min-height:100vh;
-      background:radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px),
-                 linear-gradient(135deg,#0a0f2c,#1a1f4a);
-      background-size:25px 25px,100% 100%;
-      color:#fff;
-    }
-
-    /* ================= STARS BG ================= */
-    .stars-background{position:fixed;inset:0;z-index:-1;pointer-events:none}
-
-    /* ================= NAVBAR ================= */
-    .navbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:15px 40px;
-      backdrop-filter:blur(12px);
-      background:rgba(255,255,255,0.05);
-      border-bottom:1px solid rgba(255,255,255,0.1);
-      position:sticky;top:0;z-index:100;
-    }
-    .nav-logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700}
-    .logo-icon{font-size:26px}
-    .nav-links a{
-      text-decoration:none;
-      color:#fff;
-      margin-left:25px;
-      font-weight:500;
-      opacity:.8;
-      transition:.3s;
-    }
-    .nav-links a:hover,.nav-links .active{opacity:1;color:#6cf}
-
-    /* ================= FAQ ================= */
-    .faq-wrapper{max-width:1100px;margin:60px auto;padding:0 20px;text-align:center}
-    .faq-wrapper h1{font-size:42px;margin-bottom:10px}
-    .faq-subtitle{opacity:.75;margin-bottom:40px}
-
-    .faq-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:25px;
-    }
-
-    .faq-card{
-      background:rgba(255,255,255,0.06);
-      backdrop-filter:blur(10px);
-      border:1px solid rgba(255,255,255,0.15);
-      border-radius:16px;
-      padding:20px;
-      text-align:left;
-      cursor:pointer;
-      transition:.3s;
-    }
-    .faq-card:hover{transform:translateY(-5px);border-color:#6cf}
-
-    .faq-question{font-size:18px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-
-    .faq-answer{
-      font-size:15px;
-      opacity:.8;
-      max-height:0;
-      overflow:hidden;
-      transition:max-height .4s ease;
-    }
-
-    .faq-card.active .faq-answer{max-height:200px}
-
-    /* ================= CHATBOT ================= */
-    .chatbot-icon{
-      position:fixed;
-      right:25px;bottom:25px;
-      background:#6cf;
-      color:#000;
-      font-size:24px;
-      width:55px;height:55px;
-      display:flex;align-items:center;justify-content:center;
-      border-radius:50%;
-      cursor:pointer;
-      box-shadow:0 0 20px rgba(0,255,255,.6);
-      z-index:200;
-    }
-
-    .chatbot-box{
-      position:fixed;
-      right:25px;bottom:95px;
-      width:320px;
-      background:rgba(15,20,50,.95);
-      backdrop-filter:blur(15px);
-      border-radius:18px;
-      overflow:hidden;
-      display:none;
-      flex-direction:column;
-      border:1px solid rgba(255,255,255,0.2);
-      z-index:200;
-    }
-
-    .chat-header{
-      padding:12px;
-      background:rgba(0,0,0,.4);
-      font-weight:600;
-      display:flex;justify-content:space-between;align-items:center;
-    }
-
-    .chat-body{
-      padding:10px;
-      height:240px;
-      overflow-y:auto;
-      font-size:14px;
-    }
-
-    .bot,.user{
-      margin:6px 0;
-      padding:8px 10px;
-      border-radius:10px;
-      max-width:85%;
-    }
-    .bot{background:rgba(255,255,255,0.1)}
-    .user{background:#6cf;color:#000;margin-left:auto}
-
-    .chat-input{display:flex;border-top:1px solid rgba(255,255,255,.2)}
-    .chat-input input{
-      flex:1;padding:10px;border:none;outline:none;background:transparent;color:#fff
-    }
-    .chat-input button{
-      background:#6cf;border:none;padding:10px 15px;cursor:pointer;font-weight:600
-    }
-
-    /* ================= RESPONSIVE ================= */
-    @media(max-width:600px){
-      .navbar{padding:12px 20px}
-      .faq-wrapper h1{font-size:32px}
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | DSCE Clubs</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
 
-<div class="stars-background"></div>
+  <!-- Background -->
+  <div class="stars-background"></div>
 
-
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="nav-logo">
-    <span class="logo-icon">🌌</span>
-    <span class="logo-text">DSCE Clubs</span>
-  </div>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="faq.html" class="active">FAQ</a>
-    <a href="contact.html">Contact Us</a>
-  </div>
-</nav>
-
-<!-- FAQ -->
-<section class="faq-wrapper">
-  <h1>Frequently Asked Questions</h1>
-  <p class="faq-subtitle">Common questions related to college events and registrations.</p>
-
-  <div class="faq-grid">
-
-    <div class="faq-card">
-      <div class="faq-question">What is the College Event Management System?</div>
-      <div class="faq-answer">It helps students view, register, and participate in college events like workshops and seminars.</div>
+  <!-- ================= NAVBAR ================= -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <span class="logo-icon">🌌</span>
+      <span class="logo-text">DSCE Clubs</span>
     </div>
-
-    <div class="faq-card">
-      <div class="faq-question">How can I register for an event?</div>
-      <div class="faq-answer">You can register by visiting the Events page and filling out the registration form.</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="faq.html" class="active">FAQ</a>
+      <a href="contact.html">Contact Us</a>
     </div>
+  </nav>
 
-    <div class="faq-card">
-      <div class="faq-question">Is there any registration fee?</div>
-      <div class="faq-answer">Some events are free while others may require a registration fee.</div>
+  <!-- ================= FAQ SECTION ================= -->
+  <section class="faq-wrapper">
+    <h1>Frequently Asked Questions</h1>
+    <p class="faq-subtitle">
+      Find answers to common questions about DSCE clubs and events
+    </p>
+
+    <div class="faq-grid">
+
+      <div class="faq-card">
+        <h3 class="faq-question">What is DSCE Clubs?</h3>
+        <p class="faq-answer">
+          DSCE Clubs is a centralized platform that allows students to explore,
+          join, and participate in technical, cultural, and non-technical clubs.
+        </p>
+      </div>
+
+      <div class="faq-card">
+        <h3 class="faq-question">How do I register for an event?</h3>
+        <p class="faq-answer">
+          Navigate to the Events section, choose an event, and complete the
+          registration form provided.
+        </p>
+      </div>
+
+      <div class="faq-card">
+        <h3 class="faq-question">Is there any registration fee?</h3>
+        <p class="faq-answer">
+          Most events are free. Some workshops or competitions may have a small
+          registration fee, which will be clearly mentioned.
+        </p>
+      </div>
+
+      <div class="faq-card">
+        <h3 class="faq-question">Can I join multiple clubs?</h3>
+        <p class="faq-answer">
+          Yes, students can join multiple clubs as long as the event schedules
+          do not clash.
+        </p>
+      </div>
+
+      <div class="faq-card">
+        <h3 class="faq-question">Who can participate in club events?</h3>
+        <p class="faq-answer">
+          All DSCE students are eligible to participate unless stated otherwise
+          by the organizing club.
+        </p>
+      </div>
+
+      <div class="faq-card">
+        <h3 class="faq-question">How will I receive event updates?</h3>
+        <p class="faq-answer">
+          Event updates are shared through the dashboard, official announcements,
+          and club notifications.
+        </p>
+      </div>
+
     </div>
+  </section>
 
-    <div class="faq-card">
-      <div class="faq-question">Can I attend multiple events?</div>
-      <div class="faq-answer">Yes, you can participate in multiple events if the timings do not clash.</div>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- CHATBOT -->
-<div class="chatbot-icon" onclick="toggleChat()">💬</div>
-
-<div class="chatbot-box" id="chatbot">
-  <div class="chat-header">Event Assistant <span onclick="toggleChat()">✖</span></div>
-  <div class="chat-body" id="chatBody">
-    <div class="bot">Hello 👋 How can I help you?</div>
-  </div>
-  <div class="chat-input">
-    <input type="text" id="userInput" placeholder="Ask something..." aria-label="Chat input" />
-    <button onclick="sendMessage()">Send</button>
-  </div>
-</div>
-
-<script>
-  /* FAQ ACCORDION */
-  document.querySelectorAll('.faq-card').forEach(card=>{
-    card.addEventListener('click',()=>{
-      card.classList.toggle('active');
-    });
-  });
-
-  /* CHATBOT */
-  function toggleChat(){
-    const bot=document.getElementById('chatbot');
-    bot.style.display = bot.style.display==='flex'?'none':'flex';
-  }
-
-  function sendMessage(){
-    const input=document.getElementById('userInput');
-    const body=document.getElementById('chatBody');
-    const msg=input.value.trim();
-    if(!msg) return;
-
-    const userDiv=document.createElement('div');
-    userDiv.className='user';
-    userDiv.innerText=msg;
-    body.appendChild(userDiv);
-
-    const botDiv=document.createElement('div');
-    botDiv.className='bot';
-
-    let reply="I'm here to help! Please check the Events page or Contact Us for more info.";
-
-    if(msg.toLowerCase().includes('register')) reply="Go to the Events page and fill the registration form.";
-    if(msg.toLowerCase().includes('fee')) reply="Some events are free, some require registration fees.";
-    if(msg.toLowerCase().includes('club')) reply="DSCE Clubs manages all college club activities and events.";
-
-    botDiv.innerText=reply;
-    body.appendChild(botDiv);
-
-    input.value='';
-    body.scrollTop=body.scrollHeight;
-  }
-</script>
-
+  <!-- Existing JS -->
+  <script src="app.js"></script>
 </body>
+
 </html>

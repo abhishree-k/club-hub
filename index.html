@@ -159,37 +159,71 @@
       </div>
     </section>
 
-    <section class="testimonials-section">
+    <!-- REDESIGNED STUDENT VOICES SECTION WITH NAVIGATION ARROWS -->
+    <section class="testimonials-section" role="region" aria-label="Student testimonials">
       <h2 class="section-title">
         Student <span class="text-gradient">Voices</span>
       </h2>
-      <div class="testimonial-carousel">
-        <div class="testimonial-slide active">
-          <p>
-            "Joining the Tech Society transformed my college experience. I've
-            learned so much and made lifelong friends!"
-          </p>
-          <div class="testimonial-author">-ABM, Computer Science</div>
+      
+      <div class="testimonial-container">
+        <!-- Left Navigation Arrow -->
+        <button class="testimonial-arrow left" id="prev-testimonial" aria-label="Previous testimonial">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <!-- Testimonial Carousel -->
+        <div class="testimonial-carousel">
+          <div class="testimonial-slide active">
+            <blockquote>
+              <p>
+                "Joining the Tech Society transformed my college experience. I've
+                learned so much and made lifelong friends!"
+              </p>
+            </blockquote>
+            <div class="testimonial-author">
+              <span class="author-name">-ABM</span>, 
+              <span class="author-course">Computer Science</span>
+            </div>
+          </div>
+          
+          <div class="testimonial-slide">
+            <blockquote>
+              <p>
+                "The Creative Arts club gave me the confidence to showcase my work
+                and connect with other artists."
+              </p>
+            </blockquote>
+            <div class="testimonial-author">
+              <span class="author-name">-Jamie</span>, 
+              <span class="author-course">Fine Arts</span>
+            </div>
+          </div>
+          
+          <div class="testimonial-slide">
+            <blockquote>
+              <p>
+                "Through Debate Club, I've improved my public speaking and
+                critical thinking skills immensely."
+              </p>
+            </blockquote>
+            <div class="testimonial-author">
+              <span class="author-name">-Taylor</span>, 
+              <span class="author-course">Political Science</span>
+            </div>
+          </div>
         </div>
-        <div class="testimonial-slide">
-          <p>
-            "The Creative Arts club gave me the confidence to showcase my work
-            and connect with other artists."
-          </p>
-          <div class="testimonial-author">- Jamie, Fine Arts</div>
-        </div>
-        <div class="testimonial-slide">
-          <p>
-            "Through Debate Club, I've improved my public speaking and
-            critical thinking skills immensely."
-          </p>
-          <div class="testimonial-author">- Taylor, Political Science</div>
-        </div>
+        
+        <!-- Right Navigation Arrow -->
+        <button class="testimonial-arrow right" id="next-testimonial" aria-label="Next testimonial">
+          <i class="fas fa-chevron-right"></i>
+        </button>
       </div>
+      
+      <!-- Carousel Dots Indicators -->
       <div class="carousel-dots">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
+        <button class="dot active" aria-label="Go to testimonial 1" data-index="0"></button>
+        <button class="dot" aria-label="Go to testimonial 2" data-index="1"></button>
+        <button class="dot" aria-label="Go to testimonial 3" data-index="2"></button>
       </div>
     </section>
 
@@ -212,7 +246,6 @@
     </section>
 
     <!-- scroll top button -->
-    <!-- make the icon translucent -->
     <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
       <i class="fas fa-chevron-up"></i>
     </button>

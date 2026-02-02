@@ -49,7 +49,7 @@
     <header class="registration-hero">
         <div class="hero-content">
             <h1 class="hero-title">Join the <span class="text-gradient">Community</span></h1>
-            <p class="hero-subtitle">Register for clubs, events, and more</p>
+            <p class="hero-subtitle">Register for clubs, events and more</p>
         </div>
     </header>
 
@@ -66,7 +66,7 @@
                     aria-selected="false" aria-controls="student-login">Student Login</button>
             </div>
 
-            <div class="tab-content" id="student-login" role="tabpanel">
+            <div class="tab-content" id="student-login" role="tabpanel" aria-labelledby="tab-login" hidden>
                 <h2 class="section-title">Student <span class="text-gradient">Login</span></h2>
                 <p style="text-align: center; margin-bottom: 2rem;">Login to access 'My Hub' and manage your club
                     memberships and event registrations.</p>
@@ -87,7 +87,7 @@
                 </form>
             </div>
 
-            <div class="tab-content active" id="club-registration" role="tabpanel">
+            <div class="tab-content active" id="club-registration" role="tabpanel" aria-labelledby="tab-club">
                 <h2 class="section-title">Join a <span class="text-gradient">Club</span></h2>
                 <div id="club-success-message" class="success-message hidden">
                     <i class="fas fa-check-circle"></i>
@@ -112,7 +112,10 @@
 
                     <div class="form-group">
                         <label for="club-student-id">Student ID</label>
-                        <input type="text" id="club-student-id" name="student_id" required>
+                        <input type="text" id="club-student-id" name="student_id" required maxlength="12"
+                            pattern="[A-Za-z0-9]{8,12}"
+                            title="Student ID should be 8-12 alphanumeric characters (e.g. 1DS21CS001 or 4MC22CS082)"
+                            placeholder="e.g. 1DS21CS001">
                     </div>
 
                     <div class="form-group">
@@ -138,31 +141,26 @@
                             <span class="checkmark"></span>
                             <span class="checkbox-text">Tech Society</span>
                         </label>
-
                         <label class="checkbox-item" for="club-creative-arts">
                             <input type="checkbox" id="club-creative-arts" name="clubs[]" value="creative-arts">
                             <span class="checkmark"></span>
                             <span class="checkbox-text">Creative Arts</span>
                         </label>
-
                         <label class="checkbox-item" for="club-debate-club">
                             <input type="checkbox" id="club-debate-club" name="clubs[]" value="debate-club">
                             <span class="checkmark"></span>
                             <span class="checkbox-text">Debate Club</span>
                         </label>
-
                         <label class="checkbox-item" for="club-music-society">
                             <input type="checkbox" id="club-music-society" name="clubs[]" value="music-society">
                             <span class="checkmark"></span>
                             <span class="checkbox-text">Music Society</span>
                         </label>
-
                         <label class="checkbox-item" for="club-sports-club">
                             <input type="checkbox" id="club-sports-club" name="clubs[]" value="sports-club">
                             <span class="checkmark"></span>
                             <span class="checkbox-text">Sports Club</span>
                         </label>
-
                         <label class="checkbox-item" for="club-dance-club">
                             <input type="checkbox" id="club-dance-club" name="clubs[]" value="dance-club">
                             <span class="checkmark"></span>
@@ -179,7 +177,7 @@
                         <button type="submit" class="submit-button">Submit Application</button>
                     </div>
                 </form>
-            </div>
+            </div>"
 
             <div class="tab-content" id="event-registration" role="tabpanel">
                 <h2 class="section-title">Register for <span class="text-gradient">Events</span></h2>
@@ -207,6 +205,7 @@
                             </select>
                         </div>
                     </div>
+
 
                     <div class="event-list">
                         <div class="event-card" data-club="tech" data-date="2026-02-01" data-days-offset="7">
@@ -291,7 +290,10 @@
 
                         <div class="form-group">
                             <label for="event-student-id">Student ID</label>
-                            <input type="text" id="event-student-id" name="student_id" required>
+                            <input type="text" id="event-student-id" name="student_id" required maxlength="12"
+                                pattern="[A-Za-z0-9]{8,12}"
+                                title="Student ID should be 8–12 alphanumeric characters (e.g. 1DS21CS001 or 4MC22CS082)"
+                                placeholder="e.g. 1DS21CS001">
                         </div>
 
                         <div class="form-group">
@@ -314,12 +316,16 @@
                 </div>
             </div>
 
-            <div class="tab-content" id="e-certificate" role="tabpanel">
+            <!-- E-Certificate Panel -->
+            <div class="tab-content" id="e-certificate" role="tabpanel" aria-labelledby="tab-certificate" hidden>
                 <h2 class="section-title">Request <span class="text-gradient">E-Certificate</span></h2>
                 <form id="certificate-form" class="registration-form">
                     <div class="form-group">
                         <label for="certificate-student-id">Student ID</label>
-                        <input type="text" id="certificate-student-id" name="student_id" required>
+                        <input type="text" id="certificate-student-id" name="student_id" required maxlength="12"
+                            pattern="[A-Za-z0-9]{8,12}"
+                            title="Student ID should be 8–12 alphanumeric characters (e.g. 1DS21CS001 or 4MC22CS082)"
+                            placeholder="e.g. 1DS21CS001">
                     </div>
                     <div class="form-group">
                         <label for="certificate-event">Event Name</label>
@@ -332,8 +338,10 @@
                     </div>
                     <div class="form-group">
                         <label for="certificate-file">Upload Proof (if any)</label>
-                        <input type="file" id="certificate-file" name="proof_file" accept="image/*,application/pdf"
-                            required>
+                        <input type="file" id="certificate-file" name="proof_file" accept="image/*,application/pdf">
+                        <p class="form-help" style="font-size: 0.9rem; color: #888; margin-top: 0.4rem;">
+                            Optional — upload photo, certificate scan, or other proof if available
+                        </p>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="submit-button">Request Certificate</button>
@@ -341,6 +349,7 @@
                 </form>
             </div>
         </section>
+
         <!-- scroll top button -->
         <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
             <i class="fas fa-chevron-up"></i>
@@ -350,7 +359,7 @@
 
     <footer class="cosmic-footer">
         <div class="footer-bottom">
-            <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
+            <p>© <span id="year"></span> DSCE Clubs. All rights reserved.</p>
         </div>
     </footer>
 

@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.AuthService = {
         login: function (username, password) {
+            username = username.toLowerCase();
             // Admin Master Login
             if (username === 'admin' && password === 'admin123') {
                 const user = { username, role: ROLES.ADMIN, name: 'Super Admin' };

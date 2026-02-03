@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     return { success: true, user };
                 }
             } catch (e) { }
-            // Leader: leader_tech / tech@123
+            // Leader: leader_tech / admin@123
             if (username.startsWith('leader_')) {
                 const club = username.split('_')[1];
-                if (password === `${club}@123`) {
+                if (password === 'admin@123') {
                     const user = { username, role: ROLES.LEADER, club: club, name: `${club.charAt(0).toUpperCase() + club.slice(1)} Leader` };
                     this.setCurrentUser(user);
                     return { success: true, user };

@@ -1010,3 +1010,74 @@ if (typeof module !== 'undefined' && module.exports) {
         getCurrentMonthYear
     };
 }
+/* PWA Support */
+/* PWA Support */
+let deferredPrompt;
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            })
+            .catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+    });
+
+    // Handle PWA Install Prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+
+        // Update UI notify the user they can install the PWA
+        // Navbar Install Button
+        const installBtnLi = document.getElementById('install-app-li');
+        const installBtn = document.getElementById('install-app-btn');
+        // Footer Install Button
+        const footerInstallSection = document.getElementById('footer-install-section');
+        const footerInstallBtn = document.getElementById('footer-install-btn');
+
+        const showInstallPrompt = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+                // Hide buttons after install logic
+                if (installBtnLi) installBtnLi.style.display = 'none';
+                if (installBtn) installBtn.style.display = 'none';
+                if (footerInstallSection) footerInstallSection.style.display = 'none';
+            }
+        };
+
+        if (installBtn) {
+            if (installBtnLi) installBtnLi.style.display = 'block';
+            else installBtn.style.display = 'block';
+            installBtn.addEventListener('click', showInstallPrompt);
+        }
+
+        if (footerInstallBtn && footerInstallSection) {
+            footerInstallSection.style.display = 'block';
+            footerInstallBtn.addEventListener('click', showInstallPrompt);
+        }
+    });
+
+    window.addEventListener('appinstalled', () => {
+        // Hide the app-provided install promotion
+        const installBtnLi = document.getElementById('install-app-li');
+        if (installBtnLi) installBtnLi.style.display = 'none';
+
+        const installBtn = document.getElementById('install-app-btn');
+        if (installBtn) installBtn.style.display = 'none';
+
+        const footerInstallSection = document.getElementById('footer-install-section');
+        if (footerInstallSection) footerInstallSection.style.display = 'none';
+
+        // Clear the deferredPrompt so it can be garbage collected
+        deferredPrompt = null;
+        console.log('PWA was installed');
+    });
+}

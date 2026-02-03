@@ -16,18 +16,20 @@ const authRoutes = require('./routes/authRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
+const blogRoutes = require('./routes/blogRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/feedback', feedbackRoutes);
+app.use('/api/blog', blogRoutes);
 
 const path = require('path');
 app.use(express.static(path.join(__dirname, '../')));
 
 const PORT = process.env.PORT || 3000;
 
-sequelize.sync({ force: false }).then(async () => {
+sequelize.sync({ alter: true }).then(async () => {
     console.log('Database synced');
 
     // Seed initial data if empty

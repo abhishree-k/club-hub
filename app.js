@@ -1213,6 +1213,7 @@ function initAdmin() {
     const loginButton = document.querySelector('.login-button');
     const footerText = document.getElementById('footer-text');
     const forgotWrapper = document.getElementById('forgot-password-wrapper'); // <div> with Forgot password link
+    const rememberMeCheckbox = document.getElementById('remember-me');
 
     let isLoginMode = true;
 
@@ -1297,13 +1298,12 @@ function initAdmin() {
                 // LOGIN LOGIC
                 // Check stored custom admins first, then hardcoded default
                 const result = window.AuthService.login(username, password);
+                const rememberMe = rememberMeCheckbox.checked;
 
                 if (result.success) {
                     if (rememberMe) {
                         localStorage.setItem('adminRemembered', 'true');
                         localStorage.setItem('adminUsername', username);
-                    } else {
-                        alert('Access Denied: You are not an admin.');
                     }
 
                     localStorage.setItem('adminLoggedIn', 'true');

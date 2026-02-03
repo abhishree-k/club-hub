@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         login: function (username, password) {
             username = username.toLowerCase();
             // Admin Master Login
-            if (username === 'admin' && password === 'admin123') {
+            if (username === 'admin' && password === 'admin@123') {
                 const user = { username, role: ROLES.ADMIN, name: 'Super Admin' };
                 this.setCurrentUser(user);
                 return { success: true, user };
@@ -41,10 +41,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     return { success: true, user };
                 }
             } catch (e) { }
-            // Leader: leader_tech / admin123
+            // Leader: leader_tech / admin@123
             if (username.startsWith('leader_')) {
                 const club = username.split('_')[1];
-                if (password === 'admin123') {
+                if (password === 'admin@123') {
                     const user = { username, role: ROLES.LEADER, club: club, name: `${club.charAt(0).toUpperCase() + club.slice(1)} Leader` };
                     this.setCurrentUser(user);
                     return { success: true, user };
@@ -1287,13 +1287,6 @@ function initAdmin() {
             e.preventDefault();
             const username = document.getElementById('admin-username').value;
             const password = document.getElementById('admin-password').value;
-
-            try {
-                const response = await fetch('http://localhost:3000/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: username, password })
-                });
 
             if (isLoginMode) {
                 // LOGIN LOGIC

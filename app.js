@@ -2195,3 +2195,12 @@ function initFavorites() {
         });
     });
 }
+
+// Initialize functions based on page
+document.addEventListener('DOMContentLoaded', function () {
+    // Admin Login
+    if (document.getElementById('admin-login-form')) {
+        initAdmin();
+    }
+    // Other initializations can be added here
+});

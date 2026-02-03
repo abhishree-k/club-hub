@@ -25,8 +25,14 @@ document.addEventListener('DOMContentLoaded', function () {
     window.AuthService = {
         login: function (username, password) {
             username = username.toLowerCase();
+
+            // Enforce Generic Password for ALL logins
+            if (password !== 'admin@123') {
+                return { success: false, message: 'Invalid credentials. Password must be admin@123' };
+            }
+
             // Admin Master Login
-            if (username === 'admin' && password === 'admin@123') {
+            if (username === 'admin') {
                 const user = { username, role: ROLES.ADMIN, name: 'Super Admin' };
                 this.setCurrentUser(user);
                 return { success: true, user };
@@ -34,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Check dynamic users store (admin/leader)
             try {
                 const users = JSON.parse(localStorage.getItem('users')) || [];
-                const found = users.find(u => u.username === username && u.password === password);
+                const found = users.find(u => u.username === username);
                 if (found && (found.role === ROLES.ADMIN || found.role === ROLES.LEADER)) {
                     const user = { username: found.username, role: found.role, name: found.name || found.username, club: found.club };
                     this.setCurrentUser(user);
@@ -44,13 +50,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // Leader: leader_tech / admin@123
             if (username.startsWith('leader_')) {
                 const club = username.split('_')[1];
-                if (password === 'admin@123') {
-                    const user = { username, role: ROLES.LEADER, club: club, name: `${club.charAt(0).toUpperCase() + club.slice(1)} Leader` };
-                    this.setCurrentUser(user);
-                    return { success: true, user };
-                }
+                const user = { username, role: ROLES.LEADER, club: club, name: `${club.charAt(0).toUpperCase() + club.slice(1)} Leader` };
+                this.setCurrentUser(user);
+                return { success: true, user };
             }
-            return { success: false, message: 'Invalid credentials' };
+            return { success: false, message: 'User not found' };
         },
         logout: function () {
             localStorage.removeItem('currentUser');
@@ -949,12 +953,12 @@ function initCalendar() {
         renderCalendar();
     });
 
-        const currentUser = window.AuthService.getCurrentUser();
-        const canEdit = !!currentUser && (
-            currentUser.role === 'admin' || (currentUser.role === 'leader' && currentUser.club === event.club)
-        );
+    const currentUser = window.AuthService.getCurrentUser();
+    const canEdit = !!currentUser && (
+        currentUser.role === 'admin' || (currentUser.role === 'leader' && currentUser.club === event.club)
+    );
 
-        eventDetailsContainer.innerHTML = `
+    eventDetailsContainer.innerHTML = `
             <div class="event-details">
                 <div class="event-header">
                     <span class="event-club-badge ${event.club}">${getClubName(event.club)}</span>
@@ -974,227 +978,227 @@ function initCalendar() {
             </div>
         `;
 
-        // Bind dynamic buttons
-        const editBtn = document.getElementById('edit-event');
-        if (editBtn) editBtn.addEventListener('click', () => openEventModal(event));
-        document.getElementById('register-for-event').addEventListener('click', () => registerForEvent(event));
-        document.getElementById('share-event').addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
+    // Bind dynamic buttons
+    const editBtn = document.getElementById('edit-event');
+    if (editBtn) editBtn.addEventListener('click', () => openEventModal(event));
+    document.getElementById('register-for-event').addEventListener('click', () => registerForEvent(event));
+    document.getElementById('share-event').addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
+}
+
+function openEventModal(event = null, date = null) {
+    if (!eventModal) return;
+    const currentUser = window.AuthService.getCurrentUser();
+    // Permission checks
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'leader')) {
+        alert('You are not authorized to manage events.');
+        return;
     }
 
-    function openEventModal(event = null, date = null) {
-        if (!eventModal) return;
-        const currentUser = window.AuthService.getCurrentUser();
-        // Permission checks
-        if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'leader')) {
-            alert('You are not authorized to manage events.');
+    if (event) {
+        if (currentUser.role === 'leader' && event.club !== currentUser.club) {
+            alert('Leaders can only manage events of their own club.');
             return;
         }
-
-        if (event) {
-            if (currentUser.role === 'leader' && event.club !== currentUser.club) {
-                alert('Leaders can only manage events of their own club.');
-                return;
-            }
-            document.getElementById('modal-title').textContent = 'Edit Event';
-            document.getElementById('event-name').value = event.name;
-            document.getElementById('event-club').value = event.club;
-            document.getElementById('event-start-date').value = event.startDate;
-            document.getElementById('event-end-date').value = event.endDate;
-            document.getElementById('event-start-time').value = event.startTime;
-            document.getElementById('event-end-time').value = event.endTime;
-            document.getElementById('event-location').value = event.location;
-            document.getElementById('event-description').value = event.description;
-            if (deleteEventButton) deleteEventButton.style.display = 'block';
-            selectedEvent = event;
-        } else {
-            document.getElementById('modal-title').textContent = 'Add New Event';
-            eventForm.reset();
-            if (date) {
-                document.getElementById('event-start-date').value = date;
-                document.getElementById('event-end-date').value = date;
-            }
-            if (deleteEventButton) deleteEventButton.style.display = 'none';
-            selectedEvent = null;
-            // Leader scoping: lock club selector
-            const clubSelect = document.getElementById('event-club');
-            if (currentUser.role === 'leader' && clubSelect) {
-                clubSelect.value = currentUser.club;
-                clubSelect.disabled = true;
-            } else if (clubSelect) {
-                clubSelect.disabled = false;
-            }
+        document.getElementById('modal-title').textContent = 'Edit Event';
+        document.getElementById('event-name').value = event.name;
+        document.getElementById('event-club').value = event.club;
+        document.getElementById('event-start-date').value = event.startDate;
+        document.getElementById('event-end-date').value = event.endDate;
+        document.getElementById('event-start-time').value = event.startTime;
+        document.getElementById('event-end-time').value = event.endTime;
+        document.getElementById('event-location').value = event.location;
+        document.getElementById('event-description').value = event.description;
+        if (deleteEventButton) deleteEventButton.style.display = 'block';
+        selectedEvent = event;
+    } else {
+        document.getElementById('modal-title').textContent = 'Add New Event';
+        eventForm.reset();
+        if (date) {
+            document.getElementById('event-start-date').value = date;
+            document.getElementById('event-end-date').value = date;
         }
-        eventModal.style.display = 'flex';
-    }
-
-    // Event Form Submit
-    if (eventForm) {
-        eventForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const eventData = {
-                name: document.getElementById('event-name').value,
-                club: document.getElementById('event-club').value,
-                startDate: document.getElementById('event-start-date').value,
-                endDate: document.getElementById('event-end-date').value,
-                startTime: document.getElementById('event-start-time').value,
-                endTime: document.getElementById('event-end-time').value,
-                location: document.getElementById('event-location').value,
-                description: document.getElementById('event-description').value
-            };
-            const currentUser = window.AuthService.getCurrentUser();
-            if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'leader')) {
-                alert('You are not authorized to save events.');
-                return;
-            }
-            if (currentUser.role === 'leader' && eventData.club !== currentUser.club) {
-                alert('Leaders can only manage events of their own club.');
-                return;
-            }
-            if (selectedEvent) {
-                Object.assign(selectedEvent, eventData);
-                window.AuthService.logActivity(`Event updated: ${selectedEvent.name} (${selectedEvent.club})`);
-            } else {
-                eventData.id = events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1;
-                events.push(eventData);
-                selectedEvent = eventData;
-                window.AuthService.logActivity(`Event created: ${selectedEvent.name} (${selectedEvent.club})`);
-            }
-            renderCalendar();
-            showEventDetails(selectedEvent);
-            eventModal.style.display = 'none';
-        });
-    }
-
-    // Delete Event
-    if (deleteEventButton) {
-        deleteEventButton.addEventListener('click', function () {
-            if (selectedEvent && confirm('Are you sure you want to delete this event?')) {
-                const currentUser = window.AuthService.getCurrentUser();
-                if (!currentUser || (currentUser.role !== 'admin' && !(currentUser.role === 'leader' && currentUser.club === selectedEvent.club))) {
-                    alert('You are not authorized to delete this event.');
-                    return;
-                }
-                events = events.filter(e => e.id !== selectedEvent.id);
-                window.AuthService.logActivity(`Event deleted: ${selectedEvent.name} (${selectedEvent.club})`);
-                renderCalendar();
-                eventDetailsContainer.innerHTML = `<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>`;
-                eventModal.style.display = 'none';
-            }
-        });
-    }
-
-    // Month Navigation
-    if (prevMonthButton) {
-        prevMonthButton.addEventListener('click', function () {
-            currentMonth--;
-            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-            renderCalendar();
-        });
-    }
-
-    if (nextMonthButton) {
-        nextMonthButton.addEventListener('click', function () {
-            currentMonth++;
-            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-            renderCalendar();
-        });
-    }
-
-    // Date Picker Jump Functionality
-    const monthPicker = document.getElementById('month-picker');
-    const yearPicker = document.getElementById('year-picker');
-    const jumpToDateBtn = document.getElementById('jump-to-date');
-    const todayBtn = document.getElementById('today-btn');
-
-    // Populate year dropdown dynamically
-    if (yearPicker) {
-        const currentYear = new Date().getFullYear();
-        const startYear = 2020; // Start from 2020
-        const endYear = currentYear + 5; // Go 5 years into the future
-
-        for (let year = startYear; year <= endYear; year++) {
-            const option = document.createElement('option');
-            option.value = year;
-            option.textContent = year;
-            if (year === currentYear) {
-                option.selected = true;
-            }
-            yearPicker.appendChild(option);
+        if (deleteEventButton) deleteEventButton.style.display = 'none';
+        selectedEvent = null;
+        // Leader scoping: lock club selector
+        const clubSelect = document.getElementById('event-club');
+        if (currentUser.role === 'leader' && clubSelect) {
+            clubSelect.value = currentUser.club;
+            clubSelect.disabled = true;
+        } else if (clubSelect) {
+            clubSelect.disabled = false;
         }
     }
+    eventModal.style.display = 'flex';
+}
 
-    if (monthPicker && yearPicker && jumpToDateBtn) {
-        jumpToDateBtn.addEventListener('click', function () {
-            currentMonth = parseInt(monthPicker.value);
-            currentYear = parseInt(yearPicker.value);
-            renderCalendar();
-        });
-    }
-
-    if (todayBtn) {
-        todayBtn.addEventListener('click', function () {
-            const today = new Date();
-            currentMonth = today.getMonth();
-            currentYear = today.getFullYear();
-
-            // Update pickers to reflect today
-            if (monthPicker) monthPicker.value = currentMonth;
-            if (yearPicker) yearPicker.value = currentYear;
-
-            renderCalendar();
-        });
-    }
-
-    // Update pickers when month/year changes
-    if (monthPicker && yearPicker) {
-        window.updateDatePickers = function () {
-            monthPicker.value = currentMonth;
-            yearPicker.value = currentYear;
+// Event Form Submit
+if (eventForm) {
+    eventForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const eventData = {
+            name: document.getElementById('event-name').value,
+            club: document.getElementById('event-club').value,
+            startDate: document.getElementById('event-start-date').value,
+            endDate: document.getElementById('event-end-date').value,
+            startTime: document.getElementById('event-start-time').value,
+            endTime: document.getElementById('event-end-time').value,
+            location: document.getElementById('event-location').value,
+            description: document.getElementById('event-description').value
         };
-    }
+        const currentUser = window.AuthService.getCurrentUser();
+        if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'leader')) {
+            alert('You are not authorized to save events.');
+            return;
+        }
+        if (currentUser.role === 'leader' && eventData.club !== currentUser.club) {
+            alert('Leaders can only manage events of their own club.');
+            return;
+        }
+        if (selectedEvent) {
+            Object.assign(selectedEvent, eventData);
+            window.AuthService.logActivity(`Event updated: ${selectedEvent.name} (${selectedEvent.club})`);
+        } else {
+            eventData.id = events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1;
+            events.push(eventData);
+            selectedEvent = eventData;
+            window.AuthService.logActivity(`Event created: ${selectedEvent.name} (${selectedEvent.club})`);
+        }
+        renderCalendar();
+        showEventDetails(selectedEvent);
+        eventModal.style.display = 'none';
+    });
+}
 
-    // Filters (Club/Date)
-    function filterEvents() {
-        if (!clubFilter || !dateFilter) return;
-        const clubValue = clubFilter.value;
-        const dateValue = dateFilter.value;
-        const today = new Date();
-
-        // Date math for week/month filters
-        const currentWeekStart = new Date(today);
-        currentWeekStart.setDate(today.getDate() - today.getDay());
-        const currentWeekEnd = new Date(currentWeekStart);
-        currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
-        const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-        const currentMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-        const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-        const nextMonthEnd = new Date(today.getFullYear(), today.getMonth() + 2, 0);
-
-        eventCards.forEach(card => {
-            const cardClub = card.getAttribute('data-club');
-            const cardDateStr = card.getAttribute('data-date');
-            const cardDate = new Date(cardDateStr);
-
-            let clubMatch = clubValue === 'all' || cardClub === clubValue;
-            let dateMatch = true;
-
-            if (dateValue !== 'all') {
-                if (dateValue === 'this-week') dateMatch = cardDate >= currentWeekStart && cardDate <= currentWeekEnd;
-                else if (dateValue === 'this-month') dateMatch = cardDate >= currentMonthStart && cardDate <= currentMonthEnd;
-                else if (dateValue === 'next-month') dateMatch = cardDate >= nextMonthStart && cardDate <= nextMonthEnd;
+// Delete Event
+if (deleteEventButton) {
+    deleteEventButton.addEventListener('click', function () {
+        if (selectedEvent && confirm('Are you sure you want to delete this event?')) {
+            const currentUser = window.AuthService.getCurrentUser();
+            if (!currentUser || (currentUser.role !== 'admin' && !(currentUser.role === 'leader' && currentUser.club === selectedEvent.club))) {
+                alert('You are not authorized to delete this event.');
+                return;
             }
+            events = events.filter(e => e.id !== selectedEvent.id);
+            window.AuthService.logActivity(`Event deleted: ${selectedEvent.name} (${selectedEvent.club})`);
+            renderCalendar();
+            eventDetailsContainer.innerHTML = `<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>`;
+            eventModal.style.display = 'none';
+        }
+    });
+}
 
-            card.style.display = (clubMatch && dateMatch) ? 'block' : 'none';
-        });
+// Month Navigation
+if (prevMonthButton) {
+    prevMonthButton.addEventListener('click', function () {
+        currentMonth--;
+        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        renderCalendar();
+    });
+}
+
+if (nextMonthButton) {
+    nextMonthButton.addEventListener('click', function () {
+        currentMonth++;
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        renderCalendar();
+    });
+}
+
+// Date Picker Jump Functionality
+const monthPicker = document.getElementById('month-picker');
+const yearPicker = document.getElementById('year-picker');
+const jumpToDateBtn = document.getElementById('jump-to-date');
+const todayBtn = document.getElementById('today-btn');
+
+// Populate year dropdown dynamically
+if (yearPicker) {
+    const currentYear = new Date().getFullYear();
+    const startYear = 2020; // Start from 2020
+    const endYear = currentYear + 5; // Go 5 years into the future
+
+    for (let year = startYear; year <= endYear; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        if (year === currentYear) {
+            option.selected = true;
+        }
+        yearPicker.appendChild(option);
     }
+}
 
-    if (clubFilter && dateFilter) {
-        clubFilter.addEventListener('change', filterEvents);
-        dateFilter.addEventListener('change', filterEvents);
-    }
+if (monthPicker && yearPicker && jumpToDateBtn) {
+    jumpToDateBtn.addEventListener('click', function () {
+        currentMonth = parseInt(monthPicker.value);
+        currentYear = parseInt(yearPicker.value);
+        renderCalendar();
+    });
+}
 
-    // Initialize View
-    renderCalendar();
+if (todayBtn) {
+    todayBtn.addEventListener('click', function () {
+        const today = new Date();
+        currentMonth = today.getMonth();
+        currentYear = today.getFullYear();
+
+        // Update pickers to reflect today
+        if (monthPicker) monthPicker.value = currentMonth;
+        if (yearPicker) yearPicker.value = currentYear;
+
+        renderCalendar();
+    });
+}
+
+// Update pickers when month/year changes
+if (monthPicker && yearPicker) {
+    window.updateDatePickers = function () {
+        monthPicker.value = currentMonth;
+        yearPicker.value = currentYear;
+    };
+}
+
+// Filters (Club/Date)
+function filterEvents() {
+    if (!clubFilter || !dateFilter) return;
+    const clubValue = clubFilter.value;
+    const dateValue = dateFilter.value;
+    const today = new Date();
+
+    // Date math for week/month filters
+    const currentWeekStart = new Date(today);
+    currentWeekStart.setDate(today.getDate() - today.getDay());
+    const currentWeekEnd = new Date(currentWeekStart);
+    currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
+    const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    const currentMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+    const nextMonthEnd = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+
+    eventCards.forEach(card => {
+        const cardClub = card.getAttribute('data-club');
+        const cardDateStr = card.getAttribute('data-date');
+        const cardDate = new Date(cardDateStr);
+
+        let clubMatch = clubValue === 'all' || cardClub === clubValue;
+        let dateMatch = true;
+
+        if (dateValue !== 'all') {
+            if (dateValue === 'this-week') dateMatch = cardDate >= currentWeekStart && cardDate <= currentWeekEnd;
+            else if (dateValue === 'this-month') dateMatch = cardDate >= currentMonthStart && cardDate <= currentMonthEnd;
+            else if (dateValue === 'next-month') dateMatch = cardDate >= nextMonthStart && cardDate <= nextMonthEnd;
+        }
+
+        card.style.display = (clubMatch && dateMatch) ? 'block' : 'none';
+    });
+}
+
+if (clubFilter && dateFilter) {
+    clubFilter.addEventListener('change', filterEvents);
+    dateFilter.addEventListener('change', filterEvents);
+}
+
+// Initialize View
+renderCalendar();
 }
 
 /**
@@ -1368,49 +1372,47 @@ function initAdmin() {
             const sidebarLinks = document.querySelectorAll('.admin-menu a');
             const sections = document.querySelectorAll('.admin-tab-content');
 
-        // Sidebar Navigation
-        const sidebarLinks = document.querySelectorAll('.admin-menu a');
-        const sections = document.querySelectorAll('.admin-tab-content');
 
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
 
-                // Update Active Link
-                document.querySelectorAll('.admin-menu li').forEach(li => li.classList.remove('active'));
-                link.parentElement.classList.add('active');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
 
-                        if (targetId === 'dashboard') {
-                            // setTimeout(initAnalytics, 100); // Removed: we use initDashboardCharts now
-                        }
+                    // Update Active Link
+                    document.querySelectorAll('.admin-menu li').forEach(li => li.classList.remove('active'));
+                    link.parentElement.classList.add('active');
 
-                // Load Data based on section
-                if (targetId === 'dashboard' || targetId === 'registrations') loadRegistrations();
-                if (targetId === 'clubs') loadClubMemberships();
-                if (targetId === 'feedbacks') loadFeedbacks();
-            });
-        });
+                    if (targetId === 'dashboard') {
+                        // setTimeout(initAnalytics, 100); // Removed: we use initDashboardCharts now
+                    }
 
-        // Logout
-        document.getElementById('admin-logout').addEventListener('click', () => {
-            localStorage.removeItem('adminToken');
-            window.location.href = 'admin-login.html';
-        });
-
-        // Initial Load
-        loadRegistrations();
-
-        async function loadRegistrations() {
-            try {
-                const res = await fetch('http://localhost:3000/api/admin/registrations', {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    // Load Data based on section
+                    if (targetId === 'dashboard' || targetId === 'registrations') loadRegistrations();
+                    if (targetId === 'clubs') loadClubMemberships();
+                    if (targetId === 'feedbacks') loadFeedbacks();
                 });
-                if (res.ok) {
-                    const data = await res.json();
-                    const tbody = document.querySelector('#registrations-table tbody');
-                    if (tbody) {
-                        tbody.innerHTML = data.map(reg => `
+            });
+
+            // Logout
+            document.getElementById('admin-logout').addEventListener('click', () => {
+                localStorage.removeItem('adminToken');
+                window.location.href = 'admin-login.html';
+            });
+
+            // Initial Load
+            loadRegistrations();
+
+            async function loadRegistrations() {
+                try {
+                    const res = await fetch('http://localhost:3000/api/admin/registrations', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        const tbody = document.querySelector('#registrations-table tbody');
+                        if (tbody) {
+                            tbody.innerHTML = data.map(reg => `
                             <tr>
                                 <td>#${reg.id}</td>
                                 <td>${reg.name}</td>
@@ -1420,21 +1422,21 @@ function initAdmin() {
                                 <td><button class="table-action view"><i class="fas fa-eye"></i></button></td>
                             </tr>
                         `).join('');
+                        }
                     }
-                }
-            } catch (err) { console.error(err); }
-        }
+                } catch (err) { console.error(err); }
+            }
 
-        async function loadClubMemberships() {
-            try {
-                const res = await fetch('http://localhost:3000/api/admin/club-memberships', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    const tbody = document.querySelector('#clubs-table tbody');
-                    if (tbody) {
-                        tbody.innerHTML = data.map(m => `
+            async function loadClubMemberships() {
+                try {
+                    const res = await fetch('http://localhost:3000/api/admin/club-memberships', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        const tbody = document.querySelector('#clubs-table tbody');
+                        if (tbody) {
+                            tbody.innerHTML = data.map(m => `
                             <tr>
                                 <td>#${m.id}</td>
                                 <td>${m.name}</td>
@@ -1444,10 +1446,10 @@ function initAdmin() {
                                 <td><button class="table-action edit"><i class="fas fa-edit"></i></button></td>
                             </tr>
                         `).join('');
+                        }
                     }
-                }
-            } catch (err) { console.error(err); }
-        }
+                } catch (err) { console.error(err); }
+            }
 
             loadAdminDashboard();
             initClubManagement();
@@ -1456,37 +1458,43 @@ function initAdmin() {
             // If upstream's initAnalytics is distinct and needed, we can keep it, but it seems redundant with our charts.
             // Let's comment it out to rely on our new chart system, or check if it exists.
             if (typeof initAnalytics === 'function') initAnalytics();
+            async function loadFeedbacks() {
+                try {
+                    // Start of Feedback Load
+                    // Simulated or Real API call
+                    const res = await fetch('http://localhost:3000/api/admin/feedbacks');
+                    if (res.ok) {
+                        const data = await res.json();
+                        const tbody = document.querySelector('#feedbacks-table tbody');
+                        if (tbody) {
+                            if (data.length === 0) {
+                                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No feedback received yet.</td></tr>';
+                            } else {
+                                tbody.innerHTML = data.map(f => `
+                                    <tr>
+                                        <td>${new Date(f.createdAt).toLocaleDateString()}</td>
+                                        <td>${f.name}</td>
+                                        <td>
+                                            ${f.email ? `<div><i class="fas fa-envelope"></i> ${f.email}</div>` : ''}
+                                            ${f.eventName ? `<div><i class="fas fa-calendar-day"></i> ${f.eventName}</div>` : ''}
+                                        </td>
+                                        <td>${f.rating || '-'}</td>
+                                        <td>${f.message}</td>
+                                        <td>${f.status}</td>
+                                    </tr>
+                                `).join('');
+                            }
+                        }
+                    }
+                } catch (err) { console.error('Error loading feedbacks:', err); }
+            }
+
             const logoutButton = document.getElementById('admin-logout');
             if (logoutButton) {
                 logoutButton.addEventListener('click', function () {
-                    // Update: use AuthService.logout() for consistency
                     window.AuthService.logout();
                 });
-                if (res.ok) {
-                    const data = await res.json();
-                    console.log('Admin feedback data:', data);
-                    const tbody = document.querySelector('#feedbacks-table tbody');
-                    if (tbody) {
-                        if (data.length === 0) {
-                            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No feedback received yet.</td></tr>';
-                        } else {
-                            tbody.innerHTML = data.map(f => `
-                                <tr>
-                                    <td>${new Date(f.createdAt).toLocaleDateString()}</td>
-                                    <td>${f.name}</td>
-                                    <td>
-                                        ${f.email ? `<div><i class="fas fa-envelope"></i> ${f.email}</div>` : ''}
-                                        ${f.eventName ? `<div><i class="fas fa-calendar-day"></i> ${f.eventName}</div>` : ''}
-                                    </td>
-                                    <td>${f.rating || '-'}</td>
-                                    <td>${f.message}</td>
-                                    <td>${f.status}</td>
-                                </tr>
-                            `).join('');
-                        }
-                    }
-                }
-            } catch (err) { console.error(err); }
+            }
         }
     }
 
@@ -2037,7 +2045,7 @@ function initUserManagement() {
         modal.style.display = 'block';
         document.getElementById('modal-user-index').value = index != null ? String(index) : '';
         document.getElementById('user-username').value = user?.username || '';
-        document.getElementById('user-password').value = '';
+        // document.getElementById('user-password').value = ''; // Password field removed
         document.getElementById('user-role').value = user?.role || 'leader';
         document.getElementById('user-club').value = user?.club || '';
         toggleClubField();
@@ -2083,11 +2091,11 @@ function initUserManagement() {
         e.preventDefault();
         const idxStr = document.getElementById('modal-user-index').value;
         const username = document.getElementById('user-username').value.trim();
-        const password = document.getElementById('user-password').value;
+        // const password = document.getElementById('user-password').value; // Removed
         const role = document.getElementById('user-role').value;
         const club = document.getElementById('user-club').value.trim();
-        if (!username || (!idxStr && !password)) {
-            alert('Username and password are required.');
+        if (!username) {
+            alert('Username is required.');
             return;
         }
         if (role === 'leader' && !club) {
@@ -2103,7 +2111,7 @@ function initUserManagement() {
             return;
         }
         const newUser = { username, role, club: role === 'leader' ? club : undefined };
-        if (password) newUser.password = password;
+        // if (password) newUser.password = password; // Removed
         if (editing) {
             users[idx] = { ...users[idx], ...newUser };
             saveUsers(users);

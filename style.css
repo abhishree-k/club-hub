@@ -3381,10 +3381,10 @@ body.light-mode .dot:hover {
   font-size: 0.95rem;
 }
 
-<<<<<<< HEAD
+
 /* ❌ removed .faq-card.active logic */
 
-=======
+
 /* ================= CHATBOT FIX ================= */
 
 .chatbot-icon {
@@ -3483,7 +3483,7 @@ body.light-mode .dot:hover {
     font-size: 2.3rem;
   }
 }
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
 
 /* ===========================
    FAQ VISIBILITY FIX
@@ -3700,8 +3700,7 @@ body.light-mode .dot:hover {
   cursor: pointer;
 }
 
-<<<<<<< HEAD
-=======
+
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -4410,4 +4409,13 @@ body.oled-mode .timeline-event {
   color: white !important;
 }
 
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
+
+.logo-icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+

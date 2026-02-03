@@ -4,12 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6c5ce7">
     <title>Club Details | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css?v=2.2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
 
 <body>
@@ -30,6 +33,11 @@
             <li><a href="admin-login.html">Admin</a></li>
             <li id="nav-login"><a href="registration.html#student-login">Student Login</a></li>
             <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
+            <li>
+                <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-meteor"></i>
+                </button>
+            </li>
         </ul>
         <div class="nav-hamburger">
             <div class="line"></div>
@@ -134,3 +142,5 @@
 </body>
 
 </html>
+
+

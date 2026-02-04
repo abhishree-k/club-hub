@@ -709,8 +709,7 @@ function initCalendar() {
     const prevMonthButton = document.getElementById('prev-month');
     const nextMonthButton = document.getElementById('next-month');
     const eventModal = document.getElementById('event-modal');
-<<<<<<< HEAD
-=======
+
 
     const eventForm = document.getElementById('event-form');
     const saveEventButton = document.getElementById('save-event'); // Kept variable, though used in form submit
@@ -721,22 +720,20 @@ function initCalendar() {
     const eventCards = document.querySelectorAll('.event-card');
     const eventSearch = document.getElementById('eventSearch');
     const searchBtn = document.getElementById('search-btn');
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
-
     const eventSearch = document.getElementById('eventSearch');
     const searchBtn = document.getElementById('search-btn');
 
     let currentDate = new Date();
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
-<<<<<<< HEAD
+
 
     // Mock Events for Calendar Display
     const events = [
         { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", description: "Hands-on session." },
         { id: 2, name: "Digital Art", club: "arts", date: getFutureDate(14), time: "16:00", description: "Art Masterclass." },
         { id: 3, name: "Debate", club: "debate", date: getFutureDate(21), time: "15:00", description: "Public Speaking." }
-=======
+
 
     let selectedEvent = null;
     let searchTerm = '';
@@ -766,11 +763,10 @@ function initCalendar() {
         { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." },
         { id: 4, name: "Tech Talk: AI Ethics", club: "tech", date: "2025-10-15", time: "15:00", location: "Auditorium", description: "Discussion on ethical AI development." },
         { id: 5, name: "Photography Workshop", club: "arts", date: "2025-10-20", time: "14:00", location: "Media Lab", description: "Learn basic photography techniques." }
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
     ];
 
-<<<<<<< HEAD
-=======
+
     // Helper: Get Club Name
     function getClubName(clubId) {
         const clubs = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Science Guild' };
@@ -785,7 +781,7 @@ function initCalendar() {
         { id: 3, name: "Debate", club: "debate", date: getFutureDate(21), time: "15:00", description: "Public Speaking." }
     ];
 
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
     function renderCalendar() {
         calendarGrid.innerHTML = '';
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -793,12 +789,11 @@ function initCalendar() {
 
         const firstDay = new Date(currentYear, currentMonth, 1).getDay();
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-<<<<<<< HEAD
-=======
+
 
         const today = new Date();
         const isCurrentMonth = currentMonth === today.getMonth() && currentYear === today.getFullYear();
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
 
         for (let i = 0; i < firstDay; i++) {
             const empty = document.createElement('div');
@@ -814,13 +809,13 @@ function initCalendar() {
             const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
             const dayEvents = events.filter(e => e.date === dateStr);
 
-<<<<<<< HEAD
+
             dayEvents.forEach(ev => {
                 const evEl = document.createElement('div');
                 evEl.className = `day-event ${ev.club}`;
                 evEl.textContent = ev.name;
                 dayEl.appendChild(evEl);
-=======
+
             // Events for day
             const dayEvents = document.createElement('div');
             dayEvents.classList.add('day-events');
@@ -840,18 +835,18 @@ function initCalendar() {
                     getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
                     event.description.toLowerCase().includes(searchTerm.toLowerCase());
                 return matchesDate && matchesSearch;
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
             });
 
             calendarGrid.appendChild(dayEl);
         }
     }
 
-<<<<<<< HEAD
+
     if (prevMonthButton) prevMonthButton.addEventListener('click', () => {
         currentMonth--;
         if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-=======
+
     function showEventDetails(event) {
         if (!eventDetailsContainer) return;
         selectedEvent = event;
@@ -1073,7 +1068,7 @@ function initCalendar() {
             }
         }
         
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
         renderCalendar();
     });
 
@@ -1092,10 +1087,9 @@ function initCalendar() {
 function initAdmin() {
     // 1. Admin Login
     const adminLoginForm = document.getElementById('admin-login-form');
-<<<<<<< HEAD
+
     if (adminLoginForm) {
         adminLoginForm.addEventListener('submit', async function (e) {
-=======
     const togglePassword = document.querySelector('.toggle-password');
     const passwordInput = document.getElementById('admin-password');
     const confirmPasswordGroup = document.getElementById('confirm-password-group');
@@ -1195,12 +1189,12 @@ function initAdmin() {
         });
 
         adminLoginForm.addEventListener('submit', function (e) {
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
             e.preventDefault();
             const username = document.getElementById('admin-username').value;
             const password = document.getElementById('admin-password').value;
 
-<<<<<<< HEAD
+
             try {
                 const response = await fetch('http://localhost:3000/api/auth/login', {
                     method: 'POST',
@@ -1208,7 +1202,7 @@ function initAdmin() {
                     body: JSON.stringify({ email: username, password })
                 });
 
-=======
+
             const usernameField = document.getElementById('admin-username');
             const passwordField = document.getElementById('admin-password');
             const username = usernameField.value.trim();
@@ -1297,7 +1291,7 @@ function initAdmin() {
                     body: JSON.stringify({ email: username, password })
                 });
 
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
                 if (response.ok) {
                     const data = await response.json();
                     if (data.user.role === 'admin') {
@@ -1322,10 +1316,10 @@ function initAdmin() {
         const token = localStorage.getItem('adminToken');
         if (!token) {
             window.location.href = 'admin-login.html';
-<<<<<<< HEAD
+
             return;
         }
-=======
+
 
    
         } 
@@ -1333,14 +1327,13 @@ function initAdmin() {
             // Init Sidebar Navigation
             const sidebarLinks = document.querySelectorAll('.admin-menu a');
             const sections = document.querySelectorAll('.admin-tab-content');
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
 
         // Sidebar Navigation
         const sidebarLinks = document.querySelectorAll('.admin-menu a');
         const sections = document.querySelectorAll('.admin-tab-content');
 
-<<<<<<< HEAD
-=======
+
             return;
         }
 
@@ -1349,7 +1342,7 @@ function initAdmin() {
         const sidebarLinks = document.querySelectorAll('.admin-menu a');
         const sections = document.querySelectorAll('.admin-tab-content');
 
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
         sidebarLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -1402,10 +1395,10 @@ function initAdmin() {
                     }
                 }
             } catch (err) { console.error(err); }
-<<<<<<< HEAD
+
         }
 
-=======
+
         }
 
     }
@@ -1472,7 +1465,7 @@ function initAdmin() {
             });
 
 
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
         async function loadClubMemberships() {
             try {
                 const res = await fetch('http://localhost:3000/api/admin/club-memberships', {
@@ -1495,9 +1488,9 @@ function initAdmin() {
                     }
                 }
             } catch (err) { console.error(err); }
-<<<<<<< HEAD
+
         }
-=======
+
 
         }
 
@@ -1533,7 +1526,7 @@ function initAdmin() {
     }
             eventRegistrationsTable.querySelector('tbody').appendChild(row);
         });
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
 
         async function loadFeedbacks() {
             try {
@@ -1566,10 +1559,8 @@ function initAdmin() {
                 }
             } catch (err) { console.error(err); }
         }
-<<<<<<< HEAD
-=======
 
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
     }
 }
 
@@ -1626,8 +1617,7 @@ function updateUIForStudent() {
     }
 }
 
-<<<<<<< HEAD
-=======
+
 function updateEnrollmentStatus() {
     const student = JSON.parse(localStorage.getItem('studentUser'));
     if (!student) return;
@@ -1736,7 +1726,7 @@ function sendMessage() {
  * Initialize Club Buttons
  * Adds event listeners to view club buttons
  */
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
 function initClubButtons() {
     document.querySelectorAll('.view-club-btn').forEach(btn => {
         btn.addEventListener('click', function () {
@@ -1770,8 +1760,7 @@ if (typeof module !== 'undefined' && module.exports) {
         getCurrentMonthYear
     };
 }
-<<<<<<< HEAD
-=======
+
 
 /**
  * Fetch Club Details from Backend
@@ -2105,4 +2094,76 @@ if (typeof module !== 'undefined' && module.exports) {
         getCurrentMonthYear
     };
 }
->>>>>>> 2f2e83037a280de111f551f99f8276f5d9b83772
+
+/* PWA Support */
+/* PWA Support */
+let deferredPrompt;
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            })
+            .catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+    });
+
+    // Handle PWA Install Prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+
+        // Update UI notify the user they can install the PWA
+        // Navbar Install Button
+        const installBtnLi = document.getElementById('install-app-li');
+        const installBtn = document.getElementById('install-app-btn');
+        // Footer Install Button
+        const footerInstallSection = document.getElementById('footer-install-section');
+        const footerInstallBtn = document.getElementById('footer-install-btn');
+
+        const showInstallPrompt = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+                // Hide buttons after install logic
+                if (installBtnLi) installBtnLi.style.display = 'none';
+                if (installBtn) installBtn.style.display = 'none';
+                if (footerInstallSection) footerInstallSection.style.display = 'none';
+            }
+        };
+
+        if (installBtn) {
+            if (installBtnLi) installBtnLi.style.display = 'block';
+            else installBtn.style.display = 'block';
+            installBtn.addEventListener('click', showInstallPrompt);
+        }
+
+        if (footerInstallBtn && footerInstallSection) {
+            footerInstallSection.style.display = 'block';
+            footerInstallBtn.addEventListener('click', showInstallPrompt);
+        }
+    });
+
+    window.addEventListener('appinstalled', () => {
+        // Hide the app-provided install promotion
+        const installBtnLi = document.getElementById('install-app-li');
+        if (installBtnLi) installBtnLi.style.display = 'none';
+
+        const installBtn = document.getElementById('install-app-btn');
+        if (installBtn) installBtn.style.display = 'none';
+
+        const footerInstallSection = document.getElementById('footer-install-section');
+        if (footerInstallSection) footerInstallSection.style.display = 'none';
+
+        // Clear the deferredPrompt so it can be garbage collected
+        deferredPrompt = null;
+        console.log('PWA was installed');
+    });
+}
+

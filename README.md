@@ -118,7 +118,7 @@ Educational institutions often face:
 
 ## 📁 Project Structure
 
-```bash
+```plaintext
 club-hub/
 ├── admin-dashboard.html
 ├── admin-login.html
@@ -151,109 +151,134 @@ club-hub/
         ├── home.png
         ├── clubs.png
         └── view-club.png
-⚙️ Getting Started
-Prerequisites
 
-Modern web browser (Chrome, Firefox, Edge, Safari)
+``` 
+## ⚙️ Getting Started
 
-Node.js (v14 or higher)
 
-npm
+1. ### Prerequisites
+```plaintext
+- Modern web browser (Chrome, Firefox, Edge, Safari)
 
-Installation & Setup
+- Node.js (v14 or higher)
 
+- npm
+```
+
+2. ### Installation & Setup
+```plaintext
 Clone the repository:
 
-git clone https://github.com/<your-username>/club-hub.git
-cd club-hub
+- git clone https://github.com/<your-username>/club-hub.git
+- cd club-hub
+```
 
+3. ### Setup the backend:
+```plaintext
+- cd backend
+- npm install
+- npm start
+```
 
-Setup the backend:
+4. ### Open index.html in your browser (or use VS Code Live Server).
+```plaintext
+- Running Tests
+- npm install
+- npm test
+```
 
-cd backend
-npm install
-npm start
+## 🧪 Usage Guide
 
+- Navigate the UI as a student
 
-Open index.html in your browser (or use VS Code Live Server).
+- Explore clubs & events
 
-Running Tests
-npm install
-npm test
+- Access admin functionality
 
-🧪 Usage Guide
+- Extend features by modifying JS/CSS
 
-Navigate the UI as a student
-
-Explore clubs & events
-
-Access admin functionality
-
-Extend features by modifying JS/CSS
-
-🤝 Contributing
-
+## 🤝 Contributing
+```plaintext
 We welcome contributions from all experience levels 💙
 
-Please read CONTRIBUTING.md
- before contributing.
+- Please read CONTRIBUTING.md before contributing.
 
 Contribution Flow
-git checkout -b feature/your-feature
-git commit -m "feat: meaningful description"
-git push origin feature/your-feature
-
+- git checkout -b feature/your-feature
+- git commit -m "feat: meaningful description"
+- git push origin feature/your-feature
 
 Open a Pull Request 🚀
+```
 
-♿ Accessibility
+## ♿ Accessibility
 
-Added Skip to main content link for keyboard users
+- Added Skip to main content link for keyboard users
 
-Mobile menu is a proper button with aria-label, aria-expanded, and aria-controls
+- Mobile menu is a proper button with aria-label, aria-expanded, and aria-controls
 
-Navigation list uses aria-hidden when closed, reachable via Tab when opened
+- Navigation list uses aria-hidden when closed, reachable via Tab when opened
 
-Strong focus styles for links, buttons, and CTAs
+- Strong focus styles for links, buttons, and CTAs
 
-Keyboard handling: Enter/Space toggles menu, Esc closes it, Arrow keys navigate
+- Keyboard handling: Enter/Space toggles menu, Esc closes it, Arrow keys navigate
 
-Manual testing: Tab through site, check visible focus, press Esc to close menu
+- Manual testing: Tab through site, check visible focus, press Esc to close menu
 
-🗺 Roadmap
+## 🗺 Roadmap
 
-Backend integration
+- Backend integration
 
-Role-based authentication
+- Role-based authentication
 
-Analytics dashboard
+- Analytics dashboard
 
-Mobile responsiveness
+- Mobile responsiveness
 
-Accessibility improvements
+- Accessibility improvements
 
-🏷 Open Source Program
-🌱 Social Winter of Code (SWoC) 2026
+## 🏷 Open Source Program
+- 🌱 Social Winter of Code (SWoC) 2026
 
-Beginner-friendly issues
+- Beginner-friendly issues
 
-UI/UX improvements
+- UI/UX improvements
 
-Documentation contributions
+- Documentation contributions
 
-Feature proposals
+- Feature proposals
 
-📄 License
+## 📄 License
 
 Licensed under the repository’s LICENSE
  file.
 
-🙌 Acknowledgements
+## 🙌 Acknowledgements
 
-SWoC 2026 mentors & maintainers
+- SWoC 2026 mentors & maintainers
 
-Open-source contributors
+- Open-source contributors
 
-Student developer community
+- Student developer community
 
-<div align="center"> ⭐ If you like this project, don’t forget to star the repository! Happy Contributing 🚀 </div> 
+- ⭐ If you like this project, don’t forget to star the repository! Happy Contributing 🚀  
+
+## 💛 Connect With Us
+
+Join our growing community! Connect with us on **Discord** for:
+
+- 💬 Real-time discussions and support  
+- 🚀 Project updates and announcements  
+- 💡 Feature suggestions and feedback  
+- 🤝 Collaboration opportunities 
+
+ <p align="start">
+  <a href="https://discord.gg/https://discord.gg/KnArBPuqg">
+    <img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white" height="30"/>
+        
+  </a>
+</p>
+
+
+
+

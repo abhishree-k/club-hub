@@ -151,7 +151,9 @@ club-hub/
         ├── home.png
         ├── clubs.png
         └── view-club.png
-⚙️ Getting Started
+```
+
+## ⚙️ Getting Started
 Prerequisites
 
 Modern web browser (Chrome, Firefox, Edge, Safari)

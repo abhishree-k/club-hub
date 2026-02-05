@@ -1,16 +1,18 @@
-const CACHE_NAME = 'dsce-clubs-v2';
+const CACHE_NAME = 'dsce-clubs-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './events.html',
   './past-events.html',
   './club.html',
+  './blog.html',
   './faq.html',
   './registration.html',
   './my-hub.html',
   './clubs.json',
   './style.css',
   './app.js',
+  './blog.js',
   './scroll.js',
   './darkmode.js',
   './assets/icon-192.png',

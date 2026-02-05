@@ -4675,3 +4675,12 @@ body.oled-mode .small-hero .hero-subtitle {
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: var(--secondary-color) !important;
 }
+
+/* Footer Install Button Theme Adjustments */
+#footer-install-btn {
+  color: white !important;
+}
+
+body.light-mode #footer-install-btn {
+  color: rgba(23, 21, 21, 0.7) !important;
+}

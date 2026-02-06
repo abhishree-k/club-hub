@@ -3584,8 +3584,8 @@ body.light-mode .dot:hover {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  background: linear-gradient(135deg);
-  color: var(--deep-navy);
+  background: var(--gradient);
+  color: white;
   border: none;
   border-radius: 50%;
   width: 55px;

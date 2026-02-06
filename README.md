@@ -151,7 +151,9 @@ club-hub/
         ├── home.png
         ├── clubs.png
         └── view-club.png
-⚙️ Getting Started
+```
+
+## ⚙️ Getting Started
 Prerequisites
 
 Modern web browser (Chrome, Firefox, Edge, Safari)
@@ -256,4 +258,4 @@ Open-source contributors
 
 Student developer community
 
-<div align="center"> ⭐ If you like this project, don’t forget to star the repository! Happy Contributing 🚀 </div> 
+<div align="center"> ⭐ If you like this project, don’t forget to star the repository! Happy Contributing 🚀 </div>

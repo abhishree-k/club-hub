@@ -648,19 +648,19 @@ button:focus-visible,
   .testimonial-container {
     gap: 1rem;
   }
-  
+
   .testimonial-arrow {
     width: 40px;
     height: 40px;
     min-width: 40px;
     font-size: 1rem;
   }
-  
+
   .testimonial-slide p {
     font-size: 1.1rem;
     line-height: 1.6;
   }
-  
+
   .testimonial-carousel {
     height: 280px;
   }
@@ -671,21 +671,21 @@ button:focus-visible,
     flex-direction: column;
     gap: 1.5rem;
   }
-  
+
   .testimonial-arrows-mobile {
     display: flex;
     gap: 1rem;
     order: 2;
   }
-  
+
   .testimonial-arrow {
     position: static;
   }
-  
+
   .testimonial-slide p {
     font-size: 1rem;
   }
-  
+
   .testimonial-carousel {
     height: 300px;
   }
@@ -826,6 +826,10 @@ body.light-mode .dot:hover {
   font-family: var(--font-main);
   box-shadow: var(--shadow);
   outline: none;
+  background: white;
+  /* Added for visibility */
+  color: var(--text-color);
+  /* Ensure high contrast */
 }
 
 .search-input:focus {
@@ -837,7 +841,8 @@ body.light-mode .dot:hover {
   color: white;
   border: none;
   padding: 0 1.5rem;
-  height: 54px; /* Matches input height (approx with padding) */
+  height: 54px;
+  /* Matches input height (approx with padding) */
   border-radius: 0 50px 50px 0;
   cursor: pointer;
   transition: var(--transition);

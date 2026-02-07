@@ -824,7 +824,8 @@ body.light-mode .dot:hover {
   border: none;
   font-size: 1rem;
   font-family: var(--font-main);
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  /* Darker shadow for better visibility */
   outline: none;
   background: white;
   /* Added for visibility */

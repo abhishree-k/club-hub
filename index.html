@@ -16,31 +16,31 @@
 </head>
 
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-  <div class="stars-background"></div>
-
-  <nav class="cosmic-nav" role="navigation" aria-label="Main navigation">
-    <div class="nav-logo">
-      <span class="logo-icon">🌌</span>
-      <span class="logo-text">DSCE Clubs</span>
-    </div>
-    <ul class="nav-links" id="nav-links" aria-hidden="false">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="events.html">Live & Upcoming Events</a></li>
-      <li><a href="past-events.html">Past Events</a></li>
-      <li><a href="faq.html">FAQ</a></li>
-      <li><a href="registration.html">Registration</a></li>
-      <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
-      <li><a href="admin-login.html">Admin</a></li>
-      <li id="nav-login">
-        <a href="registration.html#student-login">Student Login</a>
-      </li>
-      <li id="nav-logout" class="hidden">
-        <a href="#" id="student-logout-btn">Logout</a>
-      </li>
-      <li>
-        <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
-          <i class="fas fa-moon"></i>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="stars-background"></div>
+    
+    <nav class="cosmic-nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-logo">
+            <span class="logo-icon">🌌</span>
+            <span class="logo-text">DSCE Clubs</span>
+        </div>
+        <ul class="nav-links" id="nav-links" aria-hidden="false">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="events.html">Live & Upcoming Events</a></li>
+            <li><a href="past-events.html">Past Events</a></li>
+            <li><a href="faq.html">FAQ</a></li> 
+            <li><a href="registration.html">Registration</a></li>
+            <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
+            <li><a href="admin-login.html">Admin</a></li>
+            <li id="nav-login"><a href="registration.html#student-login">Student Login</a></li>
+            <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
+        </ul>
+        <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links" type="button">
+            <span class="hamburger-icon" aria-hidden="true">
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+            </span>
         </button>
       </li>
       </li>
@@ -308,9 +308,11 @@
     </div>
   </footer>
 
-  <script src="app.js?v=2.0"></script>
-  <script src="scroll.js?v=2.0"></script>
-  <script src="darkmode.js?v=2.0"></script>
+    <button id="backToTop" title="Go to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="app.js"></script>
 </body>
 
 </html>

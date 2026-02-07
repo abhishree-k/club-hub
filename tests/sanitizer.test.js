@@ -4,25 +4,12 @@
  */
 
 const { escapeHtml } = require('../app.js');
-// Mock escapeHtml function for testing (in a real setup, this would be imported)
-function escapeHtml(unsafe) {
-    if (typeof unsafe !== 'string') {
-        return unsafe;
-    }
-    
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
 
 /**
  * Test Suite for escapeHtml()
  */
 describe('escapeHtml Sanitizer', () => {
-    
+
     test('should escape script tags', () => {
         const input = '<script>alert("XSS")</script>';
         const expected = '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;';
@@ -99,7 +86,7 @@ describe('escapeHtml Sanitizer', () => {
  * Integration Tests - Real-world XSS scenarios
  */
 describe('Real-world XSS Prevention', () => {
-    
+
     test('should prevent stored XSS in user names', () => {
         const maliciousName = '<script>document.cookie</script>John';
         const safe = escapeHtml(maliciousName);
@@ -135,7 +122,7 @@ describe('Real-world XSS Prevention', () => {
 // Manual test runner (for browser console testing)
 if (typeof window !== 'undefined' && typeof module === 'undefined') {
     console.log('=== Running Sanitizer Tests ===');
-    
+
     const tests = [
         {
             name: 'Script tag',

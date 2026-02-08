@@ -103,6 +103,15 @@ git push origin <your-branch-name>
 ### 7️⃣ Create a Pull Request
 Go to the original repository on GitHub and create a new pull request from your forked repository.
 
+## Pull Request Guidelines
+
+All contributors must use the Pull Request template provided in the
+`.github/pull_request_template.md` file.
+
+This ensures consistent, high-quality submissions and helps maintainers
+review changes efficiently.
+
+
 📝 Pull Request Guidelines
 When opening a PR, please ensure:
 - The PR addresses a single concern

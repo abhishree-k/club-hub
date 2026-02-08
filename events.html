@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6c5ce7">
     <title>Events | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css?v=2.3">
     <link
@@ -11,6 +13,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script type="text/javascript" src="darkmode.js?v=2.0" defer></script>
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
 
 <body>
@@ -274,6 +277,14 @@
                 <span class="logo-text">DSCE Clubs</span>
             </div>
             <div class="footer-links">
+                <div class="footer-column" id="footer-install-section" style="display: none;">
+                    <h4>Install App</h4>
+                    <ul>
+                        <li><button id="footer-install-btn"
+                                style="background: none; border: none; color: rgba(23, 23, 23, 0.7); cursor: pointer; padding: 0; font-family: inherit; font-size: inherit; text-align: left;"><i
+                                    class="fas fa-download"></i> Install Now</button></li>
+                    </ul>
+                </div>
                 <div class="footer-column">
                     <h4>Explore</h4>
                     <ul>

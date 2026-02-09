@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6c5ce7">
     <title>Registration | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css?v=2.2">
     <link
@@ -11,6 +13,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script type="text/javascript" src="darkmode.js?v=2.0" defer></script>
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
 
 <body>
@@ -63,7 +66,7 @@
                     aria-selected="false" aria-controls="student-login">Student Login</button>
             </div>
 
-            <div class="tab-content" id="student-login" role="tabpanel" aria-labelledby="tab-login" hidden>
+            <div class="tab-content" id="student-login" role="tabpanel" aria-labelledby="student-login-tab-btn" hidden>
                 <h2 class="section-title">Student <span class="text-gradient">Login</span></h2>
                 <p style="text-align: center; margin-bottom: 2rem;">Login to access 'My Hub' and manage your club
                     memberships and event registrations.</p>
@@ -84,7 +87,7 @@
                 </form>
             </div>
 
-            <div class="tab-content active" id="club-registration" role="tabpanel" aria-labelledby="tab-club">
+            <div class="tab-content active" id="club-registration" role="tabpanel" aria-labelledby="tab-club-registration">
                 <h2 class="section-title">Join a <span class="text-gradient">Club</span></h2>
                 <div id="club-success-message" class="success-message hidden">
                     <i class="fas fa-check-circle"></i>
@@ -174,9 +177,9 @@
                         <button type="submit" class="submit-button">Submit Application</button>
                     </div>
                 </form>
-            </div>"
+            </div>
 
-            <div class="tab-content" id="event-registration" role="tabpanel">
+            <div class="tab-content" id="event-registration" role="tabpanel" aria-labelledby="tab-event-registration">
                 <h2 class="section-title">Register for <span class="text-gradient">Events</span></h2>
                 <div class="event-selection">
                     <div class="event-filters">
@@ -314,7 +317,7 @@
             </div>
 
             <!-- E-Certificate Panel -->
-            <div class="tab-content" id="e-certificate" role="tabpanel" aria-labelledby="tab-certificate" hidden>
+            <div class="tab-content" id="e-certificate" role="tabpanel" aria-labelledby="tab-e-certificate" hidden>
                 <h2 class="section-title">Request <span class="text-gradient">E-Certificate</span></h2>
                 <form id="certificate-form" class="registration-form">
                     <div class="form-group">

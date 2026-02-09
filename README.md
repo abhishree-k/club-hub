@@ -96,9 +96,9 @@ Educational institutions often face:
 
 ## 🖼️ Screenshots
 
-![Home Page](assets/screenshots/home.png)
-![Clubs Page](assets/screenshots/clubs.png)
-![View Club](assets/screenshots/view-club.png)
+![Home Page](assets/screenshots/home_page.png)
+![Clubs Page](assets/screenshots/club.png)
+![View Club](assets/screenshots/view_club.png)
 
 ---
 
@@ -148,40 +148,49 @@ club-hub/
     └── routes/
 └── assets/
     └── screenshots/
-        ├── home.png
-        ├── clubs.png
-        └── view-club.png
-⚙️ Getting Started
-Prerequisites
+        ├── home_page.png
+        ├── club.png
+        └── view_club.png
+```
 
-Modern web browser (Chrome, Firefox, Edge, Safari)
+## ⚙️ Getting Started
 
-Node.js (v14 or higher)
+### Prerequisites
 
-npm
+- Modern web browser (Chrome, Firefox, Edge, Safari)
+- Node.js (v14 or higher)
+- npm
 
-Installation & Setup
+---
 
-Clone the repository:
+### Installation & Setup
 
+#### Clone the repository
+
+```bash
 git clone https://github.com/<your-username>/club-hub.git
 cd club-hub
+```
 
+### Setup the backend:
 
-Setup the backend:
-
+```bash
 cd backend
 npm install
 npm start
+```
 
 
 Open index.html in your browser (or use VS Code Live Server).
 
 Running Tests
+
+```bash
 npm install
 npm test
+```
 
-🧪 Usage Guide
+### 🧪 Usage Guide
 
 Navigate the UI as a student
 
@@ -191,69 +200,52 @@ Access admin functionality
 
 Extend features by modifying JS/CSS
 
-🤝 Contributing
+### 🤝 Contributing
 
 We welcome contributions from all experience levels 💙
 
-Please read CONTRIBUTING.md
- before contributing.
+Please read CONTRIBUTING.md before contributing.
 
-Contribution Flow
+### Contribution Flow
+```bash
 git checkout -b feature/your-feature
 git commit -m "feat: meaningful description"
 git push origin feature/your-feature
+```
 
+### Open a Pull Request 🚀
 
-Open a Pull Request 🚀
+### ♿ Accessibility
 
-♿ Accessibility
+- Added Skip to main content link for keyboard users
+- Mobile menu is a proper button with aria-label, aria-expanded, and aria-controls
+- Navigation list uses aria-hidden when closed, reachable via Tab when opened
+- Strong focus styles for links, buttons, and CTAs
+- Keyboard handling: Enter/Space toggles menu, Esc closes it, Arrow keys navigate
+- Manual testing: Tab through site, check visible focus, press Esc to close menu
 
-Added Skip to main content link for keyboard users
+### 🗺 Roadmap
+- Backend integration
+- Role-based authentication
+- Analytics dashboard
+- Mobile responsiveness
+- Accessibility improvements
 
-Mobile menu is a proper button with aria-label, aria-expanded, and aria-controls
+### 🏷 Open Source Program 🌱 Social Winter of Code (SWoC) 2026
 
-Navigation list uses aria-hidden when closed, reachable via Tab when opened
+- Beginner-friendly issues
+- UI/UX improvements
+- Documentation contribution
+- Feature proposals
 
-Strong focus styles for links, buttons, and CTAs
+### 📄 License
 
-Keyboard handling: Enter/Space toggles menu, Esc closes it, Arrow keys navigate
+Licensed under the repository’s LICENSE file.
 
-Manual testing: Tab through site, check visible focus, press Esc to close menu
+### 🙌 Acknowledgements
 
-🗺 Roadmap
+- SWoC 2026 mentors & maintainers
+- Open-source contributors
+- Student developer community
 
-Backend integration
-
-Role-based authentication
-
-Analytics dashboard
-
-Mobile responsiveness
-
-Accessibility improvements
-
-🏷 Open Source Program
-🌱 Social Winter of Code (SWoC) 2026
-
-Beginner-friendly issues
-
-UI/UX improvements
-
-Documentation contributions
-
-Feature proposals
-
-📄 License
-
-Licensed under the repository’s LICENSE
- file.
-
-🙌 Acknowledgements
-
-SWoC 2026 mentors & maintainers
-
-Open-source contributors
-
-Student developer community
-
-<div align="center"> ⭐ If you like this project, don’t forget to star the repository! Happy Contributing 🚀 </div> 
+<div align="center"> ⭐ If you like this project, don’t forget to star the repository! Happy Contributing 🚀 </div>

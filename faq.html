@@ -1,100 +1,109 @@
 <!doctype html>
 <html lang="en">
-
-<head>
+  <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#6c5ce7" />
   <title>FAQ | College Events</title>
   <link rel="stylesheet" href="style.css?v=2.2" />
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
 
-<body>
-  <div class="stars-background"></div>
 
-  <!-- Navigation Bar -->
-  <nav class="navbar">
-    <div class="nav-logo">
-      <span class="logo-icon">🌌</span>
-      <span class="logo-text">DSCE Clubs</span>
-    </div>
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="faq.html" class="active">FAQ</a>
-      <a href="contact.html">Contact Us</a>
-      <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode" style="margin-left: 15px;">
-        <i class="fas fa-meteor"></i>
-      </button>
-    </div>
-  </nav>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="nav-logo">
+        <span class="logo-icon">🌌</span>
+        <span class="logo-text" style="color: aliceblue">DSCE Clubs</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html" style="color: aliceblue !important">Home</a>
+        <a href="faq.html" class="active" style="color: aliceblue !important"
+          >FAQ</a
+        >
+        <a href="contact.html" style="color: aliceblue !important"
+          >Contact Us</a
+        >
+        <button
+          id="theme-switch"
+          class="theme-btn"
+          aria-label="Toggle Dark Mode"
+          style="margin-left: 15px"
+        >
+          <i class="fas fa-meteor"></i>
+        </button>
+      </div>
+    </nav>
 
-  <!-- ================= FAQ SECTION ================= -->
-  <section class="faq-wrapper">
-    <h1>Frequently Asked Questions</h1>
-    <p class="faq-subtitle">
-      Common questions related to college events and registrations.
-    </p>
+    <!-- ================= FAQ SECTION ================= -->
+    <section class="faq-wrapper">
+      <h1>Frequently Asked Questions</h1>
+      <p class="faq-subtitle">
+        Common questions related to college events and registrations.
+      </p>
 
-    <div class="faq-grid">
-      <div class="faq-card">
-        <h3 class="faq-question">
-          What is the College Event Management System?
-        </h3>
-        <div class="faq-answer">
-          It helps students view, register, and participate in college events
-          like workshops and seminars.
+      <div class="faq-grid">
+        <div class="faq-card">
+          <h3 class="faq-question">
+            What is the College Event Management System?
+          </h3>
+          <div class="faq-answer">
+            It helps students view, register, and participate in college events
+            like workshops and seminars.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <h3 class="faq-question">How can I register for an event?</h3>
+          <div class="faq-answer">
+            You can register by visiting the Events page and filling out the
+            registration form.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <h3 class="faq-question">Is there any registration fee?</h3>
+          <div class="faq-answer">
+            Some events are free while others may require a registration fee.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <h3 class="faq-question">Can I attend multiple events?</h3>
+          <div class="faq-answer">
+            Yes, you can participate in multiple events if the timings do not
+            clash.
+          </div>
         </div>
       </div>
+    </section>
+    <!-- scroll top button -->
+    <!-- make the icon translucent -->
+    <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
+      <i class="fas fa-chevron-up"></i>
+    </button>
+    <!-- ================= CHATBOT ================= -->
+    <div class="chatbot-icon" onclick="toggleChat()">💬</div>
 
-      <div class="faq-card">
-        <h3 class="faq-question">How can I register for an event?</h3>
-        <div class="faq-answer">
-          You can register by visiting the Events page and filling out the
-          registration form.
-        </div>
+    <div class="chatbot-box" id="chatbot">
+      <div class="chat-header">
+        Event Assistant
+        <span onclick="toggleChat()">✖</span>
       </div>
 
-      <div class="faq-card">
-        <h3 class="faq-question">Is there any registration fee?</h3>
-        <div class="faq-answer">
-          Some events are free while others may require a registration fee.
-        </div>
+      <div class="chat-body" id="chatBody">
+        <div class="bot">Hello 👋 How can I help you?</div>
       </div>
 
-      <div class="faq-card">
-        <h3 class="faq-question">Can I attend multiple events?</h3>
-        <div class="faq-answer">
-          Yes, you can participate in multiple events if the timings do not
-          clash.
-        </div>
+      <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Ask something..." />
+        <button onclick="sendMessage()">Send</button>
       </div>
     </div>
-  </section>
-  <!-- scroll top button -->
-  <!-- make the icon translucent -->
-  <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
-    <i class="fas fa-chevron-up"></i>
-  </button>
-  <!-- ================= CHATBOT ================= -->
-  <div class="chatbot-icon" onclick="toggleChat()">💬</div>
 
-  <div class="chatbot-box" id="chatbot">
-    <div class="chat-header">
-      Event Assistant
-      <span onclick="toggleChat()">✖</span>
-    </div>
-
-    <div class="chat-body" id="chatBody">
-      <div class="bot">Hello 👋 How can I help you?</div>
-    </div>
-
-    <div class="chat-input">
-      <input type="text" id="userInput" placeholder="Ask something..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
-  </div>
-
-  <script src="app.js?v=2.0"></script>
-  <script src="scroll.js?v=2.0"></script>
-  <script src="darkmode.js?v=2.0"></script>
-</body>
-
+    <script src="app.js?v=2.0"></script>
+    <script src="scroll.js?v=2.0"></script>
+    <script src="darkmode.js?v=2.0"></script>
+  </body>
 </html>

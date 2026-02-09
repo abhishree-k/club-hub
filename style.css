@@ -806,6 +806,58 @@ body.light-mode .dot:hover {
   z-index: -1;
 }
 
+/* Search Bar Styles */
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: 50px 0 0 50px;
+  border: none;
+  font-size: 1rem;
+  font-family: var(--font-main);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  /* Darker shadow for better visibility */
+  outline: none;
+  background: white;
+  /* Added for visibility */
+  color: var(--text-color);
+  /* Ensure high contrast */
+}
+
+.search-input:focus {
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
+}
+
+.search-btn {
+  background: var(--gradient);
+  color: white;
+  border: none;
+  padding: 0 1.5rem;
+  height: 54px;
+  /* Matches input height (approx with padding) */
+  border-radius: 0 50px 50px 0;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-btn:hover {
+  filter: brightness(1.1);
+  box-shadow: var(--shadow-hover);
+}
+
 .events-main,
 .past-events-main,
 .registration-main {

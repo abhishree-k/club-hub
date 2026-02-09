@@ -18,7 +18,7 @@ A modern, lightweight, and open-source web platform for managing clubs, events, 
 ---
 
 ## 📑 Table of Contents
-- [About The Project](#about-the-project)
+- [About The Project](#-about-the-project)
 - [Problem Statement](#problem-statement)
 - [Solution](#solution)
 - [Key Features](#key-features)

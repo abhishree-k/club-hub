@@ -53,7 +53,7 @@ Please follow the standard GitHub workflow outlined below:
 ---
 
 ### 0️⃣ Find and Request an Issue
-- Navigate to the [Issues](https://github.com/ErebAsh/club-hub/issues) tab.
+- Navigate to the [Issues](https://github.com/abhishree-k/club-hub/issues) tab.
 - Look for an issue that interests you and isn't already assigned.
 - Comment on the issue asking to be assigned (e.g., "I'd like to work on this").
 - **Wait for a maintainer** to assign you.

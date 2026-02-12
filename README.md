@@ -240,7 +240,7 @@ git push origin feature/your-feature
 
 ### 📄 License
 
-Licensed under the repository’s [LICENSE](License) file.
+Licensed under the repository’s [LICENSE](LICENSE) file.
 
 ### 🙌 Acknowledgements
 

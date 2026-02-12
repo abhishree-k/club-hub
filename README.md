@@ -217,42 +217,6 @@ git push origin feature/your-feature
 
 ### ♿ Accessibility
 
-
-- Added Skip to main content link for keyboard users
-- Mobile menu is a proper button with aria-label, aria-expanded, and aria-controls
-- Navigation list uses aria-hidden when closed, reachable via Tab when opened
-- Strong focus styles for links, buttons, and CTAs
-- Keyboard handling: Enter/Space toggles menu, Esc closes it, Arrow keys navigate
-- Manual testing: Tab through site, check visible focus, press Esc to close menu
-
-### 🗺 Roadmap
-- Backend integration
-- Role-based authentication
-- Analytics dashboard
-- Mobile responsiveness
-- Accessibility improvements
-
-### 🏷 Open Source Program 🌱 Social Winter of Code (SWoC) 2026
-
-- Beginner-friendly issues
-- UI/UX improvements
-- Documentation contribution
-- Feature proposals
-
-### 📄 License
-
-Licensed under the repository’s LICENSE file.
-
-### 🙌 Acknowledgements
-
-- SWoC 2026 mentors & maintainers
-- Open-source contributors
-- Student developer community
-
-<div align="center"> ⭐ If you like this project, don’t forget to star the repository! Happy Contributing 🚀 </div>
- 
-
-
 - Added Skip to main content link for keyboard users
 - Mobile menu is a proper button with aria-label, aria-expanded, and aria-controls
 - Navigation list uses aria-hidden when closed, reachable via Tab when opened
@@ -301,4 +265,3 @@ Join our growing community! Connect with us on **Discord** for:
         
   </a>
 </p>
-

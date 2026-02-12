@@ -95,11 +95,6 @@ function showFormSuccess(form, message) {
     setTimeout(() => msg.remove(), 3000);
 }
 
-    setTimeout(() => {
-        if (successMsg.parentNode) successMsg.remove();
-    }, 5000);
-}
-
 /**
  * 1. Navigation & Scrolling Logic
  */

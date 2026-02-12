@@ -25,7 +25,7 @@
       <span class="logo-icon">🌌</span>
       <span class="logo-text">DSCE Clubs</span>
     </div>
-    <ul class="nav-links" id="nav-links" aria-hidden="false">
+    <ul class="nav-links" id="nav-links">
       <li><a href="index.html" class="active">Home</a></li>
       <li><a href="events.html">Live & Upcoming Events</a></li>
       <li><a href="past-events.html">Past Events</a></li>
@@ -43,7 +43,6 @@
         <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
           <i class="fas fa-moon"></i>
         </button>
-      </li>
       </li>
     </ul>
     <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
@@ -68,7 +67,7 @@
       <div class="blog-controls">
         <div class="search-wrapper">
           <i class="fas fa-search"></i>
-          <input type="text" id="search-posts" placeholder="Search articles...">
+          <input type="text" id="search-posts" name="search" placeholder="Search articles...">
         </div>
         <div class="category-filters">
           <button class="filter-btn active" data-category="All">All</button>
@@ -94,11 +93,11 @@
         <form id="create-post-form">
           <div class="form-group">
             <label for="post-title">Title</label>
-            <input type="text" id="post-title" required placeholder="Catchy title...">
+            <input type="text" id="post-title" name="title" required placeholder="Catchy title...">
           </div>
           <div class="form-group">
             <label for="post-category">Category</label>
-            <select id="post-category">
+            <select id="post-category" name="category">
               <option value="General">General</option>
               <option value="Tech">Tech</option>
               <option value="Arts">Arts</option>
@@ -108,15 +107,15 @@
           </div>
           <div class="form-group">
             <label for="post-content">Content</label>
-            <textarea id="post-content" required rows="6" placeholder="Share your thoughts..."></textarea>
+            <textarea id="post-content" name="content" required rows="6" placeholder="Share your thoughts..."></textarea>
           </div>
           <div class="form-group">
             <label for="post-tags">Tags</label>
-            <input type="text" id="post-tags" placeholder="e.g., event, news, tech">
+            <input type="text" id="post-tags" name="tags" placeholder="e.g., event, news, tech">
           </div>
           <div class="form-group">
             <label for="post-image">Image URL</label>
-            <input type="url" id="post-image" placeholder="https://...">
+            <input type="url" id="post-image" name="image" placeholder="https://...">
           </div>
           <button type="submit" class="cta-button">Publish Post</button>
         </form>
@@ -134,7 +133,7 @@
           <h3>Comments</h3>
           <div id="comments-list"></div>
           <form id="add-comment-form" style="margin-top: 1rem;">
-            <textarea id="comment-input" rows="3" placeholder="Add a comment..." required></textarea>
+            <textarea id="comment-input" name="comment" rows="3" placeholder="Add a comment..." required></textarea>
             <button type="submit" class="cta-button"
               style="margin-top: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">Post Comment</button>
           </form>

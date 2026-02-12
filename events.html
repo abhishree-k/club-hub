@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#6c5ce7">
     <title>Events | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css?v=2.3">
+    <link rel="stylesheet" href="cursor.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
@@ -316,6 +317,9 @@
         </div>
     </footer>
 
+    <div class="cursor-container" id="cursor-container">
+    </div>
+
     <script>
         const openFeedback = document.getElementById("open-feedback");
         const feedbackModal = document.getElementById("feedback-modal");
@@ -326,6 +330,7 @@
     </script>
     <script src="app.js?v=2.0"></script>
     <script src="scroll.js?v=2.0"></script>
+    <script src="cursor.js"></script>
     <script>
         // Event Search Functionality
         document.getElementById("eventSearch").addEventListener("keyup", function () {
@@ -344,7 +349,5 @@
         });
 
     </script>
-
 </body>
-
 </html>

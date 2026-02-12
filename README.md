@@ -252,6 +252,22 @@ Licensed under the repository’s LICENSE file.
 <div align="center"> ⭐ If you like this project, don’t forget to star the repository! Happy Contributing 🚀 </div>
  
 
+## 💛 Connect With Us
+
+Join our growing community! Connect with us on **Discord** for:
+
+- 💬 Real-time discussions and support  
+- 🚀 Project updates and announcements  
+- 💡 Feature suggestions and feedback  
+- 🤝 Collaboration opportunities 
+
+ <p align="start">
+  <a href="https://discord.gg/https://discord.gg/KnArBPuqg">
+    <img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white" height="30"/>
+        
+  </a>
+</p>
+
 
 - Added Skip to main content link for keyboard users
 - Mobile menu is a proper button with aria-label, aria-expanded, and aria-controls

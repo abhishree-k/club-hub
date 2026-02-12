@@ -1,0 +1,47 @@
+:root {
+  --primary-color: #6c5ce7;
+  --accent-color: #fd79a8;
+  --dark-color: #2d3436;
+  --light-color: #f5f6fa;
+  --success-color: #00b894;
+  --warning-color: #fdcb6e;
+  --danger-color: #d63031;
+}
+
+.cursor-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.cursor-dot {
+    position: fixed;
+    width: 35px;
+    height: 35px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+    will-change: transform, opacity;
+}
+
+/* Light Mode Cursor */
+body.light-mode .cursor-dot {
+    background-color: var(--primary-color);
+}
+
+/* OLED Mode Cursor */
+body.oled-mode .cursor-dot {
+    background-color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .cursor-container {
+    display: none;
+  }
+}

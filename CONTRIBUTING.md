@@ -53,7 +53,7 @@ Please follow the standard GitHub workflow outlined below:
 ---
 
 ### 0️⃣ Find and Request an Issue
-- Navigate to the [Issues](https://github.com/ErebAsh/club-hub/issues) tab.
+- Navigate to the [Issues](https://github.com/abhishree-k/club-hub/issues) tab.
 - Look for an issue that interests you and isn't already assigned.
 - Comment on the issue asking to be assigned (e.g., "I'd like to work on this").
 - **Wait for a maintainer** to assign you.
@@ -102,6 +102,15 @@ git push origin <your-branch-name>
 
 ### 7️⃣ Create a Pull Request
 Go to the original repository on GitHub and create a new pull request from your forked repository.
+
+## Pull Request Guidelines
+
+All contributors must use the Pull Request template provided in the
+`.github/pull_request_template.md` file.
+
+This ensures consistent, high-quality submissions and helps maintainers
+review changes efficiently.
+
 
 📝 Pull Request Guidelines
 When opening a PR, please ensure:

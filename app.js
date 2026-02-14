@@ -6,13 +6,14 @@ document.addEventListener('DOMContentLoaded', function () {
     initNavigation();
     initTestimonialsAndSliders();
     initTabsAndModals();
-    initCalendar();
+    initCalendar(); // Now includes navigation event listeners
     initForms();
     initAdmin();
     initAnimations();
     initStudentSession();
     initFavorites();
     initBackToTop();
+    initFeedbackNotification();
 
     const yearEl = document.getElementById("year");
     if (yearEl) {
@@ -95,10 +96,6 @@ function showFormSuccess(form, message) {
     setTimeout(() => msg.remove(), 3000);
 }
 
-    setTimeout(() => {
-        if (successMsg.parentNode) successMsg.remove();
-    }, 5000);
-}
 
 /**
  * 1. Navigation & Scrolling Logic
@@ -165,43 +162,29 @@ function initMyHub() {
 function initTestimonialsAndSliders() {
     const testimonialSlides = document.querySelectorAll('.testimonial-slide');
     const dots = document.querySelectorAll('.carousel-dots .dot');
-    const prevBtn = document.getElementById('prev-testimonial');
-    const nextBtn = document.getElementById('next-testimonial');
     
     if (testimonialSlides.length === 0) return;
 
     let currentSlide = 0;
-    let autoPlayInterval;
 
     function showSlide(index) {
-        // Remove active class from all slides and dots
         testimonialSlides.forEach(slide => slide.classList.remove('active'));
         dots.forEach(dot => dot.classList.remove('active'));
 
-        // Add active class to current slide and dot
         testimonialSlides[index].classList.add('active');
         if (dots[index]) dots[index].classList.add('active');
         
         currentSlide = index;
     }
 
-    if (testimonialSlides.length > 0) {
-        let currentSlide = 0;
-        function showSlide(index) {
-            testimonialSlides.forEach(slide => slide.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
-            testimonialSlides[index].classList.add('active');
-            dots[index].classList.add('active');
-            currentSlide = index;
-        }
-        dots.forEach((dot, index) => {
-            dot.addEventListener('click', () => showSlide(index));
-        });
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % testimonialSlides.length;
-            showSlide(currentSlide);
-        }, 5000);
-    }
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => showSlide(index));
+    });
+
+    setInterval(() => {
+        currentSlide = (currentSlide + 1) % testimonialSlides.length;
+        showSlide(currentSlide);
+    }, 5000);
 }
 
 /**
@@ -250,24 +233,116 @@ function initForms() {
 }
 
 /**
- * 5. Calendar System
+ * 5. Calendar System - REPAIRED
+ * Handles month/year navigation, jumps, and reset to today.
  */
 function initCalendar() {
     const calendarGrid = document.querySelector('.calendar-grid');
     if (!calendarGrid) return;
-    renderCalendar();
+
+    // Navigation UI Elements
+    const currentMonthElement = document.getElementById('current-month');
+    const prevMonthButton = document.getElementById('prev-month');
+    const nextMonthButton = document.getElementById('next-month');
+    const monthPicker = document.getElementById('month-picker');
+    const yearPicker = document.getElementById('year-picker');
+    const jumpToDateBtn = document.getElementById('jump-to-date');
+    const todayBtn = document.getElementById('today-btn');
+
+    // Initial State: Defaults to current month/year
+    let dateContext = new Date();
+    let currentMonth = dateContext.getMonth();
+    let currentYear = dateContext.getFullYear();
+
+    // Populate Year Picker dynamically if it exists and is empty
+    if (yearPicker && yearPicker.options.length === 0) {
+        const startYear = currentYear - 5;
+        const endYear = currentYear + 5;
+        for (let y = startYear; y <= endYear; y++) {
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.textContent = y;
+            if (y === currentYear) opt.selected = true;
+            yearPicker.appendChild(opt);
+        }
+    }
+
+    /**
+     * Helper to update global month/year display and re-render grid.
+     */
+    function updateAndRender() {
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        // 1. Update text header
+        if (currentMonthElement) {
+            currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        }
+
+        // 2. Sync dropdown pickers
+        if (monthPicker) monthPicker.value = currentMonth;
+        if (yearPicker) yearPicker.value = currentYear;
+
+        // 3. Re-trigger the logic that draws the calendar boxes
+        // Ensure you have a function named renderCalendar that accepts these arguments
+        if (typeof renderCalendar === "function") {
+            renderCalendar(currentMonth, currentYear);
+        }
+    }
+
+    // --- Event Listeners for Navigation ---
+
+    if (prevMonthButton) {
+        prevMonthButton.addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateAndRender();
+        });
+    }
+
+    if (nextMonthButton) {
+        nextMonthButton.addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateAndRender();
+        });
+    }
+
+    if (jumpToDateBtn && monthPicker && yearPicker) {
+        jumpToDateBtn.addEventListener('click', () => {
+            currentMonth = parseInt(monthPicker.value);
+            currentYear = parseInt(yearPicker.value);
+            updateAndRender();
+        });
+    }
+
+    if (todayBtn) {
+        todayBtn.addEventListener('click', () => {
+            const now = new Date();
+            currentMonth = now.getMonth();
+            currentYear = now.getFullYear();
+            updateAndRender();
+        });
+    }
+
+    // Initial render call on load
+    updateAndRender();
 }
 
 /**
- * 6. Admin Logic - REPAIRED WITHOUT DELETING LOGIC
+ * 6. Admin Logic
  */
 function initAdmin() {
     const adminLoginForm = document.getElementById('admin-login-form');
-    const togglePassword = document.querySelector('.toggle-password');
     const passwordInput = document.getElementById('admin-password');
-    const confirmPasswordInput = document.getElementById('admin-confirm-password');
-    const confirmPasswordGroup = document.getElementById('confirm-password-group');
-    const loginButton = document.querySelector('.login-button');
 
     let isLoginMode = true;
 
@@ -284,7 +359,6 @@ function initAdmin() {
                 } else {
                     alert('Login failed');
                 }
-                alert("Account logic goes here!");
             }
         });
     }
@@ -345,6 +419,30 @@ function initBackToTop() {
     }
 }
 
+/**
+ * 11. Feedback Notification Utility
+ */
+function initFeedbackNotification() {
+    const feedbackForm = document.getElementById('feedback-form') || document.querySelector('#feedback-modal form');
+    const successCard = document.getElementById('feedbackSuccessCard');
+
+    if (feedbackForm && successCard) {
+        feedbackForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const feedbackModal = document.getElementById('feedback-modal');
+            if (feedbackModal) {
+                feedbackModal.style.display = 'none';
+                feedbackModal.classList.remove('active');
+            }
+            successCard.classList.add('show-success');
+            feedbackForm.reset();
+            setTimeout(() => {
+                successCard.classList.remove('show-success');
+            }, 4000);
+        });
+    }
+}
+
 /** FAQ & Chatbot Logic */
 document.querySelectorAll(".faq-question").forEach(q => {
     q.addEventListener("click", () => {
@@ -355,7 +453,7 @@ document.querySelectorAll(".faq-question").forEach(q => {
 
 function toggleChat() {
     const chat = document.getElementById("chatbot");
-    if (chat) chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+    if (chat) chat.style.display = (chat.style.display === "flex") ? "none" : "flex";
 }
 
 /**
@@ -375,6 +473,7 @@ if (typeof module !== 'undefined' && module.exports) {
         initAdmin,
         initAnimations,
         initStudentSession,
-        initBackToTop
+        initBackToTop,
+        initFeedbackNotification
     };
 }

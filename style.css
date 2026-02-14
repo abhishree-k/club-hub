@@ -4795,7 +4795,7 @@ body.oled-mode .small-hero .hero-subtitle {
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(253, 121, 168, 0.4);
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.8px
 }
 
 .cta-button::before {
@@ -4839,5 +4839,3 @@ body.oled-mode .small-hero .hero-subtitle {
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: var(--secondary-color) !important;
 }
-
-

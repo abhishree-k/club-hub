@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', function () {
     initNavigation();
     initTestimonialsAndSliders();
     initTabsAndModals();
-    initCalendar();
+    initCalendar(); // Now includes navigation event listeners
     initForms();
     initAdmin();
     initAnimations();
     initStudentSession();
     initFavorites();
     initBackToTop();
-    initFeedbackNotification(); // Added initialization for the feedback success pop-up
+    initFeedbackNotification();
 
     const yearEl = document.getElementById("year");
     if (yearEl) {
@@ -233,12 +233,108 @@ function initForms() {
 }
 
 /**
- * 5. Calendar System
+ * 5. Calendar System - REPAIRED
+ * Handles month/year navigation, jumps, and reset to today.
  */
 function initCalendar() {
     const calendarGrid = document.querySelector('.calendar-grid');
     if (!calendarGrid) return;
-    // Logic for rendering calendar would be called here
+
+    // Navigation UI Elements
+    const currentMonthElement = document.getElementById('current-month');
+    const prevMonthButton = document.getElementById('prev-month');
+    const nextMonthButton = document.getElementById('next-month');
+    const monthPicker = document.getElementById('month-picker');
+    const yearPicker = document.getElementById('year-picker');
+    const jumpToDateBtn = document.getElementById('jump-to-date');
+    const todayBtn = document.getElementById('today-btn');
+
+    // Initial State: Defaults to current month/year
+    let dateContext = new Date();
+    let currentMonth = dateContext.getMonth();
+    let currentYear = dateContext.getFullYear();
+
+    // Populate Year Picker dynamically if it exists and is empty
+    if (yearPicker && yearPicker.options.length === 0) {
+        const startYear = currentYear - 5;
+        const endYear = currentYear + 5;
+        for (let y = startYear; y <= endYear; y++) {
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.textContent = y;
+            if (y === currentYear) opt.selected = true;
+            yearPicker.appendChild(opt);
+        }
+    }
+
+    /**
+     * Helper to update global month/year display and re-render grid.
+     */
+    function updateAndRender() {
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        // 1. Update text header
+        if (currentMonthElement) {
+            currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        }
+
+        // 2. Sync dropdown pickers
+        if (monthPicker) monthPicker.value = currentMonth;
+        if (yearPicker) yearPicker.value = currentYear;
+
+        // 3. Re-trigger the logic that draws the calendar boxes
+        // Ensure you have a function named renderCalendar that accepts these arguments
+        if (typeof renderCalendar === "function") {
+            renderCalendar(currentMonth, currentYear);
+        }
+    }
+
+    // --- Event Listeners for Navigation ---
+
+    if (prevMonthButton) {
+        prevMonthButton.addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateAndRender();
+        });
+    }
+
+    if (nextMonthButton) {
+        nextMonthButton.addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateAndRender();
+        });
+    }
+
+    if (jumpToDateBtn && monthPicker && yearPicker) {
+        jumpToDateBtn.addEventListener('click', () => {
+            currentMonth = parseInt(monthPicker.value);
+            currentYear = parseInt(yearPicker.value);
+            updateAndRender();
+        });
+    }
+
+    if (todayBtn) {
+        todayBtn.addEventListener('click', () => {
+            const now = new Date();
+            currentMonth = now.getMonth();
+            currentYear = now.getFullYear();
+            updateAndRender();
+        });
+    }
+
+    // Initial render call on load
+    updateAndRender();
 }
 
 /**
@@ -325,31 +421,21 @@ function initBackToTop() {
 
 /**
  * 11. Feedback Notification Utility
- * Handles the success animation and pop-up after feedback submission.
  */
 function initFeedbackNotification() {
-    // Select the form inside the feedback modal or by general ID
     const feedbackForm = document.getElementById('feedback-form') || document.querySelector('#feedback-modal form');
     const successCard = document.getElementById('feedbackSuccessCard');
 
     if (feedbackForm && successCard) {
         feedbackForm.addEventListener('submit', function (e) {
             e.preventDefault();
-
-            // 1. Hide the feedback modal if it is open
             const feedbackModal = document.getElementById('feedback-modal');
             if (feedbackModal) {
                 feedbackModal.style.display = 'none';
                 feedbackModal.classList.remove('active');
             }
-
-            // 2. Reveal the success "Thank You" card
             successCard.classList.add('show-success');
-
-            // 3. Reset the form fields
             feedbackForm.reset();
-
-            // 4. Auto-hide the success card after 4 seconds
             setTimeout(() => {
                 successCard.classList.remove('show-success');
             }, 4000);
@@ -367,7 +453,7 @@ document.querySelectorAll(".faq-question").forEach(q => {
 
 function toggleChat() {
     const chat = document.getElementById("chatbot");
-    if (chat) chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+    if (chat) chat.style.display = (chat.style.display === "flex") ? "none" : "flex";
 }
 
 /**

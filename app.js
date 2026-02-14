@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initStudentSession();
     initFavorites();
     initBackToTop();
+    initFeedbackNotification(); // Added initialization for the feedback success pop-up
 
     const yearEl = document.getElementById("year");
     if (yearEl) {
@@ -95,10 +96,6 @@ function showFormSuccess(form, message) {
     setTimeout(() => msg.remove(), 3000);
 }
 
-    setTimeout(() => {
-        if (successMsg.parentNode) successMsg.remove();
-    }, 5000);
-}
 
 /**
  * 1. Navigation & Scrolling Logic
@@ -165,43 +162,29 @@ function initMyHub() {
 function initTestimonialsAndSliders() {
     const testimonialSlides = document.querySelectorAll('.testimonial-slide');
     const dots = document.querySelectorAll('.carousel-dots .dot');
-    const prevBtn = document.getElementById('prev-testimonial');
-    const nextBtn = document.getElementById('next-testimonial');
     
     if (testimonialSlides.length === 0) return;
 
     let currentSlide = 0;
-    let autoPlayInterval;
 
     function showSlide(index) {
-        // Remove active class from all slides and dots
         testimonialSlides.forEach(slide => slide.classList.remove('active'));
         dots.forEach(dot => dot.classList.remove('active'));
 
-        // Add active class to current slide and dot
         testimonialSlides[index].classList.add('active');
         if (dots[index]) dots[index].classList.add('active');
         
         currentSlide = index;
     }
 
-    if (testimonialSlides.length > 0) {
-        let currentSlide = 0;
-        function showSlide(index) {
-            testimonialSlides.forEach(slide => slide.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
-            testimonialSlides[index].classList.add('active');
-            dots[index].classList.add('active');
-            currentSlide = index;
-        }
-        dots.forEach((dot, index) => {
-            dot.addEventListener('click', () => showSlide(index));
-        });
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % testimonialSlides.length;
-            showSlide(currentSlide);
-        }, 5000);
-    }
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => showSlide(index));
+    });
+
+    setInterval(() => {
+        currentSlide = (currentSlide + 1) % testimonialSlides.length;
+        showSlide(currentSlide);
+    }, 5000);
 }
 
 /**
@@ -255,19 +238,15 @@ function initForms() {
 function initCalendar() {
     const calendarGrid = document.querySelector('.calendar-grid');
     if (!calendarGrid) return;
-    renderCalendar();
+    // Logic for rendering calendar would be called here
 }
 
 /**
- * 6. Admin Logic - REPAIRED WITHOUT DELETING LOGIC
+ * 6. Admin Logic
  */
 function initAdmin() {
     const adminLoginForm = document.getElementById('admin-login-form');
-    const togglePassword = document.querySelector('.toggle-password');
     const passwordInput = document.getElementById('admin-password');
-    const confirmPasswordInput = document.getElementById('admin-confirm-password');
-    const confirmPasswordGroup = document.getElementById('confirm-password-group');
-    const loginButton = document.querySelector('.login-button');
 
     let isLoginMode = true;
 
@@ -284,7 +263,6 @@ function initAdmin() {
                 } else {
                     alert('Login failed');
                 }
-                alert("Account logic goes here!");
             }
         });
     }
@@ -345,6 +323,40 @@ function initBackToTop() {
     }
 }
 
+/**
+ * 11. Feedback Notification Utility
+ * Handles the success animation and pop-up after feedback submission.
+ */
+function initFeedbackNotification() {
+    // Select the form inside the feedback modal or by general ID
+    const feedbackForm = document.getElementById('feedback-form') || document.querySelector('#feedback-modal form');
+    const successCard = document.getElementById('feedbackSuccessCard');
+
+    if (feedbackForm && successCard) {
+        feedbackForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // 1. Hide the feedback modal if it is open
+            const feedbackModal = document.getElementById('feedback-modal');
+            if (feedbackModal) {
+                feedbackModal.style.display = 'none';
+                feedbackModal.classList.remove('active');
+            }
+
+            // 2. Reveal the success "Thank You" card
+            successCard.classList.add('show-success');
+
+            // 3. Reset the form fields
+            feedbackForm.reset();
+
+            // 4. Auto-hide the success card after 4 seconds
+            setTimeout(() => {
+                successCard.classList.remove('show-success');
+            }, 4000);
+        });
+    }
+}
+
 /** FAQ & Chatbot Logic */
 document.querySelectorAll(".faq-question").forEach(q => {
     q.addEventListener("click", () => {
@@ -375,6 +387,7 @@ if (typeof module !== 'undefined' && module.exports) {
         initAdmin,
         initAnimations,
         initStudentSession,
-        initBackToTop
+        initBackToTop,
+        initFeedbackNotification
     };
 }

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#6c5ce7" />
+  <title>Home | DSCE Clubs</title>
+  <link rel="stylesheet" href="style.css?v=2.2" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+</head>
+
+<body>
+
+  <!-- Background -->
+  <div class="stars-background"></div>
+
+  <!-- ================= NAVBAR ================= -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <span class="logo-icon">🌌</span>
+      <span class="logo-text">DSCE Clubs</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html" class="active">Contact Us</a>
+    </div>
+  </nav>
+
+  <!-- ================= CONTACT SECTION ================= -->
+  <section class="faq-wrapper">
+    <h1>Contact Us</h1>
+    <p class="faq-subtitle">
+      Get in touch with us for any queries or support.
+    </p>
+
+    <div class="faq-grid">
+
+      <!-- Contact Information Card -->
+      <div class="faq-card">
+        <h3>Email</h3>
+        <p class="faq-answer">
+          dsceclubs@example.com
+        </p>
+      </div>
+
+      
+
+      <!-- Contact Form Card -->
+      <div class="faq-card">
+        <h3>Send Us a Message</h3>
+        <p class="faq-answer">
+          <form>
+            <input type="text" placeholder="Your Name" required
+              style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:none;">
+            
+            <input type="email" placeholder="Your Email" required
+              style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:none;">
+            
+            <textarea rows="4" placeholder="Your Message" required
+              style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:none;"></textarea>
+
+            <button type="submit"
+              style="padding:10px 20px; border:none; border-radius:6px; background:#6366f1; color:white; cursor:pointer;">
+              Send Message
+            </button>
+          </form>
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+
+</body>
+
+</html>

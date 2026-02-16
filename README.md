@@ -200,6 +200,31 @@ Access admin functionality
 
 Extend features by modifying JS/CSS
 
+
+## 🌍 Community & Contributors
+
+### 💖 Contributors  
+Thanks to these amazing people who have contributed to **CLUB-HUB** ✨  
+
+<div align="center">
+  <a href="https://github.com/abhishree-k/club-hub/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=abhishree-k/club-hub" />
+  </a>
+</div>
+
+<br/>
+
+### ⭐ Project Support
+
+<div align="center">
+
+[![Stars](https://img.shields.io/github/stars/abhishree-k/club-hub?style=social)](https://github.com/abhishree-k/club-hub/stargazers)
+&nbsp;&nbsp;
+[![Forks](https://img.shields.io/github/forks/abhishree-k/club-hub?style=social)](https://github.com/abhishree-k/club-hub/network/members)
+
+</div>
+
+
 ### 🤝 Contributing
 
 We welcome contributions from all experience levels 💙
@@ -240,7 +265,7 @@ git push origin feature/your-feature
 
 ### 📄 License
 
-Licensed under the repository’s LICENSE file.
+Licensed under the repository’s [LICENSE](LICENSE) file.
 
 ### 🙌 Acknowledgements
 
@@ -249,3 +274,19 @@ Licensed under the repository’s LICENSE file.
 - Student developer community
 
 <div align="center"> ⭐ If you like this project, don’t forget to star the repository! Happy Contributing 🚀 </div>
+
+## 💛 Connect With Us
+
+Join our growing community! Connect with us on **Discord** for:
+
+- 💬 Real-time discussions and support  
+- 🚀 Project updates and announcements  
+- 💡 Feature suggestions and feedback  
+- 🤝 Collaboration opportunities 
+
+ <p align="start">
+  <a href="https://discord.gg/https://discord.gg/KnArBPuqg">
+    <img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white" height="30"/>
+        
+  </a>
+</p>

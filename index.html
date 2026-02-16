@@ -8,11 +8,13 @@
   <meta name="theme-color" content="#6c5ce7" />
   <title>Home | DSCE Clubs</title>
   <link rel="stylesheet" href="style.css?v=2.2" />
+  <link rel="stylesheet" href="cursor.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
     rel="stylesheet" />
   <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <script type="text/javascript" src="darkmode.js?v=2.0" defer></script>
 </head>
 
 <body>
@@ -34,6 +36,11 @@
             <li><a href="admin-login.html">Admin</a></li>
             <li id="nav-login"><a href="registration.html#student-login">Student Login</a></li>
             <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
+            <li>
+                <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-meteor"></i>
+                </button>
+            </li>
         </ul>
         <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links" type="button">
             <span class="hamburger-icon" aria-hidden="true">
@@ -239,7 +246,7 @@
         </div>
         <textarea id="feedback-message" rows="5" placeholder="Your Message" required
           style="padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; resize: vertical;"></textarea>
-        <button type="submit" class="cta-button" style="align-self: flex-start; border: none; cursor: pointer;">Send
+        <button type="submit" class="cta-button" style="align-self:center; background-color: #fd79a8; color:white; font-family:'Times New Roman', Times, serif; border-radius:25px; Height:45px; width:130px; border: none; cursor: pointer;">Send
           Feedback</button>
       </form>
       <div id="feedback-response" style="margin-top: 1rem; color: var(--success-color);"></div>
@@ -308,11 +315,16 @@
     </div>
   </footer>
 
-    <button id="backToTop" title="Go to top">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+  <div class="cursor-container" id="cursor-container">
+  </div>
 
-    <script src="app.js"></script>
+  <button id="backToTop" title="Go to top">
+      <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <script src="app.js"></script>
+  <script src="scroll.js?v=2.0"></script>
+  <script src="cursor.js"></script>
+  
 </body>
-
 </html>

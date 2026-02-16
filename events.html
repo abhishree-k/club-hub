@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#6c5ce7">
     <title>Events | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css?v=2.3">
+    <link rel="stylesheet" href="cursor.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
@@ -54,7 +55,6 @@
     </header>
 
     <main class="events-main">
-        <!-- 🔍 Event Search -->
         <div style="text-align:center; margin: 20px 0;">
             <div class="search-container">
                 <input type="text" id="eventSearch" placeholder="Search events or clubs..." class="search-input">
@@ -90,8 +90,7 @@
 
                 <label for="year-picker">Year:</label>
                 <select id="year-picker">
-                    <!-- Years will be populated by JavaScript -->
-                </select>
+                    </select>
 
                 <button id="jump-to-date" class="calendar-jump-btn"><i class="fas fa-arrow-right"></i> Jump</button>
                 <button id="today-btn" class="calendar-jump-btn today"><i class="fas fa-calendar-today"></i>
@@ -106,8 +105,6 @@
                 <div class="calendar-header">Thu</div>
                 <div class="calendar-header">Fri</div>
                 <div class="calendar-header">Sat</div>
-
-                <!-- Calendar days will be populated by JavaScript -->
             </div>
 
             <div class="calendar-legend">
@@ -153,13 +150,12 @@
                 <i class="fas fa-history"></i>
                 <span>Past Events</span>
             </a>
-            </a>
             <a href="#" class="action-button" id="open-feedback">
                 <i class="fas fa-comment-alt"></i>
                 <span>Event Feedback</span>
             </a>
         </section>
-        <!-- ================= Event Feedback Modal ================= -->
+
         <div id="feedback-modal" class="feedback-modal-overlay">
             <div class="feedback-modal-content">
                 <span id="close-feedback" class="feedback-close-btn">&times;</span>
@@ -191,17 +187,25 @@
                 </form>
             </div>
         </div>
-        <!-- scroll top button -->
+
         <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
             <i class="fas fa-chevron-up"></i>
         </button>
     </main>
 
     <footer class="cosmic-footer">
-        <!-- Same footer as index.html -->
+        <div class="footer-bottom">
+            <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
+        </div>
     </footer>
 
-    <!-- Event Modal (hidden by default) -->
+    <div id="feedbackSuccessCard" class="success-card">
+        <div class="success-card-content">
+            <span class="success-icon">✨</span>
+            <p>Thank you for the feedback!</p>
+        </div>
+    </div>
+
     <div id="event-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -255,7 +259,6 @@
         </div>
     </div>
 
-    <!-- Conflict Modal -->
     <div id="conflict-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -277,7 +280,7 @@
                 <span class="logo-text">DSCE Clubs</span>
             </div>
             <div class="footer-links">
-                <div class="footer-column" id="footer-install-section" style="display: none;">
+                <div class="footer-column" id="footer-install-section">
                     <h4>Install App</h4>
                     <ul>
                         <li><button id="footer-install-btn"
@@ -316,16 +319,24 @@
         </div>
     </footer>
 
+    <div class="cursor-container" id="cursor-container">
+    </div>
+
     <script>
         const openFeedback = document.getElementById("open-feedback");
         const feedbackModal = document.getElementById("feedback-modal");
         const closeFeedback = document.getElementById("close-feedback");
 
-        openFeedback.onclick = () => feedbackModal.style.display = "flex";
-        closeFeedback.onclick = () => feedbackModal.style.display = "none";
+        if (openFeedback) {
+            openFeedback.onclick = () => feedbackModal.style.display = "flex";
+        }
+        if (closeFeedback) {
+            closeFeedback.onclick = () => feedbackModal.style.display = "none";
+        }
     </script>
     <script src="app.js?v=2.0"></script>
     <script src="scroll.js?v=2.0"></script>
+    <script src="cursor.js"></script>
     <script>
         // Event Search Functionality
         document.getElementById("eventSearch").addEventListener("keyup", function () {
@@ -334,7 +345,6 @@
 
             events.forEach(event => {
                 const eventText = event.innerText.toLowerCase();
-
                 if (eventText.includes(searchValue)) {
                     event.style.display = "block";
                 } else {
@@ -342,9 +352,6 @@
                 }
             });
         });
-
     </script>
-
 </body>
-
 </html>

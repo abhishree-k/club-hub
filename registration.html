@@ -93,7 +93,7 @@
                     <i class="fas fa-check-circle"></i>
                     <p id="club-success-text">Club registration submitted successfully!</p>
                 </div>
-                <form id="club-registration-form" class="registration-form">
+                <form id="club-registration-form" class="registration-form" novalidate>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="club-first-name">First Name</label>
@@ -101,7 +101,6 @@
                              id="club-first-name"
                              name="first_name"
                              required
-                             pattern="[A-Za-z]+"
                              title="Only alphabets allowed">
 
                         </div>
@@ -111,7 +110,6 @@
                             id="club-last-name"
                             name="last_name"
                             required
-                            pattern="[A-Za-z]+"
                             title="Only alphabets allowed">
 
                         </div>
@@ -448,10 +446,16 @@
             document.getElementById("error-popup").style.display = "none";
         };
 
+        function scrollToField(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.scrollIntoView({ behavior: "smooth", block: "center" });
+            field.focus();
+        }
+
         document.getElementById("club-registration-form")
         .addEventListener("submit", function(e) {
 
-            const nameRegex = /^[A-Za-z]+$/;
+            const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
             const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
             const firstName = document.getElementById("club-first-name").value.trim();
@@ -461,18 +465,21 @@
             if (!nameRegex.test(firstName)) {
                 e.preventDefault();
                 showErrorPopup("Error: Please enter only alphabets in First Name.");
+                scrollToField("club-first-name");
                 return;
             }
 
             if (!nameRegex.test(lastName)) {
                 e.preventDefault();
                 showErrorPopup("Error: Please enter only alphabets in Last Name.");
+                scrollToField("club-last-name"); 
                 return;
             }
 
             if (!emailRegex.test(email)) {
                 e.preventDefault();
                 showErrorPopup("Error: Email must be in username@gmail.com format.");
+                scrollToField("club-email");
                 return;
             }
 

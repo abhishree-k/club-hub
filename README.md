@@ -200,6 +200,31 @@ Access admin functionality
 
 Extend features by modifying JS/CSS
 
+
+## 🌍 Community & Contributors
+
+### 💖 Contributors  
+Thanks to these amazing people who have contributed to **CLUB-HUB** ✨  
+
+<div align="center">
+  <a href="https://github.com/abhishree-k/club-hub/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=abhishree-k/club-hub" />
+  </a>
+</div>
+
+<br/>
+
+### ⭐ Project Support
+
+<div align="center">
+
+[![Stars](https://img.shields.io/github/stars/abhishree-k/club-hub?style=social)](https://github.com/abhishree-k/club-hub/stargazers)
+&nbsp;&nbsp;
+[![Forks](https://img.shields.io/github/forks/abhishree-k/club-hub?style=social)](https://github.com/abhishree-k/club-hub/network/members)
+
+</div>
+
+
 ### 🤝 Contributing
 
 We welcome contributions from all experience levels 💙

@@ -4321,3 +4321,32 @@ body.oled-mode .timeline-date {
 body.oled-mode .timeline-event {
   color: white !important;
 }
+
+.error-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.error-popup-content {
+    background: #1e1e2f;
+    padding: 25px 35px;
+    border-radius: 12px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+}
+
+.error-popup-content button {
+    margin-top: 15px;
+    padding: 6px 15px;
+    border: none;
+    border-radius: 6px;
+    background: #ff4d4d;
+    color: white;
+    cursor: pointer;
+}

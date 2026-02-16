@@ -97,17 +97,36 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="club-first-name">First Name</label>
-                            <input type="text" id="club-first-name" name="first_name" required>
+                            <input type="text"
+                             id="club-first-name"
+                             name="first_name"
+                             required
+                             pattern="[A-Za-z]+"
+                             title="Only alphabets allowed">
+
                         </div>
                         <div class="form-group">
                             <label for="club-last-name">Last Name</label>
-                            <input type="text" id="club-last-name" name="last_name" required>
+                            <input type="text"
+                            id="club-last-name"
+                            name="last_name"
+                            required
+                            pattern="[A-Za-z]+"
+                            title="Only alphabets allowed">
+
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="club-email">Email</label>
-                        <input type="email" id="club-email" name="email" required>
+                        <input type="email"
+                        id="club-email"
+                        name="email"
+                        required
+                        pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
+                        title="Email must be in username@gmail.com format">
+       
+
                     </div>
 
                     <div class="form-group">
@@ -414,6 +433,59 @@
                 <button id="conflict-swap-btn" class="action-button">Swap to New Event</button>
                 <button id="conflict-proceed-btn" class="action-button secondary">Register Anyway</button>
             </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        function showErrorPopup(message) {
+            document.getElementById("error-message-text").textContent = message;
+            document.getElementById("error-popup").style.display = "flex";
+        }
+
+        window.closeErrorPopup = function() {
+            document.getElementById("error-popup").style.display = "none";
+        };
+
+        document.getElementById("club-registration-form")
+        .addEventListener("submit", function(e) {
+
+            const nameRegex = /^[A-Za-z]+$/;
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+
+            const firstName = document.getElementById("club-first-name").value.trim();
+            const lastName = document.getElementById("club-last-name").value.trim();
+            const email = document.getElementById("club-email").value.trim();
+
+            if (!nameRegex.test(firstName)) {
+                e.preventDefault();
+                showErrorPopup("Error: Please enter only alphabets in First Name.");
+                return;
+            }
+
+            if (!nameRegex.test(lastName)) {
+                e.preventDefault();
+                showErrorPopup("Error: Please enter only alphabets in Last Name.");
+                return;
+            }
+
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                showErrorPopup("Error: Email must be in username@gmail.com format.");
+                return;
+            }
+
+        });
+
+    });
+    </script>
+
+    <!-- Error Popup -->
+    <div id="error-popup" class="error-popup">
+        <div class="error-popup-content">
+            <span id="error-message-text"></span>
+            <button onclick="closeErrorPopup()">OK</button>
         </div>
     </div>
 

@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initNavigation();
     initTestimonialsAndSliders();
     initTabsAndModals();
-    initCalendar(); // Now includes navigation event listeners
+    initCalendar(); 
     initForms();
     initAdmin();
     initAnimations();
@@ -22,9 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-/**
- * Date Helper Functions
- */
+
 function getFutureDate(daysFromNow) {
     const date = new Date();
     date.setDate(date.getDate() + daysFromNow);
@@ -42,9 +40,6 @@ function getCurrentMonthYear() {
     };
 }
 
-/**
- * HTML Sanitization
- */
 function escapeHtml(unsafe) {
     if (typeof unsafe !== 'string') return unsafe;
     return unsafe
@@ -55,9 +50,6 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
-/**
- * Form Error Handling Helpers
- */
 function showFieldError(field, message) {
     if (!field) return;
     clearFieldError(field);
@@ -156,9 +148,6 @@ function initMyHub() {
     if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${student.name}!`;
 }
 
-/**
- * 2. Testimonials & Image Sliders
- */
 function initTestimonialsAndSliders() {
     const testimonialSlides = document.querySelectorAll('.testimonial-slide');
     const dots = document.querySelectorAll('.carousel-dots .dot');
@@ -187,9 +176,6 @@ function initTestimonialsAndSliders() {
     }, 5000);
 }
 
-/**
- * 3. Tabs, Modals & UI Toggles
- */
 function initTabsAndModals() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -211,9 +197,6 @@ function initTabsAndModals() {
     }
 }
 
-/**
- * 4. Forms
- */
 function initForms() {
     const clubRegistrationForm = document.getElementById('club-registration-form');
     if (clubRegistrationForm) {
@@ -232,19 +215,24 @@ function initForms() {
     }
 }
 
-/**
- * 5. Calendar System - REPAIRED
- * Handles month/year navigation, jumps, and reset to today.
- */
 function initCalendar() {
     const calendarGrid = document.querySelector('.calendar-grid');
     if (!calendarGrid) return;
+
     const currentMonthElement = document.getElementById('current-month');
     const prevMonthButton = document.getElementById('prev-month');
     const nextMonthButton = document.getElementById('next-month');
+    const monthPicker = document.getElementById('month-picker');
+    const yearPicker = document.getElementById('year-picker');
+    const jumpToDateBtn = document.getElementById('jump-to-date');
+    const todayBtn = document.getElementById('today-btn');
+
+    // Event Modal Elements
     const eventModal = document.getElementById('event-modal');
     const eventForm = document.getElementById('event-form');
     const deleteEventButton = document.getElementById('delete-event');
+
+    // Details & Search Elements
     const eventDetailsContainer = document.getElementById('event-details-container');
     const clubFilter = document.getElementById('event-club-filter');
     const dateFilter = document.getElementById('event-date-filter');
@@ -260,50 +248,105 @@ function initCalendar() {
     let searchTerm = '';
 
     // Sample events data - using dynamic dates for current/future events
-    let events = [
+    const defaultEvents = [
         { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
         { id: 2, name: "Digital Art Masterclass", club: "arts", date: getFutureDate(14), time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
         { id: 3, name: "Public Speaking Workshop", club: "debate", date: getFutureDate(21), time: "15:00", location: "Humanities Building, Room 205", description: "Improve your speaking skills." },
         { id: 4, name: "Tech Talk: AI Ethics", club: "tech", date: "2025-10-15", time: "15:00", location: "Auditorium", description: "Discussion on ethical AI development." },
         { id: 5, name: "Photography Workshop", club: "arts", date: "2025-10-20", time: "14:00", location: "Media Lab", description: "Learn basic photography techniques." }
     ];
-    // Ensure initial save if empty
-    if (!localStorage.getItem('allEvents')) {
-        localStorage.setItem('allEvents', JSON.stringify(events));
-    } else {
-        events = JSON.parse(localStorage.getItem('allEvents'));
+
+    // Load events from LocalStorage
+    let events = [];
+    try {
+        const stored = localStorage.getItem('allEvents');
+        if (stored) events = JSON.parse(stored);
+        else {
+            events = defaultEvents;
+            localStorage.setItem('allEvents', JSON.stringify(events));
+        }
+    } catch (e) {
+        events = defaultEvents;
     }
 
     // Helper: Get Club Name
     function getClubName(clubId) {
-        const clubs = { 'tech': 'Tech Society', 'arts': 'Creative Arts', 'debate': 'Debate Club', 'music': 'Music Society', 'sports': 'Sports Club', 'science': 'Science Guild' };
-        return clubs[clubId] || 'Club';
+        const clubs = {
+            'tech': 'Tech Society',
+            'arts': 'Creative Arts',
+            'debate': 'Debate Club',
+            'music': 'Music Society',
+            'sports': 'Sports Club',
+            'science': 'Dance Club'
+        };
+        return clubs[clubId] || clubId;
+    }
+
+    // Helper: Format Date
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateStr).toLocaleDateString(undefined, options);
     }
 
     function renderCalendar() {
         calendarGrid.innerHTML = '';
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        if (currentMonthElement) currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
 
+        // Update UI Controls
+        if (currentMonthElement) currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        if (monthPicker) monthPicker.value = currentMonth;
+
+        // Populate Year Picker if empty
+        if (yearPicker && yearPicker.options.length === 0) {
+            const startYear = currentYear - 5;
+            const endYear = currentYear + 5;
+            for (let y = startYear; y <= endYear; y++) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y;
+                if (y === currentYear) opt.selected = true;
+                yearPicker.appendChild(opt);
+            }
+        }
+        if (yearPicker) yearPicker.value = currentYear;
+
+        // Render Headers
+        const headers = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        headers.forEach(day => {
+            const header = document.createElement('div');
+            header.className = 'calendar-header';
+            header.textContent = day;
+            calendarGrid.appendChild(header);
+        });
+
+        // Calendar Logic
         const firstDay = new Date(currentYear, currentMonth, 1).getDay();
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
+        // Empty slots
         for (let i = 0; i < firstDay; i++) {
             const empty = document.createElement('div');
             empty.className = 'calendar-day empty';
             calendarGrid.appendChild(empty);
         }
 
+        // Days
         for (let i = 1; i <= daysInMonth; i++) {
             const dayEl = document.createElement('div');
             dayEl.className = 'calendar-day';
             dayEl.innerHTML = `<div class="day-number">${i}</div>`;
 
-            // Events for day
-            const dayEvents = document.createElement('div');
-            dayEvents.classList.add('day-events');
-            const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-            const dayEventsData = events.filter(event => {
+            // Identify Today
+            const today = new Date();
+            if (i === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
+                dayEl.classList.add('today');
+            }
+
+            const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+
+            // Filter Events
+            const dayEvents = events.filter(event => {
                 const matchesDate = event.date === dateStr;
                 const matchesSearch = searchTerm === '' ||
                     event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -311,38 +354,43 @@ function initCalendar() {
                     event.description.toLowerCase().includes(searchTerm.toLowerCase());
                 return matchesDate && matchesSearch;
             });
+
+            // Render Events on Day
+            dayEvents.forEach(ev => {
+                const evEl = document.createElement('div');
+                evEl.className = `day-event ${ev.club}`;
+                evEl.textContent = ev.name;
+                evEl.title = ev.name; // Tooltip
+                evEl.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent bubbling if necessary
+                    showEventDetails(ev);
+                });
+                dayEl.appendChild(evEl);
+            });
+
+            // Click on day to clear selection or add event (optional)
+            dayEl.addEventListener('click', () => {
+                // Future: open empty modal
+            });
         }
     }
-
-    if (prevMonthButton) prevMonthButton.addEventListener('click', () => {
-        currentMonth--;
-        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-        renderCalendar();
-    });
 
     function showEventDetails(event) {
         if (!eventDetailsContainer) return;
         selectedEvent = event;
 
-        // Sanitize all event data before rendering
-        // Sanitize all event data before rendering
         eventDetailsContainer.innerHTML = `
             <div class="event-details">
                 <div class="event-header">
                     <span class="event-club-badge ${escapeHtml(event.club)}">${escapeHtml(getClubName(event.club))}</span>
-                    <span class="event-club-badge ${escapeHtml(event.club)}">${escapeHtml(getClubName(event.club))}</span>
                     <button id="edit-event" class="action-button"><i class="fas fa-edit"></i> Edit</button>
+                    <button id="close-details" class="action-button-small" style="margin-left:auto;"><i class="fas fa-times"></i></button>
                 </div>
-                <h2 class="event-title">${escapeHtml(event.name)}</h2>
                 <h2 class="event-title">${escapeHtml(event.name)}</h2>
                 <div class="event-date-time">
                     <span><i class="far fa-calendar-alt"></i> ${escapeHtml(formatDate(event.date))}</span>
                     <span><i class="far fa-clock"></i> ${escapeHtml(event.time)}</span>
-                    <span><i class="far fa-calendar-alt"></i> ${escapeHtml(formatDate(event.date))}</span>
-                    <span><i class="far fa-clock"></i> ${escapeHtml(event.time)}</span>
                 </div>
-                <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location)}</div>
-                <p class="event-description">${escapeHtml(event.description)}</p>
                 <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location)}</div>
                 <p class="event-description">${escapeHtml(event.description)}</p>
                 <div class="event-actions">
@@ -352,78 +400,151 @@ function initCalendar() {
             </div>
         `;
 
-        // Bind dynamic buttons
-        document.getElementById('edit-event').addEventListener('click', () => openEventModal(event));
-        document.getElementById('register-for-event').addEventListener('click', () => alert(`Registered for ${event.name}`));
-        document.getElementById('register-for-event').addEventListener('click', () => alert(`Registered for ${event.name}`));
-        document.getElementById('share-event').addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
+        // Bind Detail Buttons
+        const editBtn = document.getElementById('edit-event');
+        if (editBtn) editBtn.addEventListener('click', () => openEventModal(event));
+
+        const closeDetailsBtn = document.getElementById('close-details');
+        if (closeDetailsBtn) closeDetailsBtn.addEventListener('click', () => {
+            eventDetailsContainer.innerHTML = '<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>';
+        });
+
+        const regBtn = document.getElementById('register-for-event');
+        if (regBtn) regBtn.addEventListener('click', () => alert(`Registered for ${event.name}`));
+
+        const shareBtn = document.getElementById('share-event');
+        if (shareBtn) shareBtn.addEventListener('click', () => alert(`Share link for ${event.name} copied to clipboard!`));
     }
 
-    function openEventModal(event = null, date = null) {
-        
+    function openEventModal(event = null) {
         if (!eventModal) return;
-
         if (event) {
             document.getElementById('modal-title').textContent = 'Edit Event';
-            document.getElementById('event-name').value = event.name;
-            document.getElementById('event-club').value = event.club;
-            document.getElementById('event-date').value = event.date;
-            document.getElementById('event-time').value = event.time;
-            document.getElementById('event-date').value = event.date;
-            document.getElementById('event-time').value = event.time;
-            document.getElementById('event-location').value = event.location;
-            document.getElementById('event-description').value = event.description;
+            document.getElementById('event-name').value = event.name || '';
+            document.getElementById('event-club').value = event.club || '';
+
+            // Map our 'date' to 'event-start-date'
+            const startDateInput = document.getElementById('event-start-date');
+            if (startDateInput) startDateInput.value = event.date || '';
+
+            // Map our 'time' to 'event-start-time'
+            const startTimeInput = document.getElementById('event-start-time');
+            if (startTimeInput) startTimeInput.value = event.time || '';
+
+            const locInput = document.getElementById('event-location');
+            if (locInput) locInput.value = event.location || '';
+
+            const descInput = document.getElementById('event-description');
+            if (descInput) descInput.value = event.description || '';
+
             if (deleteEventButton) deleteEventButton.style.display = 'block';
             selectedEvent = event;
         } else {
             document.getElementById('modal-title').textContent = 'Add New Event';
             eventForm.reset();
-            if (date) document.getElementById('event-date').value = date;
-            if (date) document.getElementById('event-date').value = date;
             if (deleteEventButton) deleteEventButton.style.display = 'none';
             selectedEvent = null;
         }
         eventModal.style.display = 'flex';
     }
 
-    // Event Form Submit
+    // --- Event Listeners ---
+
+    // 1. Navigation
+    if (prevMonthButton) prevMonthButton.addEventListener('click', () => {
+        currentMonth--;
+        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        renderCalendar();
+    });
+
+    if (nextMonthButton) nextMonthButton.addEventListener('click', () => {
+        currentMonth++;
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        renderCalendar();
+    });
+
+    // 2. Jumpers
+    if (jumpToDateBtn) jumpToDateBtn.addEventListener('click', () => {
+        if (monthPicker) currentMonth = parseInt(monthPicker.value);
+        if (yearPicker) currentYear = parseInt(yearPicker.value);
+        renderCalendar();
+    });
+
+    if (todayBtn) todayBtn.addEventListener('click', () => {
+        const now = new Date();
+        currentMonth = now.getMonth();
+        currentYear = now.getFullYear();
+        renderCalendar();
+    });
+
+    // 3. Search
+    function handleSearch() {
+        const newSearchTerm = eventSearch.value.trim();
+        if (newSearchTerm !== searchTerm) {
+            searchTerm = newSearchTerm;
+            if (searchTerm) {
+                // Try to find matching event to jump to
+                const match = events.find(e => e.name.toLowerCase().includes(searchTerm.toLowerCase()));
+                if (match) {
+                    const d = new Date(match.date);
+                    if (!isNaN(d.getTime())) {
+                        currentMonth = d.getMonth();
+                        currentYear = d.getFullYear();
+                    }
+                }
+            }
+            renderCalendar();
+        }
+    }
+
+    if (searchBtn) searchBtn.addEventListener('click', handleSearch);
+    if (eventSearch) eventSearch.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') handleSearch();
+        else handleSearch();
+    });
+
+    // 4. Modal & Form
+    const closeBtn = eventModal ? eventModal.querySelector('.close-modal') : null;
+    if (closeBtn) closeBtn.addEventListener('click', () => eventModal.style.display = 'none');
+
+    // Close on click outside
+    window.addEventListener('click', (e) => {
+        if (e.target === eventModal) eventModal.style.display = 'none';
+    });
+
     if (eventForm) {
-        eventForm.addEventListener('submit', function (e) {
+        eventForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const eventData = {
+
+            const newEvent = {
+                id: selectedEvent ? selectedEvent.id : Date.now(),
                 name: document.getElementById('event-name').value,
                 club: document.getElementById('event-club').value,
-                date: document.getElementById('event-date').value,
-                time: document.getElementById('event-time').value,
-                date: document.getElementById('event-date').value,
-                time: document.getElementById('event-time').value,
+                date: document.getElementById('event-start-date').value,
+                time: document.getElementById('event-start-time').value,
                 location: document.getElementById('event-location').value,
                 description: document.getElementById('event-description').value
             };
 
             if (selectedEvent) {
-                Object.assign(selectedEvent, eventData);
+                const index = events.findIndex(e => e.id === selectedEvent.id);
+                if (index !== -1) events[index] = newEvent;
             } else {
-                eventData.id = events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1;
-                events.push(eventData);
-                selectedEvent = eventData;
+                events.push(newEvent);
             }
-            // Save to LocalStorage
-            localStorage.setItem('allEvents', JSON.stringify(events));
-            // Save to LocalStorage
+
             localStorage.setItem('allEvents', JSON.stringify(events));
             renderCalendar();
-            showEventDetails(selectedEvent);
+            showEventDetails(newEvent);
             eventModal.style.display = 'none';
         });
     }
 
     // Delete Event
     if (deleteEventButton) {
-        deleteEventButton.addEventListener('click', function () {
+        deleteEventButton.addEventListener('click', () => {
             if (selectedEvent && confirm('Are you sure you want to delete this event?')) {
                 events = events.filter(e => e.id !== selectedEvent.id);
-                localStorage.setItem('allEvents', JSON.stringify(events));
                 localStorage.setItem('allEvents', JSON.stringify(events));
                 renderCalendar();
                 eventDetailsContainer.innerHTML = `<div class="no-event-selected"><i class="fas fa-calendar-alt"></i><p>Select an event from the calendar to view details</p></div>`;
@@ -434,164 +555,27 @@ function initCalendar() {
 
     // Month Navigation
     if (prevMonthButton) {
-        prevMonthButton.addEventListener('click', function () {
+        prevMonthButton.addEventListener('click', () => {
             currentMonth--;
             if (currentMonth < 0) { currentMonth = 11; currentYear--; }
             renderCalendar();
         });
-        
-
-    // Navigation UI Elements
-    const currentMonthElement = document.getElementById('current-month');
-    const prevMonthButton = document.getElementById('prev-month');
-    const nextMonthButton = document.getElementById('next-month');
-    const monthPicker = document.getElementById('month-picker');
-    const yearPicker = document.getElementById('year-picker');
-    const jumpToDateBtn = document.getElementById('jump-to-date');
-    const todayBtn = document.getElementById('today-btn');
-
-    // Initial State: Defaults to current month/year
-    let dateContext = new Date();
-    let currentMonth = dateContext.getMonth();
-    let currentYear = dateContext.getFullYear();
-
-    // Populate Year Picker dynamically if it exists and is empty
-    if (yearPicker && yearPicker.options.length === 0) {
-        const startYear = currentYear - 5;
-        const endYear = currentYear + 5;
-        for (let y = startYear; y <= endYear; y++) {
-            const opt = document.createElement('option');
-            opt.value = y;
-            opt.textContent = y;
-            if (y === currentYear) opt.selected = true;
-            yearPicker.appendChild(opt);
-        }
-    }
-
-    /**
-     * Helper to update global month/year display and re-render grid.
-     */
-    function updateAndRender() {
-        const monthNames = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
-
-        // 1. Update text header
-        if (currentMonthElement) {
-            currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-        }
-
-        // 2. Sync dropdown pickers
-        if (monthPicker) monthPicker.value = currentMonth;
-        if (yearPicker) yearPicker.value = currentYear;
-
-        // 3. Re-trigger the logic that draws the calendar boxes
-        // Ensure you have a function named renderCalendar that accepts these arguments
-        if (typeof renderCalendar === "function") {
-            renderCalendar(currentMonth, currentYear);
-        }
-    }
-
-    // --- Event Listeners for Navigation ---
-
-    if (prevMonthButton) {
-        prevMonthButton.addEventListener('click', () => {
-            currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
-            updateAndRender();
-
-        });
     }
 
     if (nextMonthButton) {
-        nextMonthButton.addEventListener('click', function () {
+        nextMonthButton.addEventListener('click', () => {
             currentMonth++;
             if (currentMonth > 11) { currentMonth = 0; currentYear++; }
             renderCalendar();
         });
     }
 
-    // Search Functionality
-    function handleSearch() {
-        const newSearchTerm = eventSearch.value.trim();
-
-        if (newSearchTerm !== searchTerm) {
-            searchTerm = newSearchTerm;
-
-            if (searchTerm !== '') {
-                // Find the first event that matches the search
-                const matchingEvent = events.find(event =>
-                    event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    getClubName(event.club).toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    event.description.toLowerCase().includes(searchTerm.toLowerCase())
-                );
-
-
-                if (matchingEvent) {
-                    // Navigate to the month and year of the matching event
-                    const eventDate = new Date(matchingEvent.date);
-                    currentMonth = eventDate.getMonth();
-                    currentYear = eventDate.getFullYear();
-                }
-            }
-        }
-
-        
-        renderCalendar();
-    }
-
-    if (eventSearch) {
-        eventSearch.addEventListener('input', handleSearch);
-    }
-
-    if (searchBtn) {
-        searchBtn.addEventListener('click', handleSearch);
-    }
-
-    // Filters (Club/Date)
-    function filterEvents() {
-        if (!clubFilter || !dateFilter) return;
-        const clubValue = clubFilter.value;
-        const dateValue = dateFilter.value;
-        const today = new Date();
-        renderCalendar();
-    }
-
-    if (eventSearch) {
-        eventSearch.addEventListener('input', handleSearch);
-    }
-
-    if (searchBtn) {
-        searchBtn.addEventListener('click', handleSearch);
-    }
-
-    if (nextMonthButton) nextMonthButton.addEventListener('click', () => {
-        currentMonth++;
-        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-        renderCalendar();
-    });
-
-    renderCalendar();
-
-        nextMonthButton.addEventListener('click', () => {
-            currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
-            updateAndRender();
-        });
-    }
-
-    if(jumpToDateBtn && monthPicker && yearPicker) {
+    // Jumpers
+    if (jumpToDateBtn) {
         jumpToDateBtn.addEventListener('click', () => {
-            currentMonth = parseInt(monthPicker.value);
-            currentYear = parseInt(yearPicker.value);
-            updateAndRender();
+            if (monthPicker) currentMonth = parseInt(monthPicker.value);
+            if (yearPicker) currentYear = parseInt(yearPicker.value);
+            renderCalendar();
         });
     }
 
@@ -600,13 +584,38 @@ function initCalendar() {
             const now = new Date();
             currentMonth = now.getMonth();
             currentYear = now.getFullYear();
-            updateAndRender();
+            renderCalendar();
         });
     }
 
-    // Initial render call on load
-    updateAndRender();
+    // Search Functionality
+    function handleSearch() {
+        const newSearchTerm = eventSearch.value.trim();
+        if (newSearchTerm !== searchTerm) {
+            searchTerm = newSearchTerm;
+            if (searchTerm) {
+                // Try to find matching event to jump to
+                const match = events.find(e => e.name.toLowerCase().includes(searchTerm.toLowerCase()));
+                if (match) {
+                    const d = new Date(match.date);
+                    if (!isNaN(d.getTime())) {
+                        currentMonth = d.getMonth();
+                        currentYear = d.getFullYear();
+                    }
+                }
+            }
+            renderCalendar();
+        }
+    }
 
+    if (searchBtn) searchBtn.addEventListener('click', handleSearch);
+    if (eventSearch) eventSearch.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') handleSearch();
+        else handleSearch();
+    });
+
+    // Initial Render
+    renderCalendar();
 }
 
 /**
@@ -773,57 +782,10 @@ function initAdmin() {
             `).join("");
 
         } catch (e) { console.error(e); }
-}
-
-/**
- * 7. Visual Animations
- */
-function initAnimations() {
-    const checkScrollAnimations = () => {
-        const windowHeight = window.innerHeight;
-        document.querySelectorAll('.timeline-item, .club-card').forEach(item => {
-            if (item.getBoundingClientRect().top < windowHeight * 0.75) item.classList.add('visible');
-        });
-    };
-    window.addEventListener('scroll', checkScrollAnimations);
-}
-
-/**
- * Session Helpers
- */
-function initStudentSession() {
-    const student = JSON.parse(localStorage.getItem('studentUser'));
-    if (student) {
-        document.getElementById('nav-login')?.classList.add('hidden');
-        document.getElementById('nav-logout')?.classList.remove('hidden');
     }
-}
-
-function initFavorites() {}
-
-/**
- * 9. Back to Top Utility
- */
-function initBackToTop() {
-    const backToTopBtn = document.getElementById("backToTop");
-    if (backToTopBtn) {
-        window.onscroll = function () {
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                backToTopBtn.style.display = "block";
-            } else {
-                backToTopBtn.style.display = "none";
-            }
-        };
-        backToTopBtn.addEventListener("click", function () {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-
-    }
-
 
     /* ---------- FEEDBACK ---------- */
     async function loadFeedbacks() {
-
         try {
             const res = await fetch('http://localhost:3000/api/admin/feedbacks', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -855,13 +817,65 @@ function initBackToTop() {
         } catch (e) { console.error(e); }
     }
 
-
     loadRegistrations();
 }
 
+function initAnimations() {
+    const checkScrollAnimations = () => {
+        const windowHeight = window.innerHeight;
+        document.querySelectorAll('.timeline-item, .club-card').forEach(item => {
+            if (item.getBoundingClientRect().top < windowHeight * 0.75) item.classList.add('visible');
+        });
+    };
+    window.addEventListener('scroll', checkScrollAnimations);
+}
 
+function initStudentSession() {
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (student) {
+        document.getElementById('nav-login')?.classList.add('hidden');
+        document.getElementById('nav-logout')?.classList.remove('hidden');
+    }
+}
 
-/* ================= CHATBOT ================= */
+function initFavorites() {}
+
+function initBackToTop() {
+    const backToTopBtn = document.getElementById("backToTop");
+    if (backToTopBtn) {
+        window.onscroll = function () {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopBtn.style.display = "block";
+            } else {
+                backToTopBtn.style.display = "none";
+            }
+        };
+        backToTopBtn.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+}
+
+function initFeedbackNotification() {
+    const feedbackForm = document.getElementById('feedback-form') || document.querySelector('#feedback-modal form');
+    const successCard = document.getElementById('feedbackSuccessCard');
+
+    if (feedbackForm && successCard) {
+        feedbackForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const feedbackModal = document.getElementById('feedback-modal');
+            if (feedbackModal) {
+                feedbackModal.style.display = 'none';
+                feedbackModal.classList.remove('active');
+            }
+            successCard.classList.add('show-success');
+            feedbackForm.reset();
+            setTimeout(() => {
+                successCard.classList.remove('show-success');
+            }, 4000);
+        });
+    }
+}
 
 function toggleChat() {
     const chat = document.getElementById("chatbot");
@@ -869,7 +883,6 @@ function toggleChat() {
 
     chat.style.display = chat.style.display === "flex" ? "none" : "flex";
 }
-
 
 function sendMessage() {
 
@@ -901,75 +914,39 @@ function sendMessage() {
 }
 
 
-
-/**
- * 11. Feedback Notification Utility
- */
-function initFeedbackNotification() {
-    const feedbackForm = document.getElementById('feedback-form') || document.querySelector('#feedback-modal form');
-    const successCard = document.getElementById('feedbackSuccessCard');
-
-    if (feedbackForm && successCard) {
-        feedbackForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const feedbackModal = document.getElementById('feedback-modal');
-            if (feedbackModal) {
-                feedbackModal.style.display = 'none';
-                feedbackModal.classList.remove('active');
-            }
-            successCard.classList.add('show-success');
-            feedbackForm.reset();
-            setTimeout(() => {
-                successCard.classList.remove('show-success');
-            }, 4000);
-        });
-    }
-}
-
 /** FAQ & Chatbot Logic */
-
 document.querySelectorAll(".faq-question").forEach(q => {
     q.addEventListener("click", () => {
         const ans = q.nextElementSibling;
         ans.style.display = ans.style.display === "block" ? "none" : "block";
-
     });
 });
 
 
-/* ================= CLUB BUTTONS ================= */
 
+/* ================= CLUB BUTTONS ================= */
 function initClubButtons() {
     document.querySelectorAll('.view-club-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const clubId = btn.dataset.club;
             window.location.href = `club.html?club=${clubId}`;
         });
-
     });
-};
+}
 
 
 /* ================= PWA SUPPORT ================= */
-
 let deferredPrompt;
-
 if ("serviceWorker" in navigator) {
-
     window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js");
     });
-
     window.addEventListener("beforeinstallprompt", e => {
-
         e.preventDefault();
         deferredPrompt = e;
-
         const btn = document.getElementById("install-app-btn");
-
         if (btn) {
             btn.style.display = "block";
-
             btn.addEventListener("click", async () => {
                 deferredPrompt.prompt();
                 await deferredPrompt.userChoice;
@@ -978,10 +955,8 @@ if ("serviceWorker" in navigator) {
         }
     });
 }
-function toggleChat() {
-    const chat = document.getElementById("chatbot");
-    if (chat) chat.style.display = (chat.style.display === "flex") ? "none" : "flex";
-}
+
+
 
 /**
  * Export functions for testing
@@ -1003,7 +978,4 @@ if (typeof module !== 'undefined' && module.exports) {
         initBackToTop,
         initFeedbackNotification
     };
-
-}
-
 }

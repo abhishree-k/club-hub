@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initNavigation();
     initTestimonialsAndSliders();
     initTabsAndModals();
-    initCalendar(); 
+    initCalendar();
     initForms();
     initAdmin();
     initAnimations();
@@ -148,7 +148,7 @@ function initMyHub() {
 function initTestimonialsAndSliders() {
     const testimonialSlides = document.querySelectorAll('.testimonial-slide');
     const dots = document.querySelectorAll('.carousel-dots .dot');
-    
+
     if (testimonialSlides.length === 0) return;
 
     let currentSlide = 0;
@@ -159,7 +159,7 @@ function initTestimonialsAndSliders() {
 
         testimonialSlides[index].classList.add('active');
         if (dots[index]) dots[index].classList.add('active');
-        
+
         currentSlide = index;
     }
 
@@ -569,7 +569,7 @@ function initStudentSession() {
     }
 }
 
-function initFavorites() {}
+function initFavorites() { }
 
 function initBackToTop() {
     const backToTopBtn = document.getElementById("backToTop");
@@ -712,16 +712,25 @@ if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js");
     });
+
     window.addEventListener("beforeinstallprompt", e => {
         e.preventDefault();
         deferredPrompt = e;
-        const btn = document.getElementById("install-app-btn");
+
+        const installSection = document.getElementById("footer-install-section");
+        const btn = document.getElementById("footer-install-btn");
+
+        if (installSection) installSection.style.display = "block";
+
         if (btn) {
             btn.style.display = "block";
             btn.addEventListener("click", async () => {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User response to the install prompt: ${outcome}`);
+                    deferredPrompt = null;
+                }
             });
         }
     });

@@ -837,7 +837,7 @@ function initStudentSession() {
     }
 }
 
-function initFavorites() {}
+function initFavorites() { }
 
 function initBackToTop() {
     const backToTopBtn = document.getElementById("backToTop");
@@ -978,16 +978,25 @@ if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js");
     });
+
     window.addEventListener("beforeinstallprompt", e => {
         e.preventDefault();
         deferredPrompt = e;
-        const btn = document.getElementById("install-app-btn");
+
+        const installSection = document.getElementById("footer-install-section");
+        const btn = document.getElementById("footer-install-btn");
+
+        if (installSection) installSection.style.display = "block";
+
         if (btn) {
             btn.style.display = "block";
             btn.addEventListener("click", async () => {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User response to the install prompt: ${outcome}`);
+                    deferredPrompt = null;
+                }
             });
         }
     });

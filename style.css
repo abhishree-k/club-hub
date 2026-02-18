@@ -724,7 +724,7 @@ body.light-mode .dot:hover {
 .cosmic-footer {
   background: rgba(26, 26, 46, 0.9);
   color: white;
-  padding: 4rem 5% 2rem;
+  padding: 4rem 5% 1rem;
   margin-top: 4rem;
 }
 
@@ -752,8 +752,10 @@ body.light-mode .dot:hover {
 
 .footer-column h4 {
   font-size: 1.2rem;
-  margin-bottom: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
   color: var(--accent-color);
+  text-transform: capitalize;
 }
 
 .footer-column ul {
@@ -763,12 +765,15 @@ body.light-mode .dot:hover {
 }
 
 .footer-column a {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9);
   transition: var(--transition);
+  text-decoration: none;
 }
 
 .footer-column a:hover {
   color: var(--accent-color);
+  transform: translateX(3px);
+  display: inline-block;
 }
 
 .footer-bottom {
@@ -4921,9 +4926,76 @@ body.oled-mode .small-hero .hero-subtitle {
 
 /* Footer Install Button Theme Adjustments */
 #footer-install-btn {
-  color: white !important;
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  font-family: inherit !important;
+  font-size: 1rem !important;
+  font-weight: normal !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+  margin-top: 0 !important;
+  transition: var(--transition) !important;
+  text-decoration: none !important;
+  text-align: left !important;
+  height: auto !important;
+  line-height: normal !important;
+}
+
+#footer-install-btn i {
+  font-size: 0.95rem !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+#footer-install-btn:hover {
+  color: var(--accent-color) !important;
+  transform: translateX(3px) !important;
 }
 
 body.light-mode #footer-install-btn {
-  color: rgba(23, 21, 21, 0.7) !important;
+  color: var(--text-color) !important;
+}
+
+body.light-mode #footer-install-btn i {
+  color: var(--text-color) !important;
+}
+
+/* Scroll to Top Button Style */
+#scrollTopBtn,
+#backToTop {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: none;
+  /* Controlled by JS */
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#scrollTopBtn:hover,
+#backToTop:hover {
+  transform: translateY(-5px);
+  filter: brightness(1.1);
+}
+
+/* Ensure no space at bottom */
+html,
+body {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }

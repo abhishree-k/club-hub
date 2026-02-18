@@ -73,3 +73,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+const cursorDot = document.querySelector(".cursor-dot");
+
+document.addEventListener("mousedown", () => {
+  cursorDot.classList.add("click");
+});
+
+document.addEventListener("mouseup", () => {
+  cursorDot.classList.remove("click");
+});

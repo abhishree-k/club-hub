@@ -7,27 +7,27 @@ const Feedback = require('./Feedback');
 const BlogPost = require('./BlogPost');
 const Comment = require('./Comment');
 
-// Associations
-User.hasMany(Registration);
-Registration.belongsTo(User);
+// Associations (explicit foreignKey to avoid duplicate column errors)
+User.hasMany(Registration, { foreignKey: 'userId' });
+Registration.belongsTo(User, { foreignKey: 'userId' });
 
-Event.hasMany(Registration);
-Registration.belongsTo(Event);
+Event.hasMany(Registration, { foreignKey: 'eventId' });
+Registration.belongsTo(Event, { foreignKey: 'eventId' });
 
-User.belongsToMany(Event, { through: Registration });
-Event.belongsToMany(User, { through: Registration });
+User.belongsToMany(Event, { through: Registration, foreignKey: 'userId' });
+Event.belongsToMany(User, { through: Registration, foreignKey: 'eventId' });
 
-User.hasMany(ClubMembership);
-ClubMembership.belongsTo(User);
+User.hasMany(ClubMembership, { foreignKey: 'studentId' });
+ClubMembership.belongsTo(User, { foreignKey: 'studentId' });
 
 // Blog Associations
 User.hasMany(BlogPost);
 BlogPost.belongsTo(User);
 
-BlogPost.hasMany(Comment);
-Comment.belongsTo(BlogPost);
+BlogPost.hasMany(Comment, { foreignKey: 'postId' });
+Comment.belongsTo(BlogPost, { foreignKey: 'postId' });
 
-User.hasMany(Comment);
-Comment.belongsTo(User);
+User.hasMany(Comment, { foreignKey: 'userId' });
+Comment.belongsTo(User, { foreignKey: 'userId' });
 
 module.exports = { sequelize, User, Event, Registration, ClubMembership, Feedback, BlogPost, Comment };

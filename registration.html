@@ -12,10 +12,12 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    integrity="sha512-Fo3rlrZj/k7ujTTXAB+2mZbQ5e0siJmq9hw3rroWAt4EvsC0BpvyEuk+qS0bkkCm1cW0XkyKADVY6jwxKF1u9A=="
-    crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link 
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-Fo3rlrZj/k7ujTTXAB+2mZbQ5e0siJmq9hw3rroWAt4EvsC0BpvyEuk+qS0bkkCm1cW0XkyKADVY6jwxKF1u9A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"
+    >
     <script type="text/javascript" src="darkmode.js?v=2.0" defer></script>
     <link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
@@ -65,17 +67,17 @@
     <main class="registration-main">
         <section class="registration-tabs">
             <div class="tab-buttons" role="tablist">
-                <button id="tab-club-registration" class="tab-button active" data-tab="club-registration" role="tab" aria-selected="true"
-                       aria-controls="club-registration">Club Membership</button>
-                
-                <button id="tab-event-registration" class="tab-button" data-tab="event-registration" role="tab" aria-selected="false"
-                       aria-controls="event-registration">Event Registration</button>
-                
-                <button id="tab-e-certificate" class="tab-button" data-tab="e-certificate" role="tab" aria-selected="false"
-                       aria-controls="e-certificate">E-Certificate</button>
-                
-                <button id="tab-student-login" class="tab-button" data-tab="student-login"
-                       role="tab" aria-selected="false" aria-controls="student-login">Student Login</button>
+                <button id="tab-club-registration" class="tab-button active" data-tab="club-registration" role="tab"
+                    aria-selected="true" aria-controls="club-registration">Club Membership</button>
+
+                <button id="tab-event-registration" class="tab-button" data-tab="event-registration" role="tab"
+                    aria-selected="false" aria-controls="event-registration">Event Registration</button>
+
+                <button id="tab-e-certificate" class="tab-button" data-tab="e-certificate" role="tab"
+                    aria-selected="false" aria-controls="e-certificate">E-Certificate</button>
+
+                <button id="tab-student-login" class="tab-button" data-tab="student-login" role="tab"
+                    aria-selected="false" aria-controls="student-login">Student Login</button>
             </div>
 
             <div class="tab-content" id="student-login" role="tabpanel" aria-labelledby="student-login-tab-btn" hidden>
@@ -95,11 +97,13 @@
                     <div class="form-actions">
                         <button type="submit" class="submit-button">Login</button>
                     </div>
-                    <p id="login-message" aria-live="polite" style="text-align: center; margin-top: 1rem; color: var(--accent-color);"></p>
+                    <p id="login-message" aria-live="polite"
+                        style="text-align: center; margin-top: 1rem; color: var(--accent-color);"></p>
                 </form>
             </div>
 
-            <div class="tab-content active" id="club-registration" role="tabpanel" aria-labelledby="tab-club-registration">
+            <div class="tab-content active" id="club-registration" role="tabpanel"
+                aria-labelledby="tab-club-registration">
                 <h2 class="section-title">Join a <span class="text-gradient">Club</span></h2>
                 <div id="club-success-message" class="success-message hidden" aria-live="polite">
                     <i class="fas fa-check-circle"></i>
@@ -109,33 +113,23 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="club-first-name">First Name</label>
-                            <input type="text"
-                             id="club-first-name"
-                             name="first_name"
-                             required
-                             title="Only alphabets allowed">
+                            <input type="text" id="club-first-name" name="first_name" required
+                                title="Only alphabets allowed">
 
                         </div>
                         <div class="form-group">
                             <label for="club-last-name">Last Name</label>
-                            <input type="text"
-                            id="club-last-name"
-                            name="last_name"
-                            required
-                            title="Only alphabets allowed">
+                            <input type="text" id="club-last-name" name="last_name" required
+                                title="Only alphabets allowed">
 
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="club-email">Email</label>
-                        <input type="email"
-                        id="club-email"
-                        name="email"
-                        required
-                        pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
-                        title="Email must be in username@gmail.com format">
-       
+                        <input type="email" id="club-email" name="email" required
+                            pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" title="Email must be in username@gmail.com format">
+
 
                     </div>
 
@@ -208,7 +202,7 @@
                 </form>
             </div>
 
-            <div class="tab-content" id="event-registration" role="tabpanel" aria-labelledby="tab-event-registration">
+            <div class="tab-content" id="event-registration" role="tabpanel" aria-labelledby="tab-event-registration" hidden>
                 <h2 class="section-title">Register for <span class="text-gradient">Events</span></h2>
                 <div class="event-selection">
                     <div class="event-filters">
@@ -395,9 +389,7 @@
                 <div class="footer-column" id="footer-install-section">
                     <h4>Install App</h4>
                     <ul>
-                        <li><button id="footer-install-btn"
-                                style="background: none; border: none; color: rgba(23, 23, 23, 0.7); cursor: pointer; padding: 0; font-family: inherit; font-size: inherit; text-align: left;"><i
-                                    class="fas fa-download"></i> Install Now</button></li>
+                        <li><button id="footer-install-btn"><i class="fas fa-download"></i> Install Now</button></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -486,57 +478,57 @@
     </div>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
 
-        function showErrorPopup(message) {
-            document.getElementById("error-message-text").textContent = message;
-            document.getElementById("error-popup").style.display = "flex";
-        }
-
-        window.closeErrorPopup = function() {
-            document.getElementById("error-popup").style.display = "none";
-        };
-
-        function scrollToField(fieldId) {
-            const field = document.getElementById(fieldId);
-            field.scrollIntoView({ behavior: "smooth", block: "center" });
-            field.focus();
-        }
-
-        document.getElementById("club-registration-form")
-        .addEventListener("submit", function(e) {
-
-            const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
-            const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-
-            const firstName = document.getElementById("club-first-name").value.trim();
-            const lastName = document.getElementById("club-last-name").value.trim();
-            const email = document.getElementById("club-email").value.trim();
-
-            if (!nameRegex.test(firstName)) {
-                e.preventDefault();
-                showErrorPopup("Error: Please enter only alphabets in First Name.");
-                scrollToField("club-first-name");
-                return;
+            function showErrorPopup(message) {
+                document.getElementById("error-message-text").textContent = message;
+                document.getElementById("error-popup").style.display = "flex";
             }
 
-            if (!nameRegex.test(lastName)) {
-                e.preventDefault();
-                showErrorPopup("Error: Please enter only alphabets in Last Name.");
-                scrollToField("club-last-name"); 
-                return;
+            window.closeErrorPopup = function () {
+                document.getElementById("error-popup").style.display = "none";
+            };
+
+            function scrollToField(fieldId) {
+                const field = document.getElementById(fieldId);
+                field.scrollIntoView({ behavior: "smooth", block: "center" });
+                field.focus();
             }
 
-            if (!emailRegex.test(email)) {
-                e.preventDefault();
-                showErrorPopup("Error: Email must be in username@gmail.com format.");
-                scrollToField("club-email");
-                return;
-            }
+            document.getElementById("club-registration-form")
+                .addEventListener("submit", function (e) {
+
+                    const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
+                    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+
+                    const firstName = document.getElementById("club-first-name").value.trim();
+                    const lastName = document.getElementById("club-last-name").value.trim();
+                    const email = document.getElementById("club-email").value.trim();
+
+                    if (!nameRegex.test(firstName)) {
+                        e.preventDefault();
+                        showErrorPopup("Error: Please enter only alphabets in First Name.");
+                        scrollToField("club-first-name");
+                        return;
+                    }
+
+                    if (!nameRegex.test(lastName)) {
+                        e.preventDefault();
+                        showErrorPopup("Error: Please enter only alphabets in Last Name.");
+                        scrollToField("club-last-name");
+                        return;
+                    }
+
+                    if (!emailRegex.test(email)) {
+                        e.preventDefault();
+                        showErrorPopup("Error: Email must be in username@gmail.com format.");
+                        scrollToField("club-email");
+                        return;
+                    }
+
+                });
 
         });
-
-    });
     </script>
 
     <!-- Error Popup -->
@@ -545,12 +537,12 @@
             <span id="error-message-text"></span>
             <button onclick="closeErrorPopup()">OK</button>
         </div>
-    <div class="cursor-container" id="cursor-container">
-    </div>
+        <div class="cursor-container" id="cursor-container">
+        </div>
 
-    <script src="app.js?v=2.0"></script>
-    <script src="scroll.js?v=2.0"></script>
-    <script src="cursor.js"></script>
+        <script src="app.js?v=2.0"></script>
+        <script src="scroll.js?v=2.0"></script>
+        <script src="cursor.js"></script>
 </body>
 
 </html>

@@ -55,7 +55,17 @@
             </span>
         </button>
       </li>
-      </li>
+    </ul>
+    <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
+      aria-controls="nav-links" type="button">
+      <span class="hamburger-icon" aria-hidden="true">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </span>
+    </button>
+    </li>
+    </li>
     </ul>
     <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
       aria-controls="nav-links" type="button">
@@ -251,16 +261,13 @@
         </div>
         <textarea id="feedback-message" rows="5" placeholder="Your Message" required
           style="padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; resize: vertical;"></textarea>
-        <button type="submit" class="cta-button" style="align-self:center; background-color: #fd79a8; color:white; font-family:'Times New Roman', Times, serif; border-radius:25px; Height:45px; width:130px; border: none; cursor: pointer;">Send
+        <button type="submit" class="cta-button"
+          style="align-self:center; background-color: #fd79a8; color:white; font-family:'Times New Roman', Times, serif; border-radius:25px; Height:45px; width:130px; border: none; cursor: pointer;">Send
           Feedback</button>
       </form>
+      <!-- feedback-response -->
       <div id="feedback-response" style="margin-top: 1rem; color: var(--success-color);"></div>
     </section>
-
-    <!-- scroll top button -->
-    <button id="scrollTopBtn" title="Back to Top" style="opacity: 1;">
-      <i class="fas fa-chevron-up"></i>
-    </button>
 
     <a href="blog.html" class="fab-float" title="Club Blog"
       style="bottom: 6rem; right: 2rem; display: flex; text-decoration: none;">
@@ -275,12 +282,10 @@
         <span class="logo-text">DSCE Clubs</span>
       </div>
       <div class="footer-links">
-        <div class="footer-column" id="footer-install-section" style="display: none;">
+        <div class="footer-column" id="footer-install-section">
           <h4>Install App</h4>
           <ul>
-            <li><button id="footer-install-btn"
-                style="background: none; border: none; color: rgba(23, 21, 21, 0.7); cursor: pointer; padding: 0; font-family: inherit; font-size: inherit; text-align: left;"><i
-                  class="fas fa-download"></i> Install Now</button></li>
+            <li><button id="footer-install-btn"><i class="fas fa-download"></i> Install Now</button></li>
           </ul>
         </div>
         <div class="footer-column">
@@ -323,13 +328,14 @@
   <div class="cursor-container" id="cursor-container">
   </div>
 
-  <button id="backToTop" title="Go to top">
-      <i class="fas fa-arrow-up"></i>
+  <button id="scrollTopBtn" title="Back to Top">
+    <i class="fas fa-chevron-up"></i>
   </button>
 
   <script src="app.js"></script>
   <script src="scroll.js?v=2.0"></script>
   <script src="cursor.js"></script>
-  
+
 </body>
+
 </html>

@@ -10,11 +10,9 @@
   --danger-color: #d63031;
   --text-color: #2d3436;
   --text-light: #636e72;
-  --gradient: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--accent-color)
-  );
+  --gradient: linear-gradient(135deg,
+      var(--primary-color),
+      var(--accent-color));
   --font-main: "Montserrat", sans-serif;
   --font-heading: "Playfair Display", serif;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -351,6 +349,7 @@ button:focus-visible,
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
@@ -725,7 +724,7 @@ body.light-mode .dot:hover {
 .cosmic-footer {
   background: rgba(26, 26, 46, 0.9);
   color: white;
-  padding: 4rem 5% 2rem;
+  padding: 4rem 5% 1rem;
   margin-top: 4rem;
 }
 
@@ -753,8 +752,10 @@ body.light-mode .dot:hover {
 
 .footer-column h4 {
   font-size: 1.2rem;
-  margin-bottom: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
   color: var(--accent-color);
+  text-transform: capitalize;
 }
 
 .footer-column ul {
@@ -764,12 +765,15 @@ body.light-mode .dot:hover {
 }
 
 .footer-column a {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9);
   transition: var(--transition);
+  text-decoration: none;
 }
 
 .footer-column a:hover {
   color: var(--accent-color);
+  transform: translateX(3px);
+  display: inline-block;
 }
 
 .footer-bottom {
@@ -1246,70 +1250,71 @@ body.light-mode .dot:hover {
 
 /* Modal */
 .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
 }
 
 .modal-content {
-    background: rgba(26, 26, 46, 0.95);
-    border-radius: 15px;
-    padding: 2rem;
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.1);
+  background: rgba(26, 26, 46, 0.95);
+  border-radius: 15px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.1);
 }
 
 .modal-content::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 .modal-content::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background: var(--primary-color, #4a90e2);;
-    border-radius: 10px;
+  background: var(--primary-color, #4a90e2);
+  ;
+  border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-color, #357abd);
+  background: var(--secondary-color, #357abd);
 }
 
 .close-modal {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.6);
-    transition: 0.3s;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  transition: 0.3s;
 }
 
 .close-modal:hover {
-    color: var(--accent-color, #ff4757);
+  color: var(--accent-color, #ff4757);
 
   display: none;
   position: fixed;
@@ -2051,12 +2056,12 @@ body.light-mode .dot:hover {
 }
 
 /* Checked state */
-.checkbox-item input:checked + .checkmark {
+.checkbox-item input:checked+.checkmark {
   background: #fd79a8;
   border-color: #fd79a8;
 }
 
-.checkbox-item input:checked + .checkmark::after {
+.checkbox-item input:checked+.checkmark::after {
   display: block;
 }
 
@@ -2066,11 +2071,11 @@ body.light-mode .dot:hover {
   align-items: center;
 }
 
-.checkbox-container:hover input ~ .checkmark {
+.checkbox-container:hover input~.checkmark {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.checkbox-container input:checked ~ .checkmark {
+.checkbox-container input:checked~.checkmark {
   background: var(--accent-color);
   border-color: var(--accent-color);
 }
@@ -2081,7 +2086,7 @@ body.light-mode .dot:hover {
   display: none;
 }
 
-.checkbox-container input:checked ~ .checkmark:after {
+.checkbox-container input:checked~.checkmark:after {
   display: block;
 }
 
@@ -2580,6 +2585,7 @@ body.light-mode .dot:hover {
 }
 
 @keyframes bounce {
+
   0%,
   20%,
   50%,
@@ -3097,7 +3103,7 @@ body.light-mode .dot:hover {
   transition: var(--transition);
 }
 
-.remember-me input:checked ~ .checkmark {
+.remember-me input:checked~.checkmark {
   background: var(--accent-color);
   border-color: var(--accent-color);
 }
@@ -3115,7 +3121,7 @@ body.light-mode .dot:hover {
   transform: rotate(45deg);
 }
 
-.remember-me input:checked ~ .checkmark:after {
+.remember-me input:checked~.checkmark:after {
   display: block;
 }
 
@@ -3394,7 +3400,8 @@ body.light-mode .dot:hover {
 
 /* ✅ ANSWERS ALWAYS VISIBLE */
 .faq-answer {
-  display: block;              /* changed from none */
+  display: block;
+  /* changed from none */
   color: #e5e7eb;
   background: rgba(255, 255, 255, 0.12);
   padding: 15px;
@@ -3673,7 +3680,7 @@ body.light-mode .dot:hover {
 
 .back-btn:hover {
 
-    background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 
 }
 
@@ -3723,7 +3730,7 @@ body.light-mode .dot:hover {
 }
 
 
-  background: rgba(255, 255, 255, 0.2);
+background: rgba(255, 255, 255, 0.2);
 }
 
 /* Scroll Button Smaller */
@@ -3894,6 +3901,54 @@ body.light-mode .dot:hover {
   margin-top: 12px;
   text-align: center;
   font-size: 0.9rem;
+}
+
+/* Feedback Success Card */
+.success-card {
+  display: none;
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.success-card.show-success {
+  display: block;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  animation: slideUpFadeIn 0.4s ease forwards;
+}
+
+.success-card-content {
+  background: linear-gradient(135deg, #00b894, #55efc4);
+  color: #1a1a2e;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 8px 30px rgba(0, 184, 148, 0.4);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.success-card-content .success-icon {
+  font-size: 1.4rem;
+}
+
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* ===========================
@@ -4153,7 +4208,7 @@ body.light-mode .admin-menu li a:hover {
 
 body.light-mode .stat-card,
 body.light-mode .chart-container,
-body.light-mode .dashboard-grid > div {
+body.light-mode .dashboard-grid>div {
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.1);
   color: #2d3436;
@@ -4449,36 +4504,35 @@ body.oled-mode .timeline-event {
 
 
 .error-popup {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
 .error-popup-content {
-    background: #1e1e2f;
-    padding: 25px 35px;
-    border-radius: 12px;
-    text-align: center;
-    color: white;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+  background: #1e1e2f;
+  padding: 25px 35px;
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
 }
 
 .error-popup-content button {
-    margin-top: 15px;
-    padding: 6px 15px;
-    border: none;
-    border-radius: 6px;
-    background: #ff4d4d;
-    color: white;
-    cursor: pointer;
+  margin-top: 15px;
+  padding: 6px 15px;
+  border: none;
+  border-radius: 6px;
+  background: #ff4d4d;
+  color: white;
+  cursor: pointer;
 }
-=======
 
-.logo-icon-img {
+=======.logo-icon-img {
   width: 32px;
   height: 32px;
   object-fit: contain;
@@ -4872,10 +4926,76 @@ body.oled-mode .small-hero .hero-subtitle {
 
 /* Footer Install Button Theme Adjustments */
 #footer-install-btn {
-  color: white !important;
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  font-family: inherit !important;
+  font-size: 1rem !important;
+  font-weight: normal !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+  margin-top: 0 !important;
+  transition: var(--transition) !important;
+  text-decoration: none !important;
+  text-align: left !important;
+  height: auto !important;
+  line-height: normal !important;
+}
+
+#footer-install-btn i {
+  font-size: 0.95rem !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+#footer-install-btn:hover {
+  color: var(--accent-color) !important;
+  transform: translateX(3px) !important;
 }
 
 body.light-mode #footer-install-btn {
-  color: rgba(23, 21, 21, 0.7) !important;
+  color: var(--text-color) !important;
 }
 
+body.light-mode #footer-install-btn i {
+  color: var(--text-color) !important;
+}
+
+/* Scroll to Top Button Style */
+#scrollTopBtn,
+#backToTop {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: none;
+  /* Controlled by JS */
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#scrollTopBtn:hover,
+#backToTop:hover {
+  transform: translateY(-5px);
+  filter: brightness(1.1);
+}
+
+/* Ensure no space at bottom */
+html,
+body {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}

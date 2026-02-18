@@ -45,3 +45,7 @@ body.oled-mode .cursor-dot {
     display: none;
   }
 }
+
+body.cursor-disabled .cursor-container {
+    display: none !important;
+}

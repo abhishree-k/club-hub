@@ -45,3 +45,31 @@ function animate() {
 }
 
 animate();
+
+document.addEventListener("DOMContentLoaded", () => {
+    const cursorToggle = document.getElementById('cursor-toggle');
+    
+    if (localStorage.getItem('cursorTrail') === 'disabled') {
+        document.body.classList.add('cursor-disabled');
+    }
+
+    const updateCursorIcon = () => {
+        const icon = cursorToggle.querySelector('i');
+        if (document.body.classList.contains('cursor-disabled')) {
+            icon.classList.remove('fa-arrow-pointer');
+            icon.classList.add('fa-computer-mouse');
+        } else {
+            icon.classList.remove('fa-computer-mouse');
+            icon.classList.add('fa-arrow-pointer');
+        }
+    };
+
+    if (cursorToggle) {
+        updateCursorIcon();
+        cursorToggle.addEventListener('click', () => {
+            document.body.classList.toggle('cursor-disabled');
+            localStorage.setItem('cursorTrail', document.body.classList.contains('cursor-disabled') ? 'disabled' : 'enabled');
+            updateCursorIcon();
+        });
+    }
+});

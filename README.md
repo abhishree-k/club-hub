@@ -143,9 +143,32 @@ club-hub/
     ├── server.js
     ├── database.sqlite
     ├── add_admin.js
+    ├── test_event_feedback.js
+    ├── config/
+        └── database.js
     ├── controllers/
+        ├── adminController.js
+        ├── authController.js
+        ├── blogController.js
+        └── eventController.js
+    ├── middleware/
+        ├── adminMiddleware.js
+        └── authMiddleware.js
     ├── models/
+        ├── BlogPost.js
+        ├── ClubMembership.js
+        ├── Comment.js
+        ├── Event.js
+        ├── Feedback.js
+        ├── Registration.js
+        ├── user.js
+        └── index.js
     └── routes/
+        ├── adminRoutes.js
+        ├── authRoutes.js
+        ├── blogRoutes.js
+        ├── eventRoutes.js
+        └── feedbackRoutes.js
 └── assets/
     └── screenshots/
         ├── home_page.png

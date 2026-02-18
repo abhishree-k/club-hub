@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', function () {
     initNavigation();
     initTestimonialsAndSliders();
     initTabsAndModals();
-    initCalendar(); 
+    initCalendar();
     initForms();
-    initAdmin();
+    if (typeof initAdmin === 'function') initAdmin();
     initAnimations();
     initStudentSession();
     initFavorites();
@@ -148,7 +148,7 @@ function initMyHub() {
 function initTestimonialsAndSliders() {
     const testimonialSlides = document.querySelectorAll('.testimonial-slide');
     const dots = document.querySelectorAll('.carousel-dots .dot');
-    
+
     if (testimonialSlides.length === 0) return;
 
     let currentSlide = 0;
@@ -159,7 +159,7 @@ function initTestimonialsAndSliders() {
 
         testimonialSlides[index].classList.add('active');
         if (dots[index]) dots[index].classList.add('active');
-        
+
         currentSlide = index;
     }
 
@@ -569,7 +569,7 @@ function initStudentSession() {
     }
 }
 
-function initFavorites() {}
+function initFavorites() { }
 
 function initBackToTop() {
     const backToTopBtn = document.getElementById("backToTop");
@@ -622,27 +622,63 @@ function initBackToTop() {
         } catch (e) { console.error(e); }
     }
 
-
-    loadRegistrations();
 }
 
 function initFeedbackNotification() {
-    const feedbackForm = document.getElementById('feedback-form') || document.querySelector('#feedback-modal form');
+    // Support both the homepage form (#feedback-form) and the events page form (#event-feedback-form)
+    const feedbackForm = document.getElementById('feedback-form')
+        || document.getElementById('event-feedback-form');
     const successCard = document.getElementById('feedbackSuccessCard');
 
     if (feedbackForm && successCard) {
-        feedbackForm.addEventListener('submit', function (e) {
+        feedbackForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            const feedbackModal = document.getElementById('feedback-modal');
-            if (feedbackModal) {
-                feedbackModal.style.display = 'none';
-                feedbackModal.classList.remove('active');
+
+            // Gather form data from whichever form is present
+            const name = (document.getElementById('event-feedback-name') || document.getElementById('feedback-name') || {}).value || '';
+            const email = (document.getElementById('feedback-email') || {}).value || '';
+            const eventName = (document.getElementById('event-feedback-event') || {}).value || '';
+            const rating = (document.getElementById('event-feedback-rating') || {}).value || '';
+            const message = (document.getElementById('event-feedback-message') || document.getElementById('feedback-message') || {}).value || '';
+
+            try {
+                const res = await fetch('http://localhost:3000/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, message, eventName, rating })
+                });
+
+                if (res.ok) {
+                    // Close modal if present (events page)
+                    const feedbackModal = document.getElementById('feedback-modal');
+                    if (feedbackModal) {
+                        feedbackModal.style.display = 'none';
+                        feedbackModal.classList.remove('active');
+                    }
+
+                    // Show success card only on successful submission
+                    successCard.classList.add('show-success');
+                    feedbackForm.reset();
+
+                    // Dismiss only when user clicks/touches the screen
+                    function dismissSuccess() {
+                        successCard.classList.remove('show-success');
+                        document.removeEventListener('click', dismissSuccess);
+                        document.removeEventListener('touchstart', dismissSuccess);
+                    }
+                    // Use a short delay so the submit click itself doesn't immediately dismiss
+                    setTimeout(() => {
+                        document.addEventListener('click', dismissSuccess);
+                        document.addEventListener('touchstart', dismissSuccess);
+                    }, 100);
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    alert(data.message || 'Failed to submit feedback. Please try again.');
+                }
+            } catch (err) {
+                console.error('Feedback submission error:', err);
+                alert('Could not connect to the server. Please try again later.');
             }
-            successCard.classList.add('show-success');
-            feedbackForm.reset();
-            setTimeout(() => {
-                successCard.classList.remove('show-success');
-            }, 4000);
         });
     }
 }
@@ -743,7 +779,6 @@ if (typeof module !== 'undefined' && module.exports) {
         initTabsAndModals,
         initCalendar,
         initForms,
-        initAdmin,
         initAnimations,
         initStudentSession,
         initBackToTop,

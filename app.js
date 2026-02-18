@@ -1,4 +1,3 @@
-
 /**
  * Main Entry Point
  * All functionality is initialized here via modular functions.
@@ -9,12 +8,13 @@ document.addEventListener('DOMContentLoaded', function () {
     initTabsAndModals();
     initCalendar();
     initForms();
-    initAdmin();
+    if (typeof initAdmin === 'function') initAdmin();
     initAnimations();
     initStudentSession();
     initFavorites();
     initBackToTop();
     initFeedbackNotification();
+    initClubButtons();
 
     const yearEl = document.getElementById("year");
     if (yearEl) {
@@ -89,6 +89,9 @@ function showFormSuccess(form, message) {
     setTimeout(() => msg.remove(), 3000);
 }
 
+/**
+ * 1. Navigation & Scrolling Logic
+ */
 function initNavigation() {
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const mobileMenu = document.querySelector('.nav-links');
@@ -231,16 +234,20 @@ function initCalendar() {
 
     // Details & Search Elements
     const eventDetailsContainer = document.getElementById('event-details-container');
+    const clubFilter = document.getElementById('event-club-filter');
+    const dateFilter = document.getElementById('event-date-filter');
+    const eventCards = document.querySelectorAll('.event-card');
     const eventSearch = document.getElementById('eventSearch');
     const searchBtn = document.getElementById('search-btn');
 
     let currentDate = new Date();
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
+
     let selectedEvent = null;
     let searchTerm = '';
 
-    // Initial Events Data
+    // Sample events data - using dynamic dates for current/future events
     const defaultEvents = [
         { id: 1, name: "AI Workshop", club: "tech", date: getFutureDate(7), time: "14:00", location: "CS Building, Room 101", description: "Hands-on session on machine learning." },
         { id: 2, name: "Digital Art Masterclass", club: "arts", date: getFutureDate(14), time: "16:00", location: "Arts Center, Studio 3", description: "Learn advanced techniques." },
@@ -365,8 +372,6 @@ function initCalendar() {
             dayEl.addEventListener('click', () => {
                 // Future: open empty modal
             });
-
-            calendarGrid.appendChild(dayEl);
         }
     }
 
@@ -535,6 +540,7 @@ function initCalendar() {
         });
     }
 
+    // Delete Event
     if (deleteEventButton) {
         deleteEventButton.addEventListener('click', () => {
             if (selectedEvent && confirm('Are you sure you want to delete this event?')) {
@@ -547,8 +553,270 @@ function initCalendar() {
         });
     }
 
+    // Month Navigation
+    if (prevMonthButton) {
+        prevMonthButton.addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        });
+    }
+
+    if (nextMonthButton) {
+        nextMonthButton.addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar();
+        });
+    }
+
+    // Jumpers
+    if (jumpToDateBtn) {
+        jumpToDateBtn.addEventListener('click', () => {
+            if (monthPicker) currentMonth = parseInt(monthPicker.value);
+            if (yearPicker) currentYear = parseInt(yearPicker.value);
+            renderCalendar();
+        });
+    }
+
+    if (todayBtn) {
+        todayBtn.addEventListener('click', () => {
+            const now = new Date();
+            currentMonth = now.getMonth();
+            currentYear = now.getFullYear();
+            renderCalendar();
+        });
+    }
+
+    // Search Functionality
+    function handleSearch() {
+        const newSearchTerm = eventSearch.value.trim();
+        if (newSearchTerm !== searchTerm) {
+            searchTerm = newSearchTerm;
+            if (searchTerm) {
+                // Try to find matching event to jump to
+                const match = events.find(e => e.name.toLowerCase().includes(searchTerm.toLowerCase()));
+                if (match) {
+                    const d = new Date(match.date);
+                    if (!isNaN(d.getTime())) {
+                        currentMonth = d.getMonth();
+                        currentYear = d.getFullYear();
+                    }
+                }
+            }
+            renderCalendar();
+        }
+    }
+
+    if (searchBtn) searchBtn.addEventListener('click', handleSearch);
+    if (eventSearch) eventSearch.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') handleSearch();
+        else handleSearch();
+    });
+
     // Initial Render
     renderCalendar();
+}
+
+/**
+ * 6. Admin
+ */
+/* ================= ADMIN INITIALIZATION ================= */
+
+function initAdmin() {
+    /* ---------- ADMIN LOGIN ---------- */
+    const adminLoginForm = document.getElementById('admin-login-form');
+
+    if (adminLoginForm) {
+        adminLoginForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const usernameField = document.getElementById('admin-username');
+            const passwordField = document.getElementById('admin-password');
+            const username = usernameField.value.trim();
+            const password = passwordField.value.trim();
+
+            if (!username || !password) {
+                alert("Username and Password required");
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: username, password })
+                });
+
+                if (!response.ok) throw new Error("Login failed");
+
+                const data = await response.json();
+
+                if (data.user.role !== "admin") {
+                    alert("Access denied");
+                    return;
+                }
+
+                localStorage.setItem('adminToken', data.token);
+                window.location.href = "admin-dashboard.html";
+
+            } catch (err) {
+                console.error(err);
+                alert("Login error");
+            }
+        });
+    }
+
+    const adminEventForm = document.getElementById('admin-event-form');
+    if (adminEventForm) {
+        adminEventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('admin-event-name').value;
+            alert(`Event "${name}" saved successfully!`);
+            this.reset();
+        });
+    }
+
+function initFavorites() { }
+
+    const dashboard = document.getElementById('admin-dashboard');
+    if (!dashboard) return;
+
+    const token = localStorage.getItem('adminToken');
+
+    if (!token) {
+        window.location.href = "admin-login.html";
+        return;
+    }
+
+    /* Sidebar Navigation */
+    const sidebarLinks = document.querySelectorAll('.admin-menu a');
+    const sections = document.querySelectorAll('.admin-tab-content');
+
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', e => {
+
+            e.preventDefault();
+            const target = link.getAttribute('href').substring(1);
+
+            document.querySelectorAll('.admin-menu li')
+                .forEach(li => li.classList.remove('active'));
+
+            link.parentElement.classList.add('active');
+
+            sections.forEach(sec => sec.style.display = "none");
+
+            const section = document.getElementById(target);
+            if (section) section.style.display = "block";
+
+            if (target === "dashboard" || target === "registrations") loadRegistrations();
+            if (target === "clubs") loadClubMemberships();
+            if (target === "feedbacks") loadFeedbacks();
+        });
+    });
+
+
+    /* ---------- LOGOUT ---------- */
+    const logoutBtn = document.getElementById('admin-logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('adminToken');
+            window.location.href = "admin-login.html";
+        });
+    }
+
+
+    /* ---------- LOAD REGISTRATIONS ---------- */
+    async function loadRegistrations() {
+
+        try {
+            const res = await fetch('http://localhost:3000/api/admin/registrations', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+
+            const tbody = document.querySelector('#registrations-table tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = data.map(r => `
+                <tr>
+                    <td>#${r.id}</td>
+                    <td>${r.name}</td>
+                    <td>${r.email}</td>
+                    <td>${r.clubs.join(", ")}</td>
+                    <td>${new Date(r.registeredAt).toLocaleDateString()}</td>
+                    <td><button class="table-action view"><i class="fas fa-eye"></i></button></td>
+                </tr>
+            `).join("");
+
+        } catch (e) { console.error(e); }
+    }
+
+
+    /* ---------- CLUB MEMBERSHIPS ---------- */
+    async function loadClubMemberships() {
+
+        try {
+            const res = await fetch('http://localhost:3000/api/admin/club-memberships', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+
+            const tbody = document.querySelector('#clubs-table tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = data.map(m => `
+                <tr>
+                    <td>#${m.id}</td>
+                    <td>${m.name}</td>
+                    <td>${m.studentId}</td>
+                    <td>${m.club}</td>
+                    <td>${m.status}</td>
+                    <td><button class="table-action edit"><i class="fas fa-edit"></i></button></td>
+                </tr>
+            `).join("");
+
+        } catch (e) { console.error(e); }
+    }
+
+    /* ---------- FEEDBACK ---------- */
+    async function loadFeedbacks() {
+        try {
+            const res = await fetch('http://localhost:3000/api/admin/feedbacks', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+
+            const tbody = document.querySelector('#feedbacks-table tbody');
+            if (!tbody) return;
+
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="6">No feedback yet</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(f => `
+                <tr>
+                    <td>${new Date(f.createdAt).toLocaleDateString()}</td>
+                    <td>${f.name}</td>
+                    <td>${f.email || "-"}</td>
+                    <td>${f.rating || "-"}</td>
+                    <td>${f.message}</td>
+                    <td>${f.status}</td>
+                </tr>
+            `).join("");
+
+        } catch (e) { console.error(e); }
+    }
+
 }
 
 function initAnimations() {
@@ -584,65 +852,64 @@ function initBackToTop() {
         backToTopBtn.addEventListener("click", function () {
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
-
     }
-
-
-    /* ---------- FEEDBACK ---------- */
-    async function loadFeedbacks() {
-
-        try {
-            const res = await fetch('http://localhost:3000/api/admin/feedbacks', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            if (!res.ok) return;
-
-            const data = await res.json();
-
-            const tbody = document.querySelector('#feedbacks-table tbody');
-            if (!tbody) return;
-
-            if (!data.length) {
-                tbody.innerHTML = `<tr><td colspan="6">No feedback yet</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = data.map(f => `
-                <tr>
-                    <td>${new Date(f.createdAt).toLocaleDateString()}</td>
-                    <td>${f.name}</td>
-                    <td>${f.email || "-"}</td>
-                    <td>${f.rating || "-"}</td>
-                    <td>${f.message}</td>
-                    <td>${f.status}</td>
-                </tr>
-            `).join("");
-
-        } catch (e) { console.error(e); }
-    }
-
-
-    loadRegistrations();
 }
 
 function initFeedbackNotification() {
-    const feedbackForm = document.getElementById('feedback-form') || document.querySelector('#feedback-modal form');
+    // Support both the homepage form (#feedback-form) and the events page form (#event-feedback-form)
+    const feedbackForm = document.getElementById('feedback-form')
+        || document.getElementById('event-feedback-form');
     const successCard = document.getElementById('feedbackSuccessCard');
 
     if (feedbackForm && successCard) {
-        feedbackForm.addEventListener('submit', function (e) {
+        feedbackForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            const feedbackModal = document.getElementById('feedback-modal');
-            if (feedbackModal) {
-                feedbackModal.style.display = 'none';
-                feedbackModal.classList.remove('active');
+
+            // Gather form data from whichever form is present
+            const name = (document.getElementById('event-feedback-name') || document.getElementById('feedback-name') || {}).value || '';
+            const email = (document.getElementById('feedback-email') || {}).value || '';
+            const eventName = (document.getElementById('event-feedback-event') || {}).value || '';
+            const rating = (document.getElementById('event-feedback-rating') || {}).value || '';
+            const message = (document.getElementById('event-feedback-message') || document.getElementById('feedback-message') || {}).value || '';
+
+            try {
+                const res = await fetch('http://localhost:3000/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, message, eventName, rating })
+                });
+
+                if (res.ok) {
+                    // Close modal if present (events page)
+                    const feedbackModal = document.getElementById('feedback-modal');
+                    if (feedbackModal) {
+                        feedbackModal.style.display = 'none';
+                        feedbackModal.classList.remove('active');
+                    }
+
+                    // Show success card only on successful submission
+                    successCard.classList.add('show-success');
+                    feedbackForm.reset();
+
+                    // Dismiss only when user clicks/touches the screen
+                    function dismissSuccess() {
+                        successCard.classList.remove('show-success');
+                        document.removeEventListener('click', dismissSuccess);
+                        document.removeEventListener('touchstart', dismissSuccess);
+                    }
+                    // Use a short delay so the submit click itself doesn't immediately dismiss
+                    setTimeout(() => {
+                        document.addEventListener('click', dismissSuccess);
+                        document.addEventListener('touchstart', dismissSuccess);
+                    }, 100);
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    alert(data.message || 'Failed to submit feedback. Please try again.');
+                }
+            } catch (err) {
+                console.error('Feedback submission error:', err);
+                alert('Could not connect to the server. Please try again later.');
             }
-            successCard.classList.add('show-success');
-            feedbackForm.reset();
-            setTimeout(() => {
-                successCard.classList.remove('show-success');
-            }, 4000);
         });
     }
 }
@@ -705,7 +972,6 @@ function initClubButtons() {
 }
 
 
-
 /* ================= PWA SUPPORT ================= */
 let deferredPrompt;
 if ("serviceWorker" in navigator) {
@@ -752,7 +1018,6 @@ if (typeof module !== 'undefined' && module.exports) {
         initTabsAndModals,
         initCalendar,
         initForms,
-        initAdmin,
         initAnimations,
         initStudentSession,
         initBackToTop,

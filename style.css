@@ -3903,6 +3903,54 @@ background: rgba(255, 255, 255, 0.2);
   font-size: 0.9rem;
 }
 
+/* Feedback Success Card */
+.success-card {
+  display: none;
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.success-card.show-success {
+  display: block;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  animation: slideUpFadeIn 0.4s ease forwards;
+}
+
+.success-card-content {
+  background: linear-gradient(135deg, #00b894, #55efc4);
+  color: #1a1a2e;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 8px 30px rgba(0, 184, 148, 0.4);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.success-card-content .success-icon {
+  font-size: 1.4rem;
+}
+
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 /* ===========================
    Light Mode - Feedback Modal
    =========================== */
@@ -4484,7 +4532,7 @@ body.oled-mode .timeline-event {
   cursor: pointer;
 }
 
-.logo-icon-img {
+=======.logo-icon-img {
   width: 32px;
   height: 32px;
   object-fit: contain;

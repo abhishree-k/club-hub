@@ -30,8 +30,8 @@ const Comment = sequelize.define(
 
     postId: {
       type: DataTypes.INTEGER,
-      allowNull: true, 
-      references: { model: 'Posts', key: 'id' },
+      allowNull: true,
+      references: { model: 'blog_posts', key: 'id' },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     },

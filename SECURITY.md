@@ -12,9 +12,7 @@ If you discover a security vulnerability, please report it responsibly.
 Public reports may expose sensitive information or platform weaknesses.
 
 ### How to Report
-Please report security issues privately by contacting the maintainers through:
-- GitHub direct message to the repository owner/maintainers, or
-- Any official contact method provided in the repository (if available)
+Please report security issues privately by [contacting the maintainers](README.md#connect-with-us)
 
 When reporting, include:
 - A clear description of the issue

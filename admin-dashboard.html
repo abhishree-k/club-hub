@@ -7,11 +7,13 @@
     <title>Admin Dashboard | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css?v=2.2">
     <link rel="stylesheet" href="admin.css?v=2.0">
+    <link rel="stylesheet" href="cursor.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
 
 <body>
@@ -34,6 +36,11 @@
             <li>
                 <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
                     <i class="fas fa-meteor"></i>
+                </button>
+            </li>
+            <li>
+                <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail">
+                    <i class="fas fa-arrow-pointer"></i>
                 </button>
             </li>
         </ul>
@@ -381,31 +388,6 @@
                     </div>
                 </section>
 
-                <!-- Settings: User & Role Management (Admin only) -->
-                <section id="settings" class="admin-section admin-tab-content" style="display: none;">
-                    <div class="section-header">
-                        <h2>User & Role Management</h2>
-                        <button class="action-btn" id="add-user-btn">
-                            <i class="fas fa-user-plus"></i> Add User
-                        </button>
-                    </div>
-                    <div class="table-container">
-                        <table class="admin-table" id="users-table">
-                            <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Role</th>
-                                    <th>Club</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Populated by JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
                 <!-- Feedback Section -->
                 <section id="feedbacks" class="admin-section admin-tab-content" style="display: none;">
                     <div class="section-header">
@@ -509,40 +491,12 @@
         </div>
     </div>
 
-    <!-- User Management Modal (Admin only) -->
-    <div id="user-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Manage User</h2>
-                <span class="close-modal close-user-modal">&times;</span>
-            </div>
-            <form id="user-form">
-                <input type="hidden" id="modal-user-index" />
-                <div class="form-group">
-                    <label for="user-username">Username</label>
-                    <input type="text" id="user-username" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="user-role">Role</label>
-                    <select id="user-role" required>
-                        <option value="leader">Club Leader</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
-                <div class="form-group" id="user-club-group" style="display:none;">
-                    <label for="user-club">Club (for Leaders)</label>
-                    <input type="text" id="user-club" placeholder="e.g., tech, arts, debate" />
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel close-user-modal">Cancel</button>
-                    <button type="submit" class="btn-save">Save</button>
-                </div>
-            </form>
-        </div>
+    <div class="cursor-container" id="cursor-container">
     </div>
+
     <script src="app.js?v=2.0"></script>
     <script src="darkmode.js?v=2.0"></script>
+    <script src="cursor.js"></script>
 </body>
 
 </html>

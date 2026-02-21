@@ -7,27 +7,51 @@
   <title>Admin Login | DSCE Clubs</title>
   <link rel="stylesheet" href="style.css?v=2.2" />
   <link rel="stylesheet" href="admin.css?v=2.0" />
+  <link rel="stylesheet" href="cursor.css">
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
 
 <body>
   <div class="stars-background"></div>
-  <nav class="cosmic-nav">
+  <nav class="cosmic-nav" role="navigation" aria-label="Main navigation">
     <div class="nav-logo">
       <span class="logo-icon">🌌</span>
       <span class="logo-text">DSCE Clubs</span>
     </div>
-    <ul class="nav-links">
+    <ul class="nav-links" id="nav-links" aria-hidden="false">
       <li><a href="index.html">Home</a></li>
+      <li><a href="events.html">Live & Upcoming Events</a></li>
+      <li><a href="past-events.html">Past Events</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="registration.html">Registration</a></li>
+      <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
+      <li><a href="admin-login.html" class="active">Admin</a></li>
+      <li id="nav-login">
+        <a href="registration.html#student-login">Student Login</a>
+      </li>
+      <li id="nav-logout" class="hidden">
+        <a href="#" id="student-logout-btn">Logout</a>
+      </li>
       <li>
         <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
-          <i class="fas fa-meteor"></i>
+          <i class="fas fa-moon"></i>
+        </button>
+      </li>
+      <li>
+        <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail">
+          <i class="fas fa-arrow-pointer"></i>
         </button>
       </li>
     </ul>
+    <div class="nav-hamburger">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
   </nav>
 
   <div class="login-container">
@@ -100,8 +124,13 @@
       </button>
     </div>
   </div>
+
+  <div class="cursor-container" id="cursor-container">
+  </div>
+
   <script src="app.js?v=2.0"></script>
   <script src="darkmode.js?v=2.0"></script>
+  <script src="cursor.js"></script>
 </body>
 
 </html>

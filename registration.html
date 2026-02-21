@@ -4,13 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6c5ce7">
     <title>Registration | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css?v=2.2">
+    <link rel="stylesheet" href="cursor.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link 
+        rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
+    />
     <script type="text/javascript" src="darkmode.js?v=2.0" defer></script>
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
 
 <body>
@@ -35,6 +42,11 @@
                     <i class="fas fa-meteor"></i>
                 </button>
             </li>
+            <li>
+                <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail">
+                    <i class="fas fa-arrow-pointer"></i>
+                </button>
+            </li>
         </ul>
         <div class="nav-hamburger">
             <div class="line"></div>
@@ -53,17 +65,20 @@
     <main class="registration-main">
         <section class="registration-tabs">
             <div class="tab-buttons" role="tablist">
-                <button class="tab-button active" data-tab="club-registration" role="tab" aria-selected="true"
-                    aria-controls="club-registration">Club Membership</button>
-                <button class="tab-button" data-tab="event-registration" role="tab" aria-selected="false"
-                    aria-controls="event-registration">Event Registration</button>
-                <button class="tab-button" data-tab="e-certificate" role="tab" aria-selected="false"
-                    aria-controls="e-certificate">E-Certificate</button>
-                <button class="tab-button" data-tab="student-login" id="student-login-tab-btn" role="tab"
+                <button id="tab-club-registration" class="tab-button active" data-tab="club-registration" role="tab"
+                    aria-selected="true" aria-controls="club-registration">Club Membership</button>
+
+                <button id="tab-event-registration" class="tab-button" data-tab="event-registration" role="tab"
+                    aria-selected="false" aria-controls="event-registration">Event Registration</button>
+
+                <button id="tab-e-certificate" class="tab-button" data-tab="e-certificate" role="tab"
+                    aria-selected="false" aria-controls="e-certificate">E-Certificate</button>
+
+                <button id="tab-student-login" class="tab-button" data-tab="student-login" role="tab"
                     aria-selected="false" aria-controls="student-login">Student Login</button>
             </div>
 
-            <div class="tab-content" id="student-login" role="tabpanel" aria-labelledby="tab-login" hidden>
+            <div class="tab-content" id="student-login" role="tabpanel" aria-labelledby="student-login-tab-btn" hidden>
                 <h2 class="section-title">Student <span class="text-gradient">Login</span></h2>
                 <p style="text-align: center; margin-bottom: 2rem;">Login to access 'My Hub' and manage your club
                     memberships and event registrations.</p>
@@ -80,31 +95,40 @@
                     <div class="form-actions">
                         <button type="submit" class="submit-button">Login</button>
                     </div>
-                    <p id="login-message" style="text-align: center; margin-top: 1rem; color: var(--accent-color);"></p>
+                    <p id="login-message" aria-live="polite"
+                        style="text-align: center; margin-top: 1rem; color: var(--accent-color);"></p>
                 </form>
             </div>
 
-            <div class="tab-content active" id="club-registration" role="tabpanel" aria-labelledby="tab-club">
+            <div class="tab-content active" id="club-registration" role="tabpanel"
+                aria-labelledby="tab-club-registration">
                 <h2 class="section-title">Join a <span class="text-gradient">Club</span></h2>
-                <div id="club-success-message" class="success-message hidden">
+                <div id="club-success-message" class="success-message hidden" aria-live="polite">
                     <i class="fas fa-check-circle"></i>
                     <p id="club-success-text">Club registration submitted successfully!</p>
                 </div>
-                <form id="club-registration-form" class="registration-form">
+                <form id="club-registration-form" class="registration-form" novalidate>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="club-first-name">First Name</label>
-                            <input type="text" id="club-first-name" name="first_name" required>
+                            <input type="text" id="club-first-name" name="first_name" required
+                                title="Only alphabets allowed">
+
                         </div>
                         <div class="form-group">
                             <label for="club-last-name">Last Name</label>
-                            <input type="text" id="club-last-name" name="last_name" required>
+                            <input type="text" id="club-last-name" name="last_name" required
+                                title="Only alphabets allowed">
+
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="club-email">Email</label>
-                        <input type="email" id="club-email" name="email" required>
+                        <input type="email" id="club-email" name="email" required
+                            pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" title="Email must be in username@gmail.com format">
+
+
                     </div>
 
                     <div class="form-group">
@@ -174,9 +198,9 @@
                         <button type="submit" class="submit-button">Submit Application</button>
                     </div>
                 </form>
-            </div>"
+            </div>
 
-            <div class="tab-content" id="event-registration" role="tabpanel">
+            <div class="tab-content" id="event-registration" role="tabpanel" aria-labelledby="tab-event-registration" hidden>
                 <h2 class="section-title">Register for <span class="text-gradient">Events</span></h2>
                 <div class="event-selection">
                     <div class="event-filters">
@@ -208,7 +232,7 @@
                         <div class="event-card" data-club="tech" data-date="2026-02-01" data-days-offset="7">
                             <div class="event-card-header">
                                 <span class="event-club tech">Tech Society</span>
-                                <span class="event-date">Loading...</span>
+                                <span class="event-date" aria-live="polite">Loading...</span>
                             </div>
                             <h3 class="event-title">AI Workshop Series</h3>
                             <p class="event-description">Hands-on sessions on machine learning fundamentals and
@@ -223,7 +247,7 @@
                         <div class="event-card" data-club="arts" data-date="2026-02-08" data-days-offset="14">
                             <div class="event-card-header">
                                 <span class="event-club arts">Creative Arts</span>
-                                <span class="event-date">Loading...</span>
+                                <span class="event-date" aria-live="polite">Loading...</span>
                             </div>
                             <h3 class="event-title">Digital Art Masterclass</h3>
                             <p class="event-description">Learn advanced techniques in digital painting and illustration.
@@ -238,7 +262,7 @@
                         <div class="event-card" data-club="debate" data-date="2026-02-15" data-days-offset="21">
                             <div class="event-card-header">
                                 <span class="event-club debate">Debate Club</span>
-                                <span class="event-date">Loading...</span>
+                                <span class="event-date" aria-live="polite">Loading...</span>
                             </div>
                             <h3 class="event-title">Public Speaking Workshop</h3>
                             <p class="event-description">Improve your public speaking and presentation skills.</p>
@@ -252,7 +276,7 @@
                         <div class="event-card" data-club="music" data-date="2026-02-22">
                             <div class="event-card-header">
                                 <span class="event-club music">Music Society</span>
-                                <span class="event-date">Loading...</span>
+                                <span class="event-date" aria-live="polite">Loading...</span>
                             </div>
                             <h3 class="event-title">Music Jam Session</h3>
                             <p class="event-description">Open mic and jam session.</p>
@@ -314,7 +338,7 @@
             </div>
 
             <!-- E-Certificate Panel -->
-            <div class="tab-content" id="e-certificate" role="tabpanel" aria-labelledby="tab-certificate" hidden>
+            <div class="tab-content" id="e-certificate" role="tabpanel" aria-labelledby="tab-e-certificate" hidden>
                 <h2 class="section-title">Request <span class="text-gradient">E-Certificate</span></h2>
                 <form id="certificate-form" class="registration-form">
                     <div class="form-group">
@@ -351,12 +375,49 @@
         <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
             <i class="fas fa-chevron-up"></i>
         </button>
-
     </main>
 
     <footer class="cosmic-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">🌌</span>
+                <span class="logo-text">DSCE Clubs</span>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column" id="footer-install-section">
+                    <h4>Install App</h4>
+                    <ul>
+                        <li><button id="footer-install-btn"><i class="fas fa-download"></i> Install Now</button></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="past-events.html">Past Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Get Involved</h4>
+                    <ul>
+                        <li><a href="registration.html">Register</a></li>
+                        <li><a href="#">Volunteer</a></li>
+                        <li><a href="#">Start a Club</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class='fab fa-discord'></i> Discord</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <div class="footer-bottom">
-            <p>© <span id="year"></span> DSCE Clubs. All rights reserved.</p>
+            <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
         </div>
     </footer>
 
@@ -414,10 +475,72 @@
         </div>
     </div>
 
-    <script src="app.js?v=2.0"></script>
-    <script src="scroll.js?v=2.0"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
+            function showErrorPopup(message) {
+                document.getElementById("error-message-text").textContent = message;
+                document.getElementById("error-popup").style.display = "flex";
+            }
 
+            window.closeErrorPopup = function () {
+                document.getElementById("error-popup").style.display = "none";
+            };
+
+            function scrollToField(fieldId) {
+                const field = document.getElementById(fieldId);
+                field.scrollIntoView({ behavior: "smooth", block: "center" });
+                field.focus();
+            }
+
+            document.getElementById("club-registration-form")
+                .addEventListener("submit", function (e) {
+
+                    const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
+                    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+
+                    const firstName = document.getElementById("club-first-name").value.trim();
+                    const lastName = document.getElementById("club-last-name").value.trim();
+                    const email = document.getElementById("club-email").value.trim();
+
+                    if (!nameRegex.test(firstName)) {
+                        e.preventDefault();
+                        showErrorPopup("Error: Please enter only alphabets in First Name.");
+                        scrollToField("club-first-name");
+                        return;
+                    }
+
+                    if (!nameRegex.test(lastName)) {
+                        e.preventDefault();
+                        showErrorPopup("Error: Please enter only alphabets in Last Name.");
+                        scrollToField("club-last-name");
+                        return;
+                    }
+
+                    if (!emailRegex.test(email)) {
+                        e.preventDefault();
+                        showErrorPopup("Error: Email must be in username@gmail.com format.");
+                        scrollToField("club-email");
+                        return;
+                    }
+
+                });
+
+        });
+    </script>
+
+    <!-- Error Popup -->
+    <div id="error-popup" class="error-popup">
+        <div class="error-popup-content">
+            <span id="error-message-text"></span>
+            <button onclick="closeErrorPopup()">OK</button>
+        </div>
+        <div class="cursor-container" id="cursor-container">
+        </div>
+
+        <script src="app.js?v=2.0"></script>
+        <script src="scroll.js?v=2.0"></script>
+        <script src="cursor.js"></script>
 </body>
 
 </html>

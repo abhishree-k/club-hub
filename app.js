@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initBackToTop();
     initFeedbackNotification();
     initClubButtons();
-    initUserManagement();
+    if (typeof initUserManagement === 'function') initUserManagement();
 
     const yearEl = document.getElementById("year");
     if (yearEl) {
@@ -779,19 +779,49 @@ function initAdmin() {
     if (adminLoginForm) {
         adminLoginForm.addEventListener('submit', function (e) {
             e.preventDefault();
+<<<<<<< HEAD
             const username = document.getElementById('admin-username').value.trim();
             const password = document.getElementById('admin-password').value.trim();
+=======
+            const usernameField = document.getElementById('admin-username');
+            const passwordField = document.getElementById('admin-password');
+            const username = usernameField.value.trim();
+            const password = passwordField.value.trim();
+
+            if (!username || !password) {
+                alert("Username and Password required");
+                return;
+            }
+>>>>>>> origin/main
 
             if (!username || !password) {
                 alert("Username and Password required");
                 return;
             }
 
+<<<<<<< HEAD
             const result = window.AuthService.login(username, password);
             if (result.success) {
                 window.location.href = "admin-dashboard.html";
             } else {
                 alert(result.message || "Login failed");
+=======
+                if (!response.ok) throw new Error("Login failed");
+
+                const data = await response.json();
+
+                if (data.user.role !== "admin") {
+                    alert("Access denied");
+                    return;
+                }
+
+                localStorage.setItem('adminToken', data.token);
+                window.location.href = "admin-dashboard.html";
+
+            } catch (err) {
+                console.error(err);
+                alert("Login error");
+>>>>>>> origin/main
             }
         });
     }
@@ -803,6 +833,7 @@ function initAdmin() {
             const name = document.getElementById('admin-event-name').value;
             alert(`Event "${name}" saved successfully!`);
             this.reset();
+<<<<<<< HEAD
         });
     }
 
@@ -1061,8 +1092,249 @@ function initAdmin() {
                 }
             });
         }
+=======
+        });
     }
 
+function initFavorites() { }
+
+    const dashboard = document.getElementById('admin-dashboard');
+    if (!dashboard) return;
+
+    const token = localStorage.getItem('adminToken');
+
+    if (!token) {
+        window.location.href = "admin-login.html";
+        return;
+    }
+
+    /* Sidebar Navigation */
+    const sidebarLinks = document.querySelectorAll('.admin-menu a');
+    const sections = document.querySelectorAll('.admin-tab-content');
+
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', e => {
+
+            e.preventDefault();
+            const target = link.getAttribute('href').substring(1);
+
+            document.querySelectorAll('.admin-menu li')
+                .forEach(li => li.classList.remove('active'));
+
+            link.parentElement.classList.add('active');
+
+            sections.forEach(sec => sec.style.display = "none");
+
+            const section = document.getElementById(target);
+            if (section) section.style.display = "block";
+
+            if (target === "dashboard" || target === "registrations") loadRegistrations();
+            if (target === "clubs") loadClubMemberships();
+            if (target === "feedbacks") loadFeedbacks();
+        });
+    });
+
+
+    /* ---------- LOGOUT ---------- */
+    const logoutBtn = document.getElementById('admin-logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('adminToken');
+            window.location.href = "admin-login.html";
+        });
+    }
+
+
+    /* ---------- LOAD REGISTRATIONS ---------- */
+    async function loadRegistrations() {
+
+        try {
+            const res = await fetch('http://localhost:3000/api/admin/registrations', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+
+            const tbody = document.querySelector('#registrations-table tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = data.map(r => `
+                <tr>
+                    <td>#${r.id}</td>
+                    <td>${r.name}</td>
+                    <td>${r.email}</td>
+                    <td>${r.clubs.join(", ")}</td>
+                    <td>${new Date(r.registeredAt).toLocaleDateString()}</td>
+                    <td><button class="table-action view"><i class="fas fa-eye"></i></button></td>
+                </tr>
+            `).join("");
+
+        } catch (e) { console.error(e); }
+    }
+
+
+    /* ---------- CLUB MEMBERSHIPS ---------- */
+    async function loadClubMemberships() {
+
+        try {
+            const res = await fetch('http://localhost:3000/api/admin/club-memberships', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+
+            const tbody = document.querySelector('#clubs-table tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = data.map(m => `
+                <tr>
+                    <td>#${m.id}</td>
+                    <td>${m.name}</td>
+                    <td>${m.studentId}</td>
+                    <td>${m.club}</td>
+                    <td>${m.status}</td>
+                    <td><button class="table-action edit"><i class="fas fa-edit"></i></button></td>
+                </tr>
+            `).join("");
+
+        } catch (e) { console.error(e); }
+    }
+
+    /* ---------- FEEDBACK ---------- */
+    async function loadFeedbacks() {
+        try {
+            const res = await fetch('http://localhost:3000/api/admin/feedbacks', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+
+            const tbody = document.querySelector('#feedbacks-table tbody');
+            if (!tbody) return;
+
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="6">No feedback yet</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(f => `
+                <tr>
+                    <td>${new Date(f.createdAt).toLocaleDateString()}</td>
+                    <td>${f.name}</td>
+                    <td>${f.email || "-"}</td>
+                    <td>${f.rating || "-"}</td>
+                    <td>${f.message}</td>
+                    <td>${f.status}</td>
+                </tr>
+            `).join("");
+
+        } catch (e) { console.error(e); }
+    }
+
+}
+
+function initAnimations() {
+    const checkScrollAnimations = () => {
+        const windowHeight = window.innerHeight;
+        document.querySelectorAll('.timeline-item, .club-card').forEach(item => {
+            if (item.getBoundingClientRect().top < windowHeight * 0.75) item.classList.add('visible');
+        });
+    };
+    window.addEventListener('scroll', checkScrollAnimations);
+}
+
+function initStudentSession() {
+    const student = JSON.parse(localStorage.getItem('studentUser'));
+    if (student) {
+        document.getElementById('nav-login')?.classList.add('hidden');
+        document.getElementById('nav-logout')?.classList.remove('hidden');
+    }
+}
+
+function initFavorites() { }
+
+function initBackToTop() {
+    const backToTopBtn = document.getElementById("backToTop");
+    if (backToTopBtn) {
+        window.onscroll = function () {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopBtn.style.display = "block";
+            } else {
+                backToTopBtn.style.display = "none";
+            }
+        };
+        backToTopBtn.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+}
+
+function initFeedbackNotification() {
+    // Support both the homepage form (#feedback-form) and the events page form (#event-feedback-form)
+    const feedbackForm = document.getElementById('feedback-form')
+        || document.getElementById('event-feedback-form');
+    const successCard = document.getElementById('feedbackSuccessCard');
+
+    if (feedbackForm && successCard) {
+        feedbackForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Gather form data from whichever form is present
+            const name = (document.getElementById('event-feedback-name') || document.getElementById('feedback-name') || {}).value || '';
+            const email = (document.getElementById('feedback-email') || {}).value || '';
+            const eventName = (document.getElementById('event-feedback-event') || {}).value || '';
+            const rating = (document.getElementById('event-feedback-rating') || {}).value || '';
+            const message = (document.getElementById('event-feedback-message') || document.getElementById('feedback-message') || {}).value || '';
+
+            try {
+                const res = await fetch('http://localhost:3000/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, message, eventName, rating })
+                });
+
+                if (res.ok) {
+                    // Close modal if present (events page)
+                    const feedbackModal = document.getElementById('feedback-modal');
+                    if (feedbackModal) {
+                        feedbackModal.style.display = 'none';
+                        feedbackModal.classList.remove('active');
+                    }
+
+                    // Show success card only on successful submission
+                    successCard.classList.add('show-success');
+                    feedbackForm.reset();
+
+                    // Dismiss only when user clicks/touches the screen
+                    function dismissSuccess() {
+                        successCard.classList.remove('show-success');
+                        document.removeEventListener('click', dismissSuccess);
+                        document.removeEventListener('touchstart', dismissSuccess);
+                    }
+                    // Use a short delay so the submit click itself doesn't immediately dismiss
+                    setTimeout(() => {
+                        document.addEventListener('click', dismissSuccess);
+                        document.addEventListener('touchstart', dismissSuccess);
+                    }, 100);
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    alert(data.message || 'Failed to submit feedback. Please try again.');
+                }
+            } catch (err) {
+                console.error('Feedback submission error:', err);
+                alert('Could not connect to the server. Please try again later.');
+            }
+        });
+>>>>>>> origin/main
+    }
+
+<<<<<<< HEAD
     function toggleChat() {
         const chat = document.getElementById("chatbot");
         if (!chat) return;
@@ -1105,10 +1377,66 @@ function initAdmin() {
         q.addEventListener("click", () => {
             const ans = q.nextElementSibling;
             ans.style.display = ans.style.display === "block" ? "none" : "block";
+=======
+function toggleChat() {
+    const chat = document.getElementById("chatbot");
+    if (!chat) return;
+
+    chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+}
+
+function sendMessage() {
+
+    const input = document.getElementById("userInput");
+    const chat = document.getElementById("chatBody");
+
+    if (!input || !chat || !input.value.trim()) return;
+
+    const user = document.createElement("div");
+    user.className = "user";
+    user.innerText = input.value;
+    chat.appendChild(user);
+
+    let reply = "Check Events page.";
+
+    const text = input.value.toLowerCase();
+
+    if (text.includes("register")) reply = "Register via Events page.";
+    else if (text.includes("event")) reply = "See Events section.";
+    else if (text.includes("contact")) reply = "Use Contact page.";
+
+    const bot = document.createElement("div");
+    bot.className = "bot";
+    bot.innerText = reply;
+
+    setTimeout(() => chat.appendChild(bot), 400);
+
+    input.value = "";
+}
+
+
+/** FAQ & Chatbot Logic */
+document.querySelectorAll(".faq-question").forEach(q => {
+    q.addEventListener("click", () => {
+        const ans = q.nextElementSibling;
+        ans.style.display = ans.style.display === "block" ? "none" : "block";
+    });
+});
+
+
+
+/* ================= CLUB BUTTONS ================= */
+function initClubButtons() {
+    document.querySelectorAll('.view-club-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const clubId = btn.dataset.club;
+            window.location.href = `club.html?club=${clubId}`;
+>>>>>>> origin/main
         });
     });
 
 
+<<<<<<< HEAD
 
     /* ================= CLUB BUTTONS ================= */
     function initClubButtons() {
@@ -1173,3 +1501,57 @@ function initAdmin() {
             initFeedbackNotification
         };
     }
+=======
+/* ================= PWA SUPPORT ================= */
+let deferredPrompt;
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js");
+    });
+
+    window.addEventListener("beforeinstallprompt", e => {
+        e.preventDefault();
+        deferredPrompt = e;
+
+        const installSection = document.getElementById("footer-install-section");
+        const btn = document.getElementById("footer-install-btn");
+
+        if (installSection) installSection.style.display = "block";
+
+        if (btn) {
+            btn.style.display = "block";
+            btn.addEventListener("click", async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User response to the install prompt: ${outcome}`);
+                    deferredPrompt = null;
+                }
+            });
+        }
+    });
+}
+
+
+
+/**
+ * Export functions for testing
+ */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        escapeHtml: (unsafe) => unsafe,
+        getFutureDate,
+        getCurrentMonthYear,
+        initNavigation,
+        initMyHub,
+        initTestimonialsAndSliders,
+        initTabsAndModals,
+        initCalendar,
+        initForms,
+        initAnimations,
+        initStudentSession,
+        initBackToTop,
+        initFeedbackNotification
+    };
+}
+>>>>>>> origin/main

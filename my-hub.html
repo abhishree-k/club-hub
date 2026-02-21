@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6c5ce7">
     <title>My Hub | DSCE Clubs</title>
     <link rel="stylesheet" href="style.css?v=2.2">
+    <link rel="stylesheet" href="cursor.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
@@ -108,6 +111,7 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
         }
     </style>
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
 
 <body>
@@ -130,6 +134,11 @@
             <li>
                 <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
                     <i class="fas fa-meteor"></i>
+                </button>
+            </li>
+            <li>
+                <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail">
+                    <i class="fas fa-arrow-pointer"></i>
                 </button>
             </li>
         </ul>
@@ -171,8 +180,12 @@
         </div>
     </footer>
 
+    <div class="cursor-container" id="cursor-container">
+    </div>
+
     <script src="app.js?v=2.0"></script>
     <script src="darkmode.js?v=2.0"></script>
+    <script src="cursor.js"></script>
     <script>
         // TEMP LOGIN FIX (for project/demo)
         if (!localStorage.getItem("studentLoggedIn")) {

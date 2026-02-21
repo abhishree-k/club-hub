@@ -3,13 +3,21 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>FAQ | College Events</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#6c5ce7" />
+  <title>Home | DSCE Clubs</title>
   <link rel="stylesheet" href="style.css?v=2.2" />
+  <link rel="stylesheet" href="cursor.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
 
 <body>
   <div class="stars-background"></div>
-
   <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="nav-logo">
@@ -22,6 +30,9 @@
       <a href="contact.html">Contact Us</a>
       <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode" style="margin-left: 15px;">
         <i class="fas fa-meteor"></i>
+      </button>
+      <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail" style="margin-left: 10px;">
+        <i class="fas fa-arrow-pointer"></i>
       </button>
     </div>
   </nav>
@@ -97,4 +108,13 @@
   <script src="darkmode.js?v=2.0"></script>
 </body>
 
+
+    <div class="cursor-container" id="cursor-container">
+    </div>
+
+    <script src="app.js?v=2.0"></script>
+    <script src="scroll.js?v=2.0"></script>
+    <script src="cursor.js"></script>
+    <script src="darkmode.js?v=2.0"></script>
+  </body>
 </html>

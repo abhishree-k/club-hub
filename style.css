@@ -490,17 +490,28 @@ button:focus-visible,
   box-shadow: 0 5px 15px rgba(253, 121, 168, 0.3);
 }
 
-/* Testimonials */
+/* Testimonials Section */
 .testimonials-section {
   padding: 6rem 5%;
   text-align: center;
+  position: relative;
+}
+
+.testimonial-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto 2rem;
+  position: relative;
 }
 
 .testimonial-carousel {
+  flex: 1;
   max-width: 800px;
-  margin: 0 auto 2rem;
   position: relative;
-  height: 200px;
+  height: 250px;
   overflow: hidden;
 }
 
@@ -511,48 +522,204 @@ button:focus-visible,
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 0.5s ease;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   color: white;
+  padding: 2rem;
 }
 
 .testimonial-slide.active {
   opacity: 1;
+  visibility: visible;
+}
+
+.testimonial-slide blockquote {
+  margin: 0;
+  padding: 0;
 }
 
 .testimonial-slide p {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-style: italic;
-  margin-bottom: 1rem;
-  max-width: 80%;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  max-width: 90%;
+  color: rgba(255, 255, 255, 0.95);
+  position: relative;
+}
+
+.testimonial-slide p::before {
+  font-size: 3rem;
+  color: var(--accent-color);
+  position: absolute;
+  top: -20px;
+  left: -30px;
+  opacity: 0.5;
 }
 
 .testimonial-author {
   font-weight: 600;
-  color: var(--accent-color);
+  font-size: 1rem;
 }
 
+.author-name {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.author-course {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Navigation Arrows */
+.testimonial-arrow {
+  background: rgba(139, 92, 246, 0.2);
+  border: 2px solid rgba(139, 92, 246, 0.5);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.testimonial-arrow:hover {
+  background: rgba(139, 92, 246, 0.4);
+  border-color: rgba(139, 92, 246, 0.8);
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+}
+
+.testimonial-arrow:active {
+  transform: scale(0.95);
+}
+
+.testimonial-arrow:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* Carousel Dots */
 .carousel-dots {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
 }
 
 .dot {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.3);
+  border: none;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.15);
 }
 
 .dot.active {
   background: var(--accent-color);
+  width: 30px;
+  border-radius: 7px;
 }
+
+.dot:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .testimonial-container {
+    gap: 1rem;
+  }
+  
+  .testimonial-arrow {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 1rem;
+  }
+  
+  .testimonial-slide p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  
+  .testimonial-carousel {
+    height: 280px;
+  }
+}
+
+@media (max-width: 576px) {
+  .testimonial-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .testimonial-arrows-mobile {
+    display: flex;
+    gap: 1rem;
+    order: 2;
+  }
+  
+  .testimonial-arrow {
+    position: static;
+  }
+  
+  .testimonial-slide p {
+    font-size: 1rem;
+  }
+  
+  .testimonial-carousel {
+    height: 300px;
+  }
+}
+
+/* Light Mode Adjustments */
+body.light-mode .testimonial-slide p,
+body.light-mode .testimonial-author {
+  color: #2d3436;
+}
+
+body.light-mode .author-course {
+  color: #636e72;
+}
+
+body.light-mode .testimonial-arrow {
+  background: rgba(108, 92, 231, 0.1);
+  border-color: rgba(108, 92, 231, 0.3);
+  color: #2d3436;
+}
+
+body.light-mode .testimonial-arrow:hover {
+  background: rgba(108, 92, 231, 0.2);
+  border-color: var(--primary-color);
+}
+
+body.light-mode .dot {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .dot:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
 
 /* Footer */
 .cosmic-footer {

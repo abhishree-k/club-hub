@@ -972,13 +972,18 @@ function sendMessage() {
 
 
 /** FAQ & Chatbot Logic */
-document.querySelectorAll(".faq-question").forEach(q => {
-    q.addEventListener("click", () => {
-        const ans = q.nextElementSibling;
-        ans.style.display = ans.style.display === "block" ? "none" : "block";
-    });
-});
+const faqQuestions = document.querySelectorAll(".faq-question");
 
+if (faqQuestions.length > 0) {
+    faqQuestions.forEach(q => {
+        q.addEventListener("click", () => {
+            const ans = q.nextElementSibling;
+            if (ans) {
+                ans.style.display = ans.style.display === "block" ? "none" : "block";
+            }
+        });
+    });
+}
 
 
 /* ================= CLUB BUTTONS ================= */

@@ -106,6 +106,10 @@ function initNavigation() {
         mobileMenuToggle.classList.add('active');
         mobileMenuToggle.setAttribute('aria-expanded', 'true');
         mobileMenu.setAttribute('aria-hidden', 'false');
+
+        // Accessibility: focus first link
+        const firstLink = mobileMenu.querySelector('a');
+        if (firstLink) firstLink.focus();
     }
 
     function closeMenu() {
@@ -114,28 +118,44 @@ function initNavigation() {
         mobileMenuToggle.classList.remove('active');
         mobileMenuToggle.setAttribute('aria-expanded', 'false');
         mobileMenu.setAttribute('aria-hidden', 'true');
+
+        // Accessibility: return focus to toggle button
+        mobileMenuToggle.focus();
     }
 
+    // Toggle menu
     mobileMenuToggle.addEventListener('click', function () {
-        if (isMenuOpen) closeMenu(); else openMenu();
+        if (isMenuOpen) closeMenu();
+        else openMenu();
     });
 
+    // Close with ESC key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && isMenuOpen) {
+            closeMenu();
+        }
+    });
+
+    // Smooth scrolling
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
             if (targetId === '#') return;
+
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
                 window.scrollTo({
                     top: targetElement.offsetTop - 80,
                     behavior: 'smooth'
                 });
+
                 if (mobileMenu.classList.contains('active')) closeMenu();
             }
         });
     });
 }
+
 
 function initMyHub() {
     if (!window.location.pathname.includes('my-hub.html')) return;
@@ -952,13 +972,18 @@ function sendMessage() {
 
 
 /** FAQ & Chatbot Logic */
-document.querySelectorAll(".faq-question").forEach(q => {
-    q.addEventListener("click", () => {
-        const ans = q.nextElementSibling;
-        ans.style.display = ans.style.display === "block" ? "none" : "block";
-    });
-});
+const faqQuestions = document.querySelectorAll(".faq-question");
 
+if (faqQuestions.length > 0) {
+    faqQuestions.forEach(q => {
+        q.addEventListener("click", () => {
+            const ans = q.nextElementSibling;
+            if (ans) {
+                ans.style.display = ans.style.display === "block" ? "none" : "block";
+            }
+        });
+    });
+}
 
 
 /* ================= CLUB BUTTONS ================= */

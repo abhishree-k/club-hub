@@ -32,6 +32,7 @@ A modern, lightweight, and open-source web platform for managing clubs, events, 
 - [Roadmap](#-roadmap)
 - [License](#-license)
 - [Acknowledgements](#-acknowledgements)
+- [Connect with us](#-connect-with-us)
 
 ---
 
@@ -308,7 +309,7 @@ Join our growing community! Connect with us on **Discord** for:
 - 🤝 Collaboration opportunities 
 
  <p align="start">
-  <a href="https://discord.gg/https://discord.gg/KnArBPuqg">
+  <a href="https://discord.gg/KnArBPuqg">
     <img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white" height="30"/>
         
   </a>

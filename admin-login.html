@@ -126,6 +126,30 @@
   <script src="app.js?v=2.0"></script>
   <script src="darkmode.js?v=2.0"></script>
   <script src="cursor.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function setupPasswordToggle(toggleSelector, inputId) {
+        const toggleEl = document.querySelector(toggleSelector);
+        const inputEl = document.getElementById(inputId);
+
+        if (toggleEl && inputEl) {
+          toggleEl.addEventListener('click', function () {
+            const type = inputEl.getAttribute('type') === 'password' ? 'text' : 'password';
+            inputEl.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            if (icon) {
+              icon.classList.toggle('fa-eye');
+              icon.classList.toggle('fa-eye-slash');
+            }
+          });
+        }
+      }
+
+      setupPasswordToggle('.toggle-password', 'admin-password');
+      setupPasswordToggle('.toggle-confirm-password', 'admin-confirm-password');
+    });
+  </script>
 </body>
 
 </html>

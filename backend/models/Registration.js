@@ -26,6 +26,39 @@ const Registration = sequelize.define(
       onUpdate: 'CASCADE',
     },
 
+    firstName: {
+      type: DataTypes.STRING(100),
+      allowNull: false, // participant first name
+    },
+
+    lastName: {
+      type: DataTypes.STRING(100),
+      allowNull: false, // participant last name
+    },
+
+    email: {
+      type: DataTypes.STRING(150),
+      allowNull: false,
+      validate: {
+        isEmail: true,
+      }, // participant email
+    },
+
+    studentId: {
+      type: DataTypes.STRING(50),
+      allowNull: false, // institutional student ID
+    },
+
+    dietary: {
+      type: DataTypes.STRING(255),
+      allowNull: true, // dietary preferences
+    },
+
+    accessibility: {
+      type: DataTypes.STRING(255),
+      allowNull: true, // accessibility requirements
+    },
+
     status: {
       type: DataTypes.STRING,
       defaultValue: 'registered',

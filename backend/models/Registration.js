@@ -13,7 +13,7 @@ const Registration = sequelize.define(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'Users', key: 'id' }, // FK → Users
+      references: { model: 'Users', key: 'id' }, // FK -> Users
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     },
@@ -21,21 +21,27 @@ const Registration = sequelize.define(
     eventId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'Events', key: 'id' }, // FK → Events
+      references: { model: 'Events', key: 'id' }, // FK -> Events
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     },
 
     status: {
-      type: DataTypes.ENUM('registered', 'cancelled', 'completed'),
+      type: DataTypes.STRING,
       defaultValue: 'registered',
-      allowNull: false, // registration state
+      allowNull: false,
+      validate: {
+        isIn: [['registered', 'cancelled', 'completed']],
+      }, // registration state
     },
 
     paymentStatus: {
-      type: DataTypes.ENUM('pending', 'paid', 'failed', 'refunded'),
+      type: DataTypes.STRING,
       defaultValue: 'pending',
-      allowNull: false, // payment state
+      allowNull: false,
+      validate: {
+        isIn: [['pending', 'paid', 'failed', 'refunded']],
+      }, // payment state
     },
 
     cancelledAt: {
@@ -45,9 +51,9 @@ const Registration = sequelize.define(
   },
   {
     timestamps: true,
-    paranoid: true, // soft delete (adds deletedAt)
+    paranoid: true, // soft delete
     indexes: [
-      { unique: true, fields: ['userId', 'eventId'] }, // prevent duplicates
+      { fields: ['userId', 'eventId', 'deletedAt'] }, // allow re-registration after soft delete
       { fields: ['userId'] },
       { fields: ['eventId'] },
       { fields: ['status'] },

@@ -772,9 +772,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 80px);
-    margin-top: 80px;
-    padding-top: 0;
+    min-height: calc(100vh - 120px); /* Ensure full height coverage */
+    margin-top: 120px; /* Increased to separate from navbar */
+    padding-top: 2rem; /* Additional visual breathing room */
+    padding-bottom: 2rem;
 }
 
 .login-container .modal-content {

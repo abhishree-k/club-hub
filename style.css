@@ -393,6 +393,9 @@ button:focus-visible,
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .club-card:hover {
@@ -440,24 +443,63 @@ button:focus-visible,
 
 .club-icon {
   font-size: 2.5rem;
-  margin-bottom: 1rem;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.club-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+/* Club Card Section Styling */
+.club-icon-section {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
 }
 
-.club-card p {
+.club-title-section {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.club-title-section h3 {
+  font-size: 1.3rem;
+  margin: 0;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.club-description-section {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.club-description-section p {
   color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}
+
+.club-tags-section {
+  flex-grow: 1;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1rem;
 }
 
 .club-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
 }
 
 .club-tags span {
@@ -467,6 +509,49 @@ button:focus-visible,
   border-radius: 50px;
   font-size: 0.8rem;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+}
+
+.club-button-section {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Legacy support for direct h3 and p elements */
+.club-card h3 {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.club-card p {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.club-tags .tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.club-tags .tags-list li {
+  display: inline-flex;
+}
+
+.club-tags .tag {
+  background: rgba(253, 121, 168, 0.2);
+  color: var(--accent-color);
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: inline-block;
 }
 
 .view-club-btn {
@@ -479,8 +564,8 @@ button:focus-visible,
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  margin-top: 1rem;
   width: 100%;
+  max-width: 200px;
 }
 
 .view-club-btn:hover {

@@ -88,6 +88,29 @@ img {
   }
 }
 
+/* Slide animations for notifications */
+@keyframes slideInRight {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+}
+
 /* Text Gradient */
 .text-gradient {
   background: var(--gradient);
@@ -257,6 +280,21 @@ button:focus-visible,
     display: block;
     padding: 0.6rem 0.8rem;
     width: 100%;
+  }
+
+  /* Language dropdown mobile adjustments */
+  .language-dropdown {
+    width: 100%;
+  }
+
+  .language-menu {
+    position: static;
+    transform: none;
+    margin-top: 8px;
+  }
+
+  .language-menu.active {
+    transform: none;
   }
 }
 
@@ -3874,6 +3912,80 @@ background: rgba(255, 255, 255, 0.2);
   transform: scale(0.95);
 }
 
+/* Language Dropdown Styles */
+.language-dropdown {
+  position: relative;
+}
+
+.language-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(108, 92, 231, 0.3);
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 10001;
+  pointer-events: none;
+}
+
+.language-menu.active {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.language-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+}
+
+.language-option:hover {
+  background: rgba(108, 92, 231, 0.2);
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.language-option:active {
+  transform: scale(0.98);
+}
+
+.language-option.selected {
+  background: rgba(108, 92, 231, 0.3);
+  color: #fff;
+  border-left: 3px solid #6c5ce7;
+}
+
+.lang-flag {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.lang-name {
+  font-weight: 500;
+}
+
 /* ===========================
    EVENT FEEDBACK MODAL STYLES
    =========================== */
@@ -4329,6 +4441,22 @@ body.light-mode .theme-btn {
 body.light-mode .theme-btn i {
   color: #f39c12;
   /* Sun */
+}
+
+/* Language dropdown light mode */
+body.light-mode .language-menu {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+body.light-mode .language-option {
+  color: #2d3436;
+}
+
+body.light-mode .language-option:hover {
+  background: rgba(108, 92, 231, 0.1);
+  color: var(--primary-color);
 }
 
 /* FIX: Timeline & Event Actions in Light Mode */

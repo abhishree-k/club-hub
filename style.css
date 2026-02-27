@@ -6267,3 +6267,15 @@ body.oled-mode .forum-stats-bar {
     padding: 1rem;
   }
 }
+
+.feedback-submit-btn,
+#feedbackBtn{
+  width: auto;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 1rem;
+  display: block;
+  margin: 0; /* removes centering */
+}

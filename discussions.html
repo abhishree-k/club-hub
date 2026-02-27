@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#6c5ce7" />
+    <title>Discussions | DSCE Clubs</title>
+    <meta name="description"
+        content="Join the conversation! Discuss topics, share ideas, and engage with fellow students in the DSCE Clubs community forum." />
+    <link rel="stylesheet" href="style.css?v=2.2" />
+    <link rel="stylesheet" href="cursor.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet" />
+    <link rel="apple-touch-icon" href="assets/icon-192.png" />
+</head>
+
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="stars-background"></div>
+
+    <nav class="cosmic-nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-logo">
+            <span class="logo-icon">🌌</span>
+            <span class="logo-text">DSCE Clubs</span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Live &amp; Upcoming Events</a></li>
+            <li><a href="past-events.html">Past Events</a></li>
+            <li><a href="discussions.html" class="active">Discussions</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="registration.html">Registration</a></li>
+            <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
+            <li><a href="admin-login.html">Admin</a></li>
+            <li id="nav-login"><a href="registration.html#student-login">Student Login</a></li>
+            <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
+            <li>
+                <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-meteor"></i>
+                </button>
+            </li>
+            <li>
+                <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail">
+                    <i class="fa-solid fa-arrow-pointer"></i>
+                </button>
+            </li>
+        </ul>
+        <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
+            aria-controls="nav-links" type="button">
+            <span class="hamburger-icon" aria-hidden="true">
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+            </span>
+        </button>
+    </nav>
+
+    <main id="main-content" tabindex="-1">
+        <!-- Hero -->
+        <section class="hero-section small-hero">
+            <div class="hero-content" style="text-align: center;">
+                <h1 class="hero-title">Community <span class="text-gradient">Discussions</span></h1>
+                <p class="hero-subtitle" style="max-width: 100%;">Ask questions, share ideas, and connect with the DSCE
+                    community</p>
+            </div>
+        </section>
+
+        <!-- Stats Bar -->
+        <section class="forum-stats-bar">
+            <div class="stat-item">
+                <i class="fas fa-comments"></i>
+                <span id="stat-topics">0</span>
+                <span class="stat-label">Topics</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-reply-all"></i>
+                <span id="stat-replies">0</span>
+                <span class="stat-label">Replies</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-users"></i>
+                <span id="stat-participants">0</span>
+                <span class="stat-label">Participants</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-fire"></i>
+                <span id="stat-active">0</span>
+                <span class="stat-label">Active Today</span>
+            </div>
+        </section>
+
+        <!-- Forum Container -->
+        <section class="forum-container">
+            <!-- Controls -->
+            <div class="forum-controls">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="forum-search" name="search" placeholder="Search discussions..." />
+                </div>
+                <div class="forum-filters">
+                    <div class="category-filters" id="forum-category-filters">
+                        <button class="filter-btn active" data-category="All">All</button>
+                        <button class="filter-btn" data-category="General">💬 General</button>
+                        <button class="filter-btn" data-category="Tech">💻 Tech</button>
+                        <button class="filter-btn" data-category="Arts">🎨 Arts</button>
+                        <button class="filter-btn" data-category="Sports">⚽ Sports</button>
+                        <button class="filter-btn" data-category="Debate">🗣️ Debate</button>
+                        <button class="filter-btn" data-category="Music">🎵 Music</button>
+                        <button class="filter-btn" data-category="Dance">💃 Dance</button>
+                        <button class="filter-btn" data-category="Events">📅 Events</button>
+                    </div>
+                    <div class="sort-controls">
+                        <label for="sort-select" class="sort-label">Sort by:</label>
+                        <select id="sort-select" class="sort-select">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="popular">Most Popular</option>
+                            <option value="most-replies">Most Replies</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Forum Layout -->
+            <div class="forum-layout">
+                <!-- Topics List -->
+                <div class="forum-topics-section">
+                    <div id="forum-topics-list" class="forum-topics-list">
+                        <p class="loading-text">Loading discussions...</p>
+                    </div>
+                    <!-- Empty State -->
+                    <div id="forum-empty-state" class="forum-empty-state hidden">
+                        <div class="empty-icon">💭</div>
+                        <h3>No discussions yet</h3>
+                        <p>Be the first to start a conversation!</p>
+                        <button class="cta-button" id="empty-start-btn">Start a Discussion</button>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="forum-sidebar">
+                    <!-- Trending Topics -->
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-fire-alt"></i> Trending Topics</h3>
+                        <div id="trending-topics" class="trending-list">
+                            <p class="loading-text" style="font-size: 0.85rem;">Loading...</p>
+                        </div>
+                    </div>
+
+                    <!-- Active Contributors -->
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-trophy"></i> Top Contributors</h3>
+                        <div id="top-contributors" class="contributors-list">
+                            <p class="loading-text" style="font-size: 0.85rem;">Loading...</p>
+                        </div>
+                    </div>
+
+                    <!-- Forum Guidelines -->
+                    <div class="sidebar-card guidelines-card">
+                        <h3><i class="fas fa-shield-alt"></i> Community Guidelines</h3>
+                        <ul>
+                            <li>Be respectful and constructive</li>
+                            <li>Stay on topic for each category</li>
+                            <li>No spam, hate speech, or harassment</li>
+                            <li>Report inappropriate content</li>
+                            <li>Help each other learn and grow</li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- Create Topic Modal -->
+        <div id="create-topic-modal" class="modal-overlay hidden">
+            <div class="modal-content glass-panel" style="max-width: 700px;">
+                <button class="close-modal" id="close-create-modal">&times;</button>
+                <h2>Start a <span class="text-gradient">Discussion</span></h2>
+                <form id="create-topic-form">
+                    <div class="form-group">
+                        <label for="topic-title">Title</label>
+                        <input type="text" id="topic-title" name="title" required placeholder="What's on your mind?"
+                            maxlength="120" />
+                        <div class="char-count"><span id="title-char-count">0</span>/120</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="topic-category">Category</label>
+                        <select id="topic-category" name="category" required>
+                            <option value="General">💬 General</option>
+                            <option value="Tech">💻 Tech</option>
+                            <option value="Arts">🎨 Arts</option>
+                            <option value="Sports">⚽ Sports</option>
+                            <option value="Debate">🗣️ Debate</option>
+                            <option value="Music">🎵 Music</option>
+                            <option value="Dance">💃 Dance</option>
+                            <option value="Events">📅 Events</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="topic-content">Content</label>
+                        <textarea id="topic-content" name="content" required rows="6"
+                            placeholder="Share your thoughts, questions, or ideas..." maxlength="5000"></textarea>
+                        <div class="char-count"><span id="content-char-count">0</span>/5000</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="topic-tags">Tags <span
+                                style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">(comma
+                                separated)</span></label>
+                        <input type="text" id="topic-tags" name="tags" placeholder="e.g., hackathon, coding, help" />
+                    </div>
+                    <div class="form-actions-row">
+                        <button type="submit" class="cta-button" id="publish-topic-btn">
+                            <i class="fas fa-paper-plane"></i> Publish Topic
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- View Topic / Thread Modal -->
+        <div id="view-topic-modal" class="modal-overlay hidden">
+            <div class="modal-content glass-panel" style="max-width: 850px;">
+                <button class="close-modal" id="close-view-modal">&times;</button>
+                <div id="view-topic-content">
+                    <!-- Dynamically injected -->
+                </div>
+
+                <!-- Replies Section -->
+                <div class="thread-replies-section">
+                    <h3 class="replies-heading">
+                        <i class="fas fa-comments"></i>
+                        <span id="replies-count-heading">Replies</span>
+                    </h3>
+                    <div id="replies-list" class="replies-list">
+                        <!-- Dynamically injected -->
+                    </div>
+
+                    <!-- Reply Form -->
+                    <div class="reply-form-container" id="reply-form-container">
+                        <form id="reply-form">
+                            <div class="form-group" style="margin-bottom: 0.8rem;">
+                                <textarea id="reply-content" name="reply" rows="3" placeholder="Write your reply..."
+                                    required maxlength="2000"></textarea>
+                            </div>
+                            <div class="reply-form-actions">
+                                <div class="reply-to-indicator hidden" id="reply-to-indicator">
+                                    <span>Replying to <strong id="reply-to-name"></strong></span>
+                                    <button type="button" id="cancel-reply-to" class="cancel-reply-btn">&times;</button>
+                                </div>
+                                <button type="submit" class="cta-button"
+                                    style="font-size: 0.85rem; padding: 0.5rem 1.2rem;">
+                                    <i class="fas fa-reply"></i> Post Reply
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Modal -->
+        <div id="report-modal" class="modal-overlay hidden">
+            <div class="modal-content glass-panel" style="max-width: 500px;">
+                <button class="close-modal" id="close-report-modal">&times;</button>
+                <h2><i class="fas fa-flag" style="color: var(--danger-color);"></i> Report Content</h2>
+                <form id="report-form">
+                    <div class="form-group">
+                        <label for="report-reason">Reason for reporting</label>
+                        <select id="report-reason" name="reason" required>
+                            <option value="">Select a reason...</option>
+                            <option value="spam">Spam or self-promotion</option>
+                            <option value="harassment">Harassment or bullying</option>
+                            <option value="hate-speech">Hate speech</option>
+                            <option value="inappropriate">Inappropriate content</option>
+                            <option value="misinformation">Misinformation</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-details">Additional details <span
+                                style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">(optional)</span></label>
+                        <textarea id="report-details" name="details" rows="3"
+                            placeholder="Provide any additional context..."></textarea>
+                    </div>
+                    <button type="submit" class="cta-button"
+                        style="background: linear-gradient(135deg, #d63031, #e17055);">
+                        <i class="fas fa-paper-plane"></i> Submit Report
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- FAB Create Discussion -->
+        <button id="fab-create-topic" class="fab-float" title="Start a Discussion" style="bottom: 6rem; right: 2rem;">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <!-- Toast Notification -->
+        <div id="forum-toast" class="forum-toast hidden">
+            <div class="toast-content">
+                <i class="fas fa-check-circle"></i>
+                <span id="toast-message">Action completed!</span>
+            </div>
+        </div>
+    </main>
+
+    <footer class="cosmic-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">🌌</span>
+                <span class="logo-text">DSCE Clubs</span>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column" id="footer-install-section" style="display: none;">
+                    <h4>Install App</h4>
+                    <ul>
+                        <li><button id="footer-install-btn"><i class="fas fa-download"></i> Install Now</button></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="events.html">Events</a></li>
+                        <li><a href="discussions.html">Discussions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Get Involved</h4>
+                    <ul>
+                        <li><a href="registration.html">Register</a></li>
+                        <li><a href="#">Volunteer</a></li>
+                        <li><a href="#">Start a Club</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class="fab fa-discord"></i> Discord</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div class="cursor-container" id="cursor-container"></div>
+
+    <button id="scrollTopBtn" title="Back to Top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script src="app.js?v=2.0"></script>
+    <script src="scroll.js?v=2.0"></script>
+    <script src="darkmode.js?v=2.0"></script>
+    <script src="discussions.js?v=1.0"></script>
+    <script src="cursor.js"></script>
+</body>
+
+</html>

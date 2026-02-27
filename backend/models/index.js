@@ -6,6 +6,8 @@ const ClubMembership = require('./ClubMembership');
 const Feedback = require('./Feedback');
 const BlogPost = require('./BlogPost');
 const Comment = require('./Comment');
+const Resource = require('./Resource');
+const ResourceDownload = require('./ResourceDownload');
 
 // Associations (explicit foreignKey to avoid duplicate column errors)
 User.hasMany(Registration, { foreignKey: 'userId' });
@@ -30,4 +32,17 @@ Comment.belongsTo(BlogPost, { foreignKey: 'postId' });
 User.hasMany(Comment, { foreignKey: 'userId' });
 Comment.belongsTo(User, { foreignKey: 'userId' });
 
-module.exports = { sequelize, User, Event, Registration, ClubMembership, Feedback, BlogPost, Comment };
+// Resource Associations
+User.hasMany(Resource, { foreignKey: 'uploadedBy', as: 'uploadedResources' });
+Resource.belongsTo(User, { foreignKey: 'uploadedBy', as: 'uploader' });
+
+Resource.hasMany(Resource, { as: 'versions', foreignKey: 'parentResourceId' });
+Resource.belongsTo(Resource, { as: 'parent', foreignKey: 'parentResourceId' });
+
+Resource.hasMany(ResourceDownload, { foreignKey: 'resourceId' });
+ResourceDownload.belongsTo(Resource, { foreignKey: 'resourceId' });
+
+User.hasMany(ResourceDownload, { foreignKey: 'userId' });
+ResourceDownload.belongsTo(User, { foreignKey: 'userId' });
+
+module.exports = { sequelize, User, Event, Registration, ClubMembership, Feedback, BlogPost, Comment, Resource, ResourceDownload };

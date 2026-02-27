@@ -2,27 +2,59 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { sequelize } = require('./models');
+const http = require('http');
+const WebSocket = require('ws');
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server, path: '/ws' });
+
 app.use(cors({
     origin: ['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:3000'],
     credentials: true
 }));
 app.use(express.json());
 
+const clients = new Map();
+
+wss.on('connection', (ws, req) => {
+    const url = req.url;
+    const userIdMatch = url.match(/\/ws\/notifications\/(\d+)/);
+
+    if (userIdMatch) {
+        const userId = parseInt(userIdMatch[1]);
+        clients.set(userId, ws);
+
+        ws.on('close', () => {
+            clients.delete(userId);
+        });
+    }
+});
+
+function sendNotificationToUser(userId, notification) {
+    const client = clients.get(userId);
+    if (client && client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(notification));
+    }
+}
+
+global.sendNotificationToUser = sendNotificationToUser;
+
 const authRoutes = require('./routes/authRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const blogRoutes = require('./routes/blogRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/blog', blogRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 const path = require('path');
 app.use(express.static(path.join(__dirname, '../')));
@@ -55,6 +87,6 @@ sequelize.sync({ alter: true }).then(async () => {
     console.error('Failed to sync db: ' + err.message);
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

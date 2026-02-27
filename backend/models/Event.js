@@ -52,14 +52,47 @@ const Event = sequelize.define('Event', {
   description: {
     type: DataTypes.TEXT,
     allowNull: true
-  }
+  },
 
+  capacity: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+
+  currentAttendees: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    allowNull: false
+  },
+
+  waitlistLimit: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+
+  rsvpDeadline: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+
+  allowWaitlist: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+    allowNull: false
+  },
+
+  requireRsvp: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
+  }
 }, {
   tableName: 'events',
   timestamps: true,
   indexes: [
     { fields: ['startDate'] },
-    { fields: ['club'] }
+    { fields: ['club'] },
+    { fields: ['requireRsvp'] }
   ]
 });
 

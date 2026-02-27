@@ -1,14 +1,15 @@
 const { User, ClubMembership, Feedback } = require('../models');
 
+// Fetch all student registrations
 exports.getRegistrations = async (req, res) => {
     try {
         const users = await User.findAll({
             where: { role: 'student' },
-            include: [{ model: ClubMembership }],
+            include: [{ model: ClubMembership }], // Include club memberships
             order: [['createdAt', 'DESC']]
         });
 
-        // Format for frontend
+        // Format data for frontend
         const formatted = users.map(user => ({
             id: user.id,
             name: `${user.firstName} ${user.lastName}`,
@@ -21,14 +22,15 @@ exports.getRegistrations = async (req, res) => {
         res.json(formatted);
     } catch (error) {
         console.error("Error fetching registrations:", error);
-        res.status(500).json({ message: 'Error fetching registrations' });
+        res.status(500).json({ message: 'Error fetching registrations', error: error.message });
     }
 };
 
+// Fetch all club memberships
 exports.getClubMemberships = async (req, res) => {
     try {
         const memberships = await ClubMembership.findAll({
-            include: [{ model: User, attributes: ['firstName', 'lastName'] }],
+            include: [{ model: User, attributes: ['firstName', 'lastName'] }], // Include user info
             order: [['createdAt', 'DESC']]
         });
 
@@ -43,10 +45,11 @@ exports.getClubMemberships = async (req, res) => {
         res.json(formatted);
     } catch (error) {
         console.error("Error fetching club memberships:", error);
-        res.status(500).json({ message: 'Error fetching club memberships' });
+        res.status(500).json({ message: 'Error fetching club memberships', error: error.message });
     }
 };
 
+// Fetch all feedbacks
 exports.getFeedbacks = async (req, res) => {
     try {
         const feedbacks = await Feedback.findAll({
@@ -55,6 +58,6 @@ exports.getFeedbacks = async (req, res) => {
         res.json(feedbacks);
     } catch (error) {
         console.error("Error fetching feedbacks:", error);
-        res.status(500).json({ message: 'Error fetching feedbacks' });
+        res.status(500).json({ message: 'Error fetching feedbacks', error: error.message });
     }
 };

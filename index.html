@@ -48,6 +48,29 @@
                 <i class="fa-solid fa-arrow-pointer"></i>
               </button>
             </li>
+            <li class="language-dropdown">
+              <button type="button" id="language-toggle" class="theme-btn" aria-label="Change Language" aria-expanded="false">
+                <i class="fas fa-globe"></i>
+              </button>
+              <div class="language-menu" id="language-menu">
+                <button type="button" class="language-option" data-lang="en">
+                  <span class="lang-flag">🇺🇸</span>
+                  <span class="lang-name">English</span>
+                </button>
+                <button type="button" class="language-option" data-lang="hi">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">हिन्दी</span>
+                </button>
+                <button type="button" class="language-option" data-lang="bn">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">বাংলা</span>
+                </button>
+                <button type="button" class="language-option" data-lang="mr">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">मराठी</span>
+                </button>
+              </div>
+            </li>
         </ul>
       <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
         aria-controls="nav-links" type="button">
@@ -300,17 +323,21 @@
         </div>
         <textarea id="feedback-message" rows="5" placeholder="Your Message" required
           style="padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; resize: vertical;"></textarea>
-        <button type="submit" class="cta-button"
-          style="align-self:center; background-color: #fd79a8; color:white; font-family:'Times New Roman', Times, serif; border-radius:25px; Height:45px; width:130px; border: none; cursor: pointer;">Send
-          Feedback</button>
+        <button type="submit" class="submit-button"
+  style="align-self:flex-start; border-radius:50px;">Send Feedback</button>
       </form>
       <!-- feedback-response -->
       <div id="feedback-response" style="margin-top: 1rem; color: var(--success-color);"></div>
     </section>
 
     <a href="blog.html" class="fab-float" title="Club Blog"
-      style="bottom: 6rem; right: 2rem; display: flex; text-decoration: none;">
+      style="bottom: 10rem; right: 2rem; display: flex; text-decoration: none;">
       <i class="fas fa-newspaper"></i>
+    </a>
+
+    <a href="discussions.html" class="fab-float" title="Community Discussions"
+      style="bottom: 6rem; right: 2rem; display: flex; text-decoration: none;">
+      <i class="fas fa-comments"></i>
     </a>
   </main>
 
@@ -371,7 +398,84 @@
     <i class="fas fa-chevron-up"></i>
   </button>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2.0"></script>
+  <script>
+    (function () {
+      const toggle = document.getElementById('language-toggle');
+      const menu = document.getElementById('language-menu');
+      if (!toggle || !menu) return;
+
+      if (toggle.dataset.bound === 'true') return;
+      toggle.dataset.bound = 'true';
+
+      let isOpen = false;
+      const setMenu = (open) => {
+        isOpen = open;
+        menu.classList.toggle('active', open);
+        menu.style.display = open ? 'block' : 'none';
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (!open) toggle.blur();
+      };
+
+      setMenu(false);
+
+      toggle.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const willOpen = !isOpen;
+        const options = menu.querySelectorAll('.language-option');
+        
+        if (willOpen) {
+          // Highlight currently selected language when opening
+          const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+          options.forEach(opt => {
+            if (opt.getAttribute('data-lang') === currentLang) {
+              opt.classList.add('selected');
+            } else {
+              opt.classList.remove('selected');
+            }
+          });
+        } else {
+          // Remove highlighting when closing
+          options.forEach(opt => opt.classList.remove('selected'));
+        }
+        setMenu(willOpen);
+      });
+
+      menu.addEventListener('click', function (e) {
+        const option = e.target.closest('.language-option');
+        if (!option) return;
+        e.preventDefault();
+        const langNameEl = option.querySelector('.lang-name');
+        const langName = langNameEl ? langNameEl.textContent : 'language';
+        const selectedLang = option.getAttribute('data-lang');
+        if (typeof window.setLanguage === 'function') {
+          window.setLanguage(selectedLang);
+        } else {
+          localStorage.setItem('selectedLanguage', selectedLang);
+        }
+
+        if (typeof window.showLanguageNotification === 'function') {
+          const prefix = typeof window.getTranslation === 'function'
+            ? window.getTranslation('Language changed to', selectedLang)
+            : 'Language changed to';
+          window.showLanguageNotification(`${prefix} ${langName}`);
+        }
+
+        setMenu(false);
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!isOpen) return;
+        if (menu.contains(e.target) || toggle.contains(e.target)) return;
+        setMenu(false);
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && isOpen) setMenu(false);
+      });
+    })();
+  </script>
   <script src="scroll.js?v=2.0"></script>
   <script src="cursor.js"></script>
 

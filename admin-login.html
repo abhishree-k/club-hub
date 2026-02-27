@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="DSCE Clubs Admin Login page for secure access to 
+    dashboard, event management, member registrations and administrative controls.">
   <title>Admin Login | DSCE Clubs</title>
   <link rel="stylesheet" href="style.css?v=2.2" />
   <link rel="stylesheet" href="admin.css?v=2.0" />
@@ -45,6 +47,29 @@
         <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail">
           <i class="fas fa-arrow-pointer"></i>
         </button>
+      </li>
+      <li class="language-dropdown">
+        <button type="button" id="language-toggle" class="theme-btn" aria-label="Change Language" aria-expanded="false">
+          <i class="fas fa-globe"></i>
+        </button>
+        <div class="language-menu" id="language-menu">
+          <button type="button" class="language-option" data-lang="en">
+            <span class="lang-flag">🇬🇧</span>
+            <span class="lang-name">English</span>
+          </button>
+          <button type="button" class="language-option" data-lang="hi">
+            <span class="lang-flag">🇮🇳</span>
+            <span class="lang-name">हिन्दी</span>
+          </button>
+          <button type="button" class="language-option" data-lang="bn">
+            <span class="lang-flag">🇮🇳</span>
+            <span class="lang-name">বाংলा</span>
+          </button>
+          <button type="button" class="language-option" data-lang="mr">
+            <span class="lang-flag">🇮🇳</span>
+            <span class="lang-name">मराठी</span>
+          </button>
+        </div>
       </li>
     </ul>
     <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
@@ -115,7 +140,7 @@
 
       </form>
       <!-- scroll top button -->
-      <button id="scrollTopBtn" title="Back to Top" style="opacity: 0.5">
+      <button id="scrollTopBtn" title="Back to Top">
         <i class="fas fa-chevron-up"></i>
       </button>
     </div>
@@ -125,6 +150,81 @@
   </div>
 
   <script src="app.js?v=2.0"></script>
+  <script>
+    (function () {
+      const toggle = document.getElementById('language-toggle');
+      const menu = document.getElementById('language-menu');
+      if (!toggle || !menu) return;
+
+      if (toggle.dataset.bound === 'true') return;
+      toggle.dataset.bound = 'true';
+
+      let isOpen = false;
+      const setMenu = (open) => {
+        isOpen = open;
+        menu.classList.toggle('active', open);
+        menu.style.display = open ? 'block' : 'none';
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (!open) toggle.blur();
+      };
+
+      setMenu(false);
+
+      toggle.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const willOpen = !isOpen;
+        const options = menu.querySelectorAll('.language-option');
+        
+        if (willOpen) {
+          const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+          options.forEach(opt => {
+            if (opt.getAttribute('data-lang') === currentLang) {
+              opt.classList.add('selected');
+            } else {
+              opt.classList.remove('selected');
+            }
+          });
+        } else {
+          options.forEach(opt => opt.classList.remove('selected'));
+        }
+        setMenu(willOpen);
+      });
+
+      menu.addEventListener('click', function (e) {
+        const option = e.target.closest('.language-option');
+        if (!option) return;
+        e.preventDefault();
+        const langNameEl = option.querySelector('.lang-name');
+        const langName = langNameEl ? langNameEl.textContent : 'language';
+        const selectedLang = option.getAttribute('data-lang');
+        if (typeof window.setLanguage === 'function') {
+          window.setLanguage(selectedLang);
+        } else {
+          localStorage.setItem('selectedLanguage', selectedLang);
+        }
+
+        if (typeof window.showLanguageNotification === 'function') {
+          const prefix = typeof window.getTranslation === 'function'
+            ? window.getTranslation('Language changed to', selectedLang)
+            : 'Language changed to';
+          window.showLanguageNotification(`${prefix} ${langName}`);
+        }
+
+        setMenu(false);
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!isOpen) return;
+        if (menu.contains(e.target) || toggle.contains(e.target)) return;
+        setMenu(false);
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && isOpen) setMenu(false);
+      });
+    })();
+  </script>
   <script src="darkmode.js?v=2.0"></script>
   <script src="cursor.js"></script>
   <script>

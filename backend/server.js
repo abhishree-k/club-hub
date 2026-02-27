@@ -17,12 +17,14 @@ const eventRoutes = require('./routes/eventRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const blogRoutes = require('./routes/blogRoutes');
+const pollRoutes = require('./routes/pollRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/blog', blogRoutes);
+app.use('/api/polls', pollRoutes);
 
 const path = require('path');
 app.use(express.static(path.join(__dirname, '../')));

@@ -13,35 +13,76 @@ const ClubMembership = sequelize.define(
     studentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'Users', key: 'id' }, // FK → Users
+      references: { model: 'Users', key: 'id' },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     },
 
     club: {
       type: DataTypes.STRING,
-      allowNull: false, // club name
+      allowNull: false,
     },
 
     status: {
-      type: DataTypes.ENUM('Active', 'Pending', 'Inactive'),
-      defaultValue: 'Active',
-      allowNull: false, // membership status
+      type: DataTypes.ENUM('Active', 'Pending', 'Inactive', 'Rejected'),
+      defaultValue: 'Pending',
+      allowNull: false,
+    },
+
+    membershipType: {
+      type: DataTypes.ENUM('Member', 'Coordinator', 'Admin'),
+      defaultValue: 'Member',
+      allowNull: false,
+    },
+
+    accessLevel: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+      allowNull: false,
+    },
+
+    applicationAnswers: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+
+    approvalStage: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+      allowNull: false,
+    },
+
+    approvedBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: 'Users', key: 'id' },
+    },
+
+    approvalNotes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
 
     deactivatedAt: {
       type: DataTypes.DATE,
-      allowNull: true, // sets when the status becomes Inactive
+      allowNull: true,
+    },
+
+    joinedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {
     timestamps: true,
-    paranoid: true, // soft delete (adds deletedAt)
+    paranoid: true,
     indexes: [
-      { unique: true, fields: ['studentId', 'club'] }, // prevent any duplicate memberships
+      { unique: true, fields: ['studentId', 'club'] },
       { fields: ['studentId'] },
       { fields: ['club'] },
       { fields: ['status'] },
+      { fields: ['membershipType'] },
+      { fields: ['accessLevel'] },
     ],
   }
 );

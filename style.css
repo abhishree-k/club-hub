@@ -3814,10 +3814,6 @@ body.light-mode .dot:hover {
   cursor: pointer;
 }
 
-
-background: rgba(255, 255, 255, 0.2);
-}
-
 /* Scroll Button Smaller */
 #scrollTopBtn {
   position: fixed;
@@ -4617,7 +4613,7 @@ body.oled-mode .timeline-event {
   cursor: pointer;
 }
 
-=======.logo-icon-img {
+.logo-icon-img {
   width: 32px;
   height: 32px;
   object-fit: contain;
@@ -5083,4 +5079,24 @@ html,
 body {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
+}
+
+/* Nav Login Button Style */
+.nav-login-btn {
+  background: var(--gradient);
+  color: white !important;
+  padding: 0.5rem 1.5rem !important;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+}
+
+.nav-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.5);
+}
+
+.nav-login-btn::after {
+  display: none !important;
 }

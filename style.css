@@ -5229,6 +5229,7 @@ body {
 
 .nav-login-btn::after {
   display: none !important;
+}
 
 /* ============================================================
    DISCUSSION FORUM STYLES

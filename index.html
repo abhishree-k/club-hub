@@ -34,7 +34,9 @@
             <li><a href="registration.html">Registration</a></li>
             <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
             <li><a href="admin-login.html">Admin</a></li>
-            <li id="nav-login"><a href="registration.html#student-login">Student Login</a></li>
+            <li id="nav-login">
+              <a href="registration.html#student-login" class="nav-login-btn">Login</a>
+            </li>
             <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
             <li>
                 <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
@@ -46,35 +48,36 @@
                 <i class="fa-solid fa-arrow-pointer"></i>
               </button>
             </li>
+            <li class="language-dropdown">
+              <button type="button" id="language-toggle" class="theme-btn" aria-label="Change Language" aria-expanded="false">
+                <i class="fas fa-globe"></i>
+              </button>
+              <div class="language-menu" id="language-menu">
+                <button type="button" class="language-option" data-lang="en">
+                  <span class="lang-flag">🇺🇸</span>
+                  <span class="lang-name">English</span>
+                </button>
+                <button type="button" class="language-option" data-lang="hi">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">हिन्दी</span>
+                </button>
+                <button type="button" class="language-option" data-lang="bn">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">বাংলা</span>
+                </button>
+                <button type="button" class="language-option" data-lang="mr">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">मराठी</span>
+                </button>
+              </div>
+            </li>
         </ul>
-        <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links" type="button">
-            <span class="hamburger-icon" aria-hidden="true">
-                <span class="line"></span>
-                <span class="line"></span>
-                <span class="line"></span>
-            </span>
-        </button>
-      </li>
-    </ul>
-    <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
-      aria-controls="nav-links" type="button">
-      <span class="hamburger-icon" aria-hidden="true">
+      <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
+        aria-controls="nav-links" type="button">
         <span class="line"></span>
         <span class="line"></span>
         <span class="line"></span>
-      </span>
-    </button>
-    </li>
-    </li>
-    </ul>
-    <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
-      aria-controls="nav-links" type="button">
-      <span class="hamburger-icon" aria-hidden="true">
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
-      </span>
-    </button>
+      </button>
   </nav>
 
   <header class="hero-section">
@@ -101,82 +104,141 @@
       </h2>
       <div class="clubs-grid">
         <div class="club-card" data-club="tech">
-          <div class="club-icon">💻</div>
-          <h3>Tech Society - POINT BLANK</h3>
-          <p>
-            Innovate, code, and build the future with fellow tech enthusiasts.
-          </p>
-          <div class="club-tags">
-            <span>Hackathons</span>
-            <span>Weekly Hustle</span>
-            <span>AI/ML</span>
-            <span>Cyber</span>
+          <div class="club-icon-section">
+            <div class="club-icon">💻</div>
           </div>
-          <button class="view-club-btn" data-club="tech">View Club</button>
+          <div class="club-title-section">
+            <h3>Tech Society - POINT BLANK</h3>
+          </div>
+          <div class="club-description-section">
+            <p>Innovate, code, and build the future with fellow tech enthusiasts.</p>
+          </div>
+          <div class="club-tags-section">
+            <div class="club-tags">
+              <span>Hackathons</span>
+              <span>Weekly Hustle</span>
+              <span>AI/ML</span>
+              <span>Cyber</span>
+            </div>
+          </div>
+          <div class="club-button-section">
+            <button class="view-club-btn" data-club="tech">View Club</button>
+          </div>
         </div>
 
         <div class="club-card" data-club="arts">
-          <div class="club-icon">🎨</div>
-          <h3>Creative Arts - AALEKA</h3>
-          <p>
-            Express yourself through painting, sculpture, and digital art.
-          </p>
-          <div class="club-tags">
-            <span>Exhibitions</span>
-            <span>Live Demos</span>
-            <span>Collaborations</span>
-            <span>Competitions</span>
+          <div class="club-icon-section">
+            <div class="club-icon">🎨</div>
           </div>
-          <button class="view-club-btn" data-club="arts">View Club</button>
+          <div class="club-title-section">
+            <h3>Creative Arts - AALEKA</h3>
+          </div>
+          <div class="club-description-section">
+            <p>Express yourself through painting, sculpture, and digital art.</p>
+          </div>
+          <div class="club-tags-section">
+            <div class="club-tags">
+              <span>Exhibitions</span>
+              <span>Live Demos</span>
+              <span>Collaborations</span>
+              <span>Competitions</span>
+            </div>
+          </div>
+          <div class="club-button-section">
+            <button class="view-club-btn" data-club="arts">View Club</button>
+          </div>
         </div>
 
         <div class="club-card" data-club="debate">
-          <div class="club-icon">💬</div>
-          <h3>Debate Club - LITSOC</h3>
-          <p>Sharpen your rhetoric and critical thinking skills.</p>
-          <div class="club-tags">
-            <span>Tournaments</span>
-            <span>Public Speaking</span>
-            <span>Model UN</span>
+          <div class="club-icon-section">
+            <div class="club-icon">💬</div>
           </div>
-          <button class="view-club-btn" data-club="debate">View Club</button>
+          <div class="club-title-section">
+            <h3>Debate Club - LITSOC</h3>
+          </div>
+          <div class="club-description-section">
+            <p>Sharpen your rhetoric and critical thinking skills.</p>
+          </div>
+          <div class="club-tags-section">
+            <div class="club-tags">
+              <span>Tournaments</span>
+              <span>Public Speaking</span>
+              <span>Model UN</span>
+              <span>Workshops</span>
+            </div>
+          </div>
+          <div class="club-button-section">
+            <button class="view-club-btn" data-club="debate">View Club</button>
+          </div>
         </div>
 
         <div class="club-card" data-club="music">
-          <div class="club-icon">🎵</div>
-          <h3>Music Society</h3>
-          <p>Create, perform, and appreciate music in all its forms.</p>
-          <div class="club-tags">
-            <span>Concerts</span>
-            <span>Jam Sessions</span>
-            <span>Composition</span>
-            <span>Shayari</span>
+          <div class="club-icon-section">
+            <div class="club-icon">🎵</div>
           </div>
-          <button class="view-club-btn" data-club="music">View Club</button>
+          <div class="club-title-section">
+            <h3>Music Society - HARMONY</h3>
+          </div>
+          <div class="club-description-section">
+            <p>Create, perform, and appreciate music in all its forms.</p>
+          </div>
+          <div class="club-tags-section">
+            <div class="club-tags">
+              <span>Concerts</span>
+              <span>Jam Sessions</span>
+              <span>Composition</span>
+              <span>Shayari</span>
+            </div>
+          </div>
+          <div class="club-button-section">
+            <button class="view-club-btn" data-club="music">View Club</button>
+          </div>
         </div>
 
         <div class="club-card" data-club="sports">
-          <div class="club-icon">⚽</div>
-          <h3>Sports Club</h3>
-          <p>Stay active and compete in various sports activities.</p>
-          <div class="club-tags">
-            <span>Tournaments</span>
-            <span>Fitness</span>
-            <span>Team Building</span>
+          <div class="club-icon-section">
+            <div class="club-icon">⚽</div>
           </div>
-          <button class="view-club-btn" data-club="sports">View Club</button>
+          <div class="club-title-section">
+            <h3>Sports Club - ATHLETIX</h3>
+          </div>
+          <div class="club-description-section">
+            <p>Stay active and compete in various sports activities.</p>
+          </div>
+          <div class="club-tags-section">
+            <div class="club-tags">
+              <span>Tournaments</span>
+              <span>Fitness</span>
+              <span>Team Building</span>
+              <span>Training</span>
+            </div>
+          </div>
+          <div class="club-button-section">
+            <button class="view-club-btn" data-club="sports">View Club</button>
+          </div>
         </div>
 
         <div class="club-card" data-club="science">
-          <div class="club-icon">💃</div>
-          <h3>Dance Club - ABCD</h3>
-          <p>"Let's move to the beat and make memories together!".</p>
-          <div class="club-tags">
-            <span>Live Performances</span>
-            <span>Cine stars meetups</span>
-            <span>Competitions</span>
+          <div class="club-icon-section">
+            <div class="club-icon">💃</div>
           </div>
-          <button class="view-club-btn" data-club="science">View Club</button>
+          <div class="club-title-section">
+            <h3>Dance Club - ABCD</h3>
+          </div>
+          <div class="club-description-section">
+            <p>Let's move to the beat and make memories together!</p>
+          </div>
+          <div class="club-tags-section">
+            <div class="club-tags">
+              <span>Live Performances</span>
+              <span>Cine stars meetups</span>
+              <span>Competitions</span>
+              <span>Choreography</span>
+            </div>
+          </div>
+          <div class="club-button-section">
+            <button class="view-club-btn" data-club="science">View Club</button>
+          </div>
         </div>
       </div>
     </section>
@@ -261,17 +323,21 @@
         </div>
         <textarea id="feedback-message" rows="5" placeholder="Your Message" required
           style="padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; resize: vertical;"></textarea>
-        <button type="submit" class="cta-button"
-          style="align-self:center; background-color: #fd79a8; color:white; font-family:'Times New Roman', Times, serif; border-radius:25px; Height:45px; width:130px; border: none; cursor: pointer;">Send
-          Feedback</button>
+        <button type="submit" class="submit-button"
+  style="align-self:flex-start; border-radius:50px;">Send Feedback</button>
       </form>
       <!-- feedback-response -->
       <div id="feedback-response" style="margin-top: 1rem; color: var(--success-color);"></div>
     </section>
 
     <a href="blog.html" class="fab-float" title="Club Blog"
-      style="bottom: 6rem; right: 2rem; display: flex; text-decoration: none;">
+      style="bottom: 10rem; right: 2rem; display: flex; text-decoration: none;">
       <i class="fas fa-newspaper"></i>
+    </a>
+
+    <a href="discussions.html" class="fab-float" title="Community Discussions"
+      style="bottom: 6rem; right: 2rem; display: flex; text-decoration: none;">
+      <i class="fas fa-comments"></i>
     </a>
   </main>
 
@@ -332,7 +398,84 @@
     <i class="fas fa-chevron-up"></i>
   </button>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2.0"></script>
+  <script>
+    (function () {
+      const toggle = document.getElementById('language-toggle');
+      const menu = document.getElementById('language-menu');
+      if (!toggle || !menu) return;
+
+      if (toggle.dataset.bound === 'true') return;
+      toggle.dataset.bound = 'true';
+
+      let isOpen = false;
+      const setMenu = (open) => {
+        isOpen = open;
+        menu.classList.toggle('active', open);
+        menu.style.display = open ? 'block' : 'none';
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (!open) toggle.blur();
+      };
+
+      setMenu(false);
+
+      toggle.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const willOpen = !isOpen;
+        const options = menu.querySelectorAll('.language-option');
+        
+        if (willOpen) {
+          // Highlight currently selected language when opening
+          const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+          options.forEach(opt => {
+            if (opt.getAttribute('data-lang') === currentLang) {
+              opt.classList.add('selected');
+            } else {
+              opt.classList.remove('selected');
+            }
+          });
+        } else {
+          // Remove highlighting when closing
+          options.forEach(opt => opt.classList.remove('selected'));
+        }
+        setMenu(willOpen);
+      });
+
+      menu.addEventListener('click', function (e) {
+        const option = e.target.closest('.language-option');
+        if (!option) return;
+        e.preventDefault();
+        const langNameEl = option.querySelector('.lang-name');
+        const langName = langNameEl ? langNameEl.textContent : 'language';
+        const selectedLang = option.getAttribute('data-lang');
+        if (typeof window.setLanguage === 'function') {
+          window.setLanguage(selectedLang);
+        } else {
+          localStorage.setItem('selectedLanguage', selectedLang);
+        }
+
+        if (typeof window.showLanguageNotification === 'function') {
+          const prefix = typeof window.getTranslation === 'function'
+            ? window.getTranslation('Language changed to', selectedLang)
+            : 'Language changed to';
+          window.showLanguageNotification(`${prefix} ${langName}`);
+        }
+
+        setMenu(false);
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!isOpen) return;
+        if (menu.contains(e.target) || toggle.contains(e.target)) return;
+        setMenu(false);
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && isOpen) setMenu(false);
+      });
+    })();
+  </script>
   <script src="scroll.js?v=2.0"></script>
   <script src="cursor.js"></script>
 

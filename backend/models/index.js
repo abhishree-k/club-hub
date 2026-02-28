@@ -6,6 +6,8 @@ const ClubMembership = require('./ClubMembership');
 const Feedback = require('./Feedback');
 const BlogPost = require('./BlogPost');
 const Comment = require('./Comment');
+const Poll = require('./Poll');
+const PollVote = require('./PollVote');
 
 // Associations (explicit foreignKey to avoid duplicate column errors)
 User.hasMany(Registration, { foreignKey: 'userId' });
@@ -30,4 +32,14 @@ Comment.belongsTo(BlogPost, { foreignKey: 'postId' });
 User.hasMany(Comment, { foreignKey: 'userId' });
 Comment.belongsTo(User, { foreignKey: 'userId' });
 
-module.exports = { sequelize, User, Event, Registration, ClubMembership, Feedback, BlogPost, Comment };
+// Poll Associations
+User.hasMany(Poll, { foreignKey: 'createdBy', as: 'createdPolls' });
+Poll.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+
+Poll.hasMany(PollVote, { foreignKey: 'pollId' });
+PollVote.belongsTo(Poll, { foreignKey: 'pollId' });
+
+User.hasMany(PollVote, { foreignKey: 'userId' });
+PollVote.belongsTo(User, { foreignKey: 'userId' });
+
+module.exports = { sequelize, User, Event, Registration, ClubMembership, Feedback, BlogPost, Comment, Poll, PollVote };

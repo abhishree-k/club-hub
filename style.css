@@ -2485,7 +2485,7 @@ body.light-mode .dot:hover {
     position: fixed;
     top: 80px;
     left: -100%;
-    width: 80%;
+    width: 90%;
     height: calc(100vh - 80px);
     background: rgba(26, 26, 46, 0.95);
     flex-direction: column;
@@ -2493,10 +2493,12 @@ body.light-mode .dot:hover {
     justify-content: center;
     gap: 2rem;
     transition: var(--transition);
+    text-align: center;
+    border-radius: 15px;
   }
 
   .nav-links.active {
-    left: 0;
+    left: 5%;
   }
 
   .nav-hamburger {

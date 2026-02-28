@@ -36,6 +36,20 @@
             .hub-grid {
                 grid-template-columns: 1fr 1fr;
             }
+            .notification-badge {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                background: #fd79a8;
+                color: white;
+                border-radius: 50%;
+                width: 18px;
+                height: 18px;
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
 
         .hub-section {
@@ -56,6 +70,189 @@
         .hub-section h2 i {
             color: #fd79a8;
             margin-right: 8px;
+        }
+
+        .notification-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .notification-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .notification-item.unread {
+            background: rgba(253, 121, 168, 0.15);
+            border-left: 3px solid #fd79a8;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(108, 92, 231, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notification-icon.event {
+            background: rgba(0, 184, 148, 0.3);
+        }
+
+        .notification-icon.membership {
+            background: rgba(253, 121, 168, 0.3);
+        }
+
+        .notification-icon.discussion {
+            background: rgba(0, 206, 201, 0.3);
+        }
+
+        .notification-icon.admin {
+            background: rgba(255, 234, 167, 0.3);
+        }
+
+        .notification-icon i {
+            font-size: 18px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: white;
+        }
+
+        .notification-message {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-meta {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .notification-actions button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.2s ease;
+        }
+
+        .notification-actions button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .notification-actions button.mark-read {
+            background: rgba(0, 184, 148, 0.3);
+        }
+
+        .notification-center-toggle {
+            position: relative;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+
+        .notification-center {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 400px;
+            max-height: 500px;
+            background: rgba(30, 30, 50, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+        }
+
+        .notification-center.active {
+            display: block;
+        }
+
+        .notification-center-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-center-header h3 {
+            margin: 0;
+            color: white;
+        }
+
+        .notification-center-header button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s ease;
+        }
+
+        .notification-center-header button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .notification-center-body {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .notification-center-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .notification-center-body::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .notification-center-body::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .notification-center-footer {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .notification-center-footer a {
+            color: #fd79a8;
+            text-decoration: none;
+            font-size: 0.9rem;
         }
 
         .hub-item {
@@ -131,6 +328,12 @@
             <li><a href="admin-login.html">Admin</a></li>
             <li id="nav-login" class="hidden"><a href="registration.html#student-login" class="nav-login-btn">Login</a></li>
             <li id="nav-logout"><a href="#" id="student-logout-btn">Logout</a></li>
+            <li class="notification-center-toggle">
+                <button id="notification-bell" class="theme-btn" aria-label="Notifications">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <span id="notification-badge" class="notification-badge" style="display: none;">0</span>
+            </li>
             <li>
                 <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
                     <i class="fas fa-meteor"></i>
@@ -173,6 +376,19 @@
         </button>
     </nav>
 
+    <div id="notification-center" class="notification-center">
+        <div class="notification-center-header">
+            <h3>Notifications</h3>
+            <button id="mark-all-read">Mark all as read</button>
+        </div>
+        <div id="notification-center-body" class="notification-center-body">
+            <!-- Notifications will be loaded here -->
+        </div>
+        <div class="notification-center-footer">
+            <a href="#" id="view-all-notifications">View all notifications</a>
+        </div>
+    </div>
+
     <header class="registration-hero" style="height: 40vh; margin-top: 80px; padding-top: 1rem;">
         <div class="hero-content">
             <h1 class="hero-title">My <span class="text-gradient">Hub</span></h1>
@@ -192,6 +408,13 @@
             <section class="hub-section">
                 <h2><i class="fas fa-calendar-check"></i> My Upcoming Schedule</h2>
                 <div id="registered-events-list">
+                    <!-- Dynamic Content -->
+                </div>
+            </section>
+
+            <section class="hub-section">
+                <h2><i class="fas fa-bell"></i> Notifications</h2>
+                <div id="notifications-list">
                     <!-- Dynamic Content -->
                 </div>
             </section>
@@ -285,6 +508,7 @@
     </script>
     <script src="darkmode.js?v=2.0"></script>
     <script src="cursor.js"></script>
+    <script src="notifications.js"></script>
     <script>
         // TEMP LOGIN FIX (for project/demo)
         if (!localStorage.getItem("studentLoggedIn")) {
@@ -297,6 +521,11 @@
                 initMyHub();
             } else {
                 console.warn("initMyHub() function not found");
+            }
+
+            if (typeof setupNotificationCenter === 'function') {
+                const userId = localStorage.getItem('userId') || 1;
+                setupNotificationCenter(userId);
             }
         });
     </script>

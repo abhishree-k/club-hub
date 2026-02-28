@@ -253,29 +253,6 @@ button:focus-visible,
 }
 
 @media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
-    /* ensure button visible on mobile */
-  }
-
-  .nav-links {
-    position: absolute;
-    top: 100%;
-    right: 5%;
-    background: rgba(26, 26, 46, 0.95);
-    padding: 0.5rem;
-    min-width: 200px;
-    border-radius: 8px;
-    flex-direction: column;
-    gap: 0.25rem;
-    display: none;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  }
-
-  .nav-links.active {
-    display: flex;
-  }
-
   .nav-links a {
     display: block;
     padding: 0.6rem 0.8rem;
@@ -2484,8 +2461,10 @@ body.light-mode .dot:hover {
   .nav-links {
     position: fixed;
     top: 80px;
-    left: -100%;
-    width: 90%;
+    left: 0;
+    transform: translateX(-100%);
+    width: 100%;
+    z-index: 999;
     height: calc(100vh - 80px);
     background: rgba(26, 26, 46, 0.95);
     flex-direction: column;
@@ -2498,7 +2477,7 @@ body.light-mode .dot:hover {
   }
 
   .nav-links.active {
-    left: 5%;
+    transform: translateX(0);
   }
 
   .nav-hamburger {
@@ -3629,10 +3608,6 @@ body.light-mode .dot:hover {
    RESPONSIVE
 */
 @media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-
   .faq-wrapper h1 {
     font-size: 2.3rem;
   }
@@ -6298,4 +6273,33 @@ body.oled-mode .forum-stats-bar {
   font-size: 1rem;
   display: block;
   margin: 0; /* removes centering */
+}
+
+@media (max-width: 768px) {
+
+  .nav-links {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background: rgba(26, 26, 46, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 999;
+  }
+
+  .nav-links.active {
+    transform: translateX(0);
+  }
+
+  .nav-hamburger {
+    display: flex;
+    z-index: 1000;
+  }
 }

@@ -1,5 +1,6 @@
 const { Event, Registration } = require('../models');
 
+// Fetch all events
 exports.getAllEvents = async (req, res) => {
     try {
         const events = await Event.findAll(); // fetch all events
@@ -9,6 +10,7 @@ exports.getAllEvents = async (req, res) => {
     }
 };
 
+// Create a new event
 exports.createEvent = async (req, res) => {
     try {
         const event = await Event.create(req.body); // create new event
@@ -18,6 +20,8 @@ exports.createEvent = async (req, res) => {
     }
 };
 
+// Register for an event using route param `:id`
+// validateEventParams ensures `id` exists and is valid
 exports.registerForEvent = async (req, res) => {
     try {
         const { id } = req.params; // event ID from route
@@ -28,6 +32,7 @@ exports.registerForEvent = async (req, res) => {
             return res.status(401).json({ message: 'Authentication required' }); // ensure user is logged in
         }
 
+        // Validate required fields
         if (!firstName || !lastName || !email || !studentId) {
             return res.status(400).json({ message: 'Required fields are missing' }); // basic validation
         }

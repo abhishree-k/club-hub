@@ -6,6 +6,7 @@ const ClubMembership = require('./ClubMembership');
 const Feedback = require('./Feedback');
 const BlogPost = require('./BlogPost');
 const Comment = require('./Comment');
+const Certificate = require('./Certificate');
 
 // Associations (explicit foreignKey to avoid duplicate column errors)
 User.hasMany(Registration, { foreignKey: 'userId' });
@@ -30,4 +31,11 @@ Comment.belongsTo(BlogPost, { foreignKey: 'postId' });
 User.hasMany(Comment, { foreignKey: 'userId' });
 Comment.belongsTo(User, { foreignKey: 'userId' });
 
-module.exports = { sequelize, User, Event, Registration, ClubMembership, Feedback, BlogPost, Comment };
+// Certificate Associations
+Event.hasMany(Certificate, { foreignKey: 'eventId' });
+Certificate.belongsTo(Event, { foreignKey: 'eventId' });
+
+User.hasMany(Certificate, { foreignKey: 'userId' });
+Certificate.belongsTo(User, { foreignKey: 'userId' });
+
+module.exports = { sequelize, User, Event, Registration, ClubMembership, Feedback, BlogPost, Comment, Certificate };

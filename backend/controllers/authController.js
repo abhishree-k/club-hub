@@ -2,16 +2,22 @@ const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// -------------------------
+// User Registration
+// -------------------------
 exports.register = async (req, res) => {
     try {
         const { firstName, lastName, email, password, studentId, major, year, clubs } = req.body;
 
+        // Basic validation
         if (!email || !password) {
             return res.status(400).json({ message: 'Email and password are required' });
         }
 
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Create user
         const user = await User.create({
             firstName,
             lastName,
@@ -23,14 +29,15 @@ exports.register = async (req, res) => {
             role: 'student'
         });
 
+        // Create club memberships if provided
         if (clubs && Array.isArray(clubs) && clubs.length > 0) {
             const { ClubMembership } = require('../models');
             const membershipPromises = clubs.map(club => {
                 return ClubMembership.create({
-                    UserId: user.id,
-                    studentId: user.studentId,
+                    UserId: user.id,          // link to User
+                    studentId: user.studentId, 
                     club: club,
-                    status: 'Active'
+                    status: 'Active'          // membership state
                 });
             });
             await Promise.all(membershipPromises);
@@ -38,6 +45,7 @@ exports.register = async (req, res) => {
 
         res.status(201).json({ message: 'User created successfully', userId: user.id });
     } catch (error) {
+        // Handle unique constraint violations
         if (error.name === 'SequelizeUniqueConstraintError') {
             return res.status(400).json({ message: 'User already exists (Email or Student ID is taken)' });
         }
@@ -46,15 +54,20 @@ exports.register = async (req, res) => {
     }
 };
 
+// -------------------------
+// User Login
+// -------------------------
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ where: { email } });
 
+        // Validate credentials
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
+        // Generate JWT token
         const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         const userData = {
@@ -74,9 +87,14 @@ exports.login = async (req, res) => {
     }
 };
 
+// -------------------------
+// Get Authenticated User Info
+// -------------------------
 exports.getMe = async (req, res) => {
     try {
         const { User, Registration, ClubMembership, Event } = require('../models');
+
+        // Fetch user
         const user = await User.findByPk(req.userId, {
             attributes: { exclude: ['password'] }
         });
@@ -85,26 +103,32 @@ exports.getMe = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
+        // Fetch user's registrations
         const registrations = await Registration.findAll({
             where: { UserId: user.id },
             include: [{ model: Event, attributes: ['name', 'startDate', 'startTime'] }]
         });
 
+        // Fetch user's club memberships
         const memberships = await ClubMembership.findAll({
             where: { UserId: user.id }
         });
 
-        // Format data for frontend
+        // Format registrations for frontend
         const formattedRegistrations = registrations.map(r => ({
             eventName: r.Event ? r.Event.name : 'Unknown Event',
             eventDate: r.Event ? r.Event.startDate : '',
-            eventTime: r.Event ? r.Event.startTime : '', // Added time
-            status: r.status
+            eventTime: r.Event ? r.Event.startTime : '',
+            status: r.status,
+            paymentStatus: r.paymentStatus,
+            cancelledAt: r.cancelledAt
         }));
 
+        // Format memberships for frontend
         const formattedMemberships = memberships.map(m => ({
-            clubId: m.club,
-            status: m.status
+            club: m.club,
+            status: m.status,
+            deactivatedAt: m.deactivatedAt
         }));
 
         res.json({

@@ -1,4 +1,27 @@
 const API_BASE_URL = 'http://localhost:3000/api';
+const DEMO_POSTS = [
+    {
+        id: 'demo-1',
+        title: 'The Future of AI in Campus Life',
+        category: 'Tech',
+        content: 'Artificial Intelligence is changing how we study and collaborate. From automated scheduling to smart research tools...',
+        authorName: 'Tech Admin',
+        createdAt: new Date().toISOString(),
+        tags: 'AI, Technology, Future',
+        imageUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e'
+    },
+    {
+        id: 'demo-2',
+        title: 'Annual Sports Meet 2026',
+        category: 'Sports',
+        content: 'Get ready for the most anticipated event of the year! Register now for Athletics, Football, and Cricket...',
+        authorName: 'Sports Club',
+        createdAt: new Date().toISOString(),
+        tags: 'Sports, Fitness, Campus',
+        imageUrl: 'https://images.unsplash.com/photo-1517649763962-0c623066013b'
+    },
+    // Add similar objects for 'Arts', 'Debate', and 'General'
+];
 
 document.addEventListener('DOMContentLoaded', () => {
     initBlog();
@@ -17,14 +40,19 @@ async function initBlog() {
     if (!feedContainer) return;
 
     try {
-        const res = await fetch(`${API_BASE_URL}/blog`);
-        if (!res.ok) throw new Error('Failed to fetch posts');
-        allPosts = await res.json();
-        renderPosts(allPosts);
-    } catch (error) {
-        console.error(error);
-        feedContainer.innerHTML = '<p class="error-text">Failed to load posts. Please try again later.</p>';
+    const res = await fetch(`${API_BASE_URL}/blog`);
+    if (res.ok) {
+        const data = await res.json();
+        // If API is empty, use Demo Posts; otherwise use API data
+        allPosts = data.length > 0 ? data : DEMO_POSTS;
+    } else {
+        allPosts = DEMO_POSTS; // Use fallback on server error
     }
+} catch (error) {
+    console.warn("Backend unreachable. Loading demo posts.");
+    allPosts = DEMO_POSTS; // Fallback for connection errors
+}
+renderPosts(allPosts);
 
     // Filters
     filters.forEach(btn => {

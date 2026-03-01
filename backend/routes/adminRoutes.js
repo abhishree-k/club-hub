@@ -4,8 +4,12 @@ const adminController = require('../controllers/adminController');
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 
-router.get('/registrations', authMiddleware, adminMiddleware, adminController.getRegistrations);
-router.get('/club-memberships', authMiddleware, adminMiddleware, adminController.getClubMemberships);
-router.get('/feedbacks', authMiddleware, adminMiddleware, adminController.getFeedbacks);
+// Apply authentication and admin authorization to all admin routes
+router.use(authMiddleware);
+router.use(adminMiddleware);
+
+router.get('/registrations', adminController.getRegistrations);
+router.get('/club-memberships', adminController.getClubMemberships);
+router.get('/feedbacks', adminController.getFeedbacks);
 
 module.exports = router;

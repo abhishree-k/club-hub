@@ -4562,6 +4562,30 @@ body.light-mode textarea {
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
+/* FAQ Light Mode Fixes */
+body.light-mode .faq-wrapper h1 {
+  color: #2d3436;
+}
+
+body.light-mode .faq-subtitle {
+  color: #636e72;
+}
+
+body.light-mode .faq-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .faq-card h3 {
+  color: #2d3436;
+}
+
+body.light-mode .faq-answer {
+  background: #f1f2f6;
+  color: #2d3436;
+}
+
 /* --- OLED Mode (Pitch Black) --- */
 /* --- OLED Mode (Pitch Black) --- */
 /* FIX: Show Stars in OLED Mode, but ensure background is black */
@@ -6253,7 +6277,6 @@ body.oled-mode .forum-stats-bar {
   margin: 0; /* removes centering */
 }
 
-
 @media (max-width: 768px) {
   .nav-links {
     position: fixed;
@@ -6279,6 +6302,8 @@ body.oled-mode .forum-stats-bar {
   .nav-hamburger {
     display: flex;
     z-index: 1000;
+  }
+}
 
 /* ============================================================
    E-Certificate Generator Styles

@@ -125,6 +125,10 @@
   <button id="scrollTopBtn" title="Back to Top">
     <i class="fas fa-chevron-up"></i>
   </button>
+  <a href="blog.html" class="fab-float" title="Club Blog"
+    style="bottom: 6rem; right: 2rem; display: flex; text-decoration: none;">
+    <i class="fas fa-newspaper"></i>
+  </a>
   <!-- ================= CHATBOT ================= -->
   <div class="chatbot-icon" onclick="toggleChat()">💬</div>
 
@@ -143,6 +147,56 @@
       <button onclick="sendMessage()">Send</button>
     </div>
   </div>
+
+  <footer class="cosmic-footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <span class="logo-icon">🌌</span>
+        <span class="logo-text">DSCE Clubs</span>
+      </div>
+      <div class="footer-links">
+        <div class="footer-column" id="footer-install-section">
+          <h4>Install App</h4>
+          <ul>
+            <li><button id="footer-install-btn"><i class="fas fa-download"></i> Install Now</button></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="past-events.html">Past Events</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Get Involved</h4>
+          <ul>
+            <li><a href="registration.html">Register</a></li>
+            <li><a href="#">Volunteer</a></li>
+            <li><a href="#">Start a Club</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li>
+              <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+            </li>
+            <li>
+              <a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
+            </li>
+            <li>
+              <a href="#"><i class="fab fa-discord"></i> Discord</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> DSCE Clubs. All rights reserved.</p>
+    </div>
+  </footer>
 
   <script src="app.js?v=2.0"></script>
   <script>

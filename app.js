@@ -1087,6 +1087,45 @@ const TRANSLATIONS = {
     }
 };
 
+const CLUB_DETAILS = {
+    tech: {
+        name: "Tech Society - POINT BLANK",
+        description: "Innovate, code, and build the future with fellow tech enthusiasts. Focus on Hackathons, AI/ML, and Cyber Security.",
+        tags: ["Hackathons", "Weekly Hustle", "AI/ML", "Cyber"],
+        icon: "💻"
+    },
+    arts: {
+        name: "Creative Arts - AALEKA",
+        description: "Express yourself through painting, sculpture, and digital art. Participate in exhibitions and live demonstrations.",
+        tags: ["Exhibitions", "Live Demos", "Collaborations", "Competitions"],
+        icon: "🎨"
+    },
+    debate: {
+        name: "Debate Club - LITSOC",
+        description: "Sharpen your rhetoric and critical thinking skills through tournaments and Model UN workshops.",
+        tags: ["Tournaments", "Public Speaking", "Model UN", "Workshops"],
+        icon: "🗣️"
+    },
+    music: {
+        name: "Music Society - HARMONY",
+        description: "Create, perform, and appreciate music in all its forms. Join us for jam sessions and concerts.",
+        tags: ["Concerts", "Jam Sessions", "Composition", "Shayari"],
+        icon: "🎵"
+    },
+    sports: {
+        name: "Sports Club - ATHLETIX",
+        description: "Stay active and compete in various sports activities. Focus on fitness and team building.",
+        tags: ["Fitness", "Team Building", "Training"],
+        icon: "🏆"
+    },
+    science: {
+        name: "Dance Club - ABCD",
+        description: "Let's move to the beat and make memories together! Features live performances and choreography.",
+        tags: ["Live Performances", "Cine stars meetups", "Choreography"],
+        icon: "💃"
+    }
+};
+
 let currentLanguage = 'en';
 const i18nState = {
     textNodeKey: new WeakMap()
@@ -2271,11 +2310,55 @@ if (faqQuestions.length > 0) {
 /* ================= CLUB BUTTONS ================= */
 function initClubButtons() {
     document.querySelectorAll('.view-club-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault(); // Stop the link from redirecting
             const clubId = btn.dataset.club;
-            window.location.href = `club.html?club=${clubId}`;
+            showClubModal(clubId);
         });
     });
+}
+
+function showClubModal(clubId) {
+    const data = CLUB_DETAILS[clubId];
+    const modal = document.getElementById('club-modal'); // Ensure this ID exists in your HTML
+    
+    if (!data || !modal) return;
+
+    // Fill in the details
+    document.getElementById('modal-club-name').textContent = data.name;
+    document.getElementById('modal-club-description').textContent = data.description;
+    
+    // Fill in the icon (if you added an icon element to your HTML modal)
+    const iconEl = document.getElementById('modal-club-icon');
+    if (iconEl) iconEl.textContent = data.icon;
+
+    // Generate Tags HTML
+    const tagsContainer = document.getElementById('modal-club-tags');
+    if (tagsContainer) {
+        tagsContainer.innerHTML = data.tags
+            .map(tag => `<span class="tag">${tag}</span>`)
+            .join('');
+    }
+
+    // Show the modal
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+
+    // Close logic for the "X" button and clicking outside
+    const closeBtn = modal.querySelector('.close-modal');
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+        };
+    }
+
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+        }
+    };
 }
 
 

@@ -285,6 +285,9 @@ button:focus-visible,
   /* Language dropdown mobile adjustments */
   .language-dropdown {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .language-menu {

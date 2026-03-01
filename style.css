@@ -3195,7 +3195,8 @@ body.light-mode .dot:hover {
   transition: var(--transition);
 }
 
-.toggle-password:hover {
+.toggle-password,
+.toggle-confirm-password {
   color: var(--accent-color);
 }
 

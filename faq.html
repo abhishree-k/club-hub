@@ -19,51 +19,63 @@
 <body>
   <div class="stars-background"></div>
   <!-- Navigation Bar -->
-  <nav class="navbar">
-    <div class="nav-logo">
-      <span class="logo-icon">🌌</span>
-      <span class="logo-text">DSCE Clubs</span>
-    </div>
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="faq.html" class="active">FAQ</a>
-      <a href="contact.html">Contact Us</a>
-      <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode" style="margin-left: 15px;">
-        <i class="fas fa-meteor"></i>
-      </button>
-      <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail" style="margin-left: 10px;">
-        <i class="fas fa-arrow-pointer"></i>
-      </button>
-    </div>
-    <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
-        aria-controls="nav-links" type="button">
-      <span class="line"></span>
-      <span class="line"></span>
-      <span class="line"></span>
-    </button>
-      </button>      <div style="position: relative; display: inline-block; margin-left: 15px;">
-        <button id="language-toggle" class="theme-btn" aria-label="Change Language" aria-expanded="false" style="margin: 0;">
-          <i class="fas fa-globe"></i>
-        </button>
-        <div class="language-menu" id="language-menu" style="position: absolute; top: 100%; right: 0;">
-          <button type="button" class="language-option" data-lang="en">
-            <span class="lang-flag">🇬🇧</span>
-            <span class="lang-name">English</span>
-          </button>
-          <button type="button" class="language-option" data-lang="hi">
-            <span class="lang-flag">🇮🇳</span>
-            <span class="lang-name">हिन्दी</span>
-          </button>
-          <button type="button" class="language-option" data-lang="bn">
-            <span class="lang-flag">🇮🇳</span>
-            <span class="lang-name">বাংলা</span>
-          </button>
-          <button type="button" class="language-option" data-lang="mr">
-            <span class="lang-flag">🇮🇳</span>
-            <span class="lang-name">मराठी</span>
-          </button>
+  <nav class="cosmic-nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-logo">
+            <span class="logo-icon">🌌</span>
+            <span class="logo-text">DSCE Clubs</span>
         </div>
-      </div>    </div>
+        <ul class="nav-links" id="nav-links" aria-hidden="false">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Live & Upcoming Events</a></li>
+            <li><a href="past-events.html">Past Events</a></li>
+            <li><a href="faq.html" class="active">FAQ</a></li> 
+            <li><a href="registration.html">Registration</a></li>
+            <li id="nav-my-hub" class="hidden"><a href="my-hub.html">My Hub</a></li>
+            <li><a href="admin-login.html">Admin</a></li>
+            <li id="nav-login">
+              <a href="registration.html#student-login" class="nav-login-btn">Login</a>
+            </li>
+            <li id="nav-logout" class="hidden"><a href="#" id="student-logout-btn">Logout</a></li>
+            <li>
+                <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-meteor"></i>
+                </button>
+            </li>
+            <li>
+              <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail">
+                <i class="fa-solid fa-arrow-pointer"></i>
+              </button>
+            </li>
+            <li class="language-dropdown">
+              <button type="button" id="language-toggle" class="theme-btn" aria-label="Change Language" aria-expanded="false">
+                <i class="fas fa-globe"></i>
+              </button>
+              <div class="language-menu" id="language-menu">
+                <button type="button" class="language-option" data-lang="en">
+                  <span class="lang-flag">🇺🇸</span>
+                  <span class="lang-name">English</span>
+                </button>
+                <button type="button" class="language-option" data-lang="hi">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">हिन्दी</span>
+                </button>
+                <button type="button" class="language-option" data-lang="bn">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">বাংলা</span>
+                </button>
+                <button type="button" class="language-option" data-lang="mr">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">मराठी</span>
+                </button>
+              </div>
+            </li>
+        </ul>
+      <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
+        aria-controls="nav-links" type="button">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </button>
   </nav>
 
   <!-- ================= FAQ SECTION ================= -->

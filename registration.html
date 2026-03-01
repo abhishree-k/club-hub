@@ -363,35 +363,7 @@
 
             <!-- E-Certificate Panel -->
             <div class="tab-content" id="e-certificate" role="tabpanel" aria-labelledby="tab-e-certificate" hidden>
-                <h2 class="section-title">Request <span class="text-gradient">E-Certificate</span></h2>
-                <form id="certificate-form" class="registration-form">
-                    <div class="form-group">
-                        <label for="certificate-student-id">Student ID</label>
-                        <input type="text" id="certificate-student-id" name="student_id" required maxlength="12"
-                            pattern="[A-Za-z0-9]{8,12}"
-                            title="Student ID should be 8–12 alphanumeric characters (e.g. 1DS21CS001 or 4MC22CS082)"
-                            placeholder="e.g. 1DS21CS001">
-                    </div>
-                    <div class="form-group">
-                        <label for="certificate-event">Event Name</label>
-                        <select id="certificate-event" name="event" required>
-                            <option value="">Select Event</option>
-                            <option value="AI Workshop Series">AI Workshop Series</option>
-                            <option value="Digital Art Masterclass">Digital Art Masterclass</option>
-                            <option value="Public Speaking Workshop">Public Speaking Workshop</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="certificate-file">Upload Proof (if any)</label>
-                        <input type="file" id="certificate-file" name="proof_file" accept="image/*,application/pdf">
-                        <p class="form-help" style="font-size: 0.9rem; color: #888; margin-top: 0.4rem;">
-                            Optional — upload photo, certificate scan, or other proof if available
-                        </p>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="submit-button">Request Certificate</button>
-                    </div>
-                </form>
+                <!-- Certificate UI is dynamically injected by certificate.js -->
             </div>
         </section>
 
@@ -565,6 +537,7 @@
     <div class="cursor-container" id="cursor-container">
     </div>
 
+    <script src="certificate.js?v=1.0"></script>
     <script src="app.js?v=2.0"></script>
     <script>
       (function () {

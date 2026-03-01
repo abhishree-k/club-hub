@@ -1428,9 +1428,9 @@ function showLanguageNotification(message) {
         animation: slideInRight 0.3s ease;
         font-family: var(--font-main);
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     // Keep visible briefly, then fade out
     setTimeout(() => {
         notification.style.animation = 'slideOutRight 0.3s ease';
@@ -1978,7 +1978,7 @@ function initAdmin() {
         });
     }
 
-function initFavorites() { }
+    function initFavorites() { }
 
     const dashboard = document.getElementById('admin-dashboard');
     if (!dashboard) return;

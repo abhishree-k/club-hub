@@ -5,25 +5,14 @@ const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 const validateEventParams = require('../middleware/validateEventParams');
 
-// -------------------------
-// Public Routes
-// -------------------------
-
 // Get all events
 router.get('/', eventController.getAllEvents);
-
-// -------------------------
-// Admin Routes
-// -------------------------
 
 // Create a new event (admin only)
 router.post('/', authMiddleware, adminMiddleware, eventController.createEvent);
 
-// -------------------------
-// Authenticated User Routes
-// -------------------------
-
-// Register for an event (user must be logged in)
-router.post('/:id/register', authMiddleware, eventController.registerForEvent);
+// Register for an event using route param `:id`
+// validateEventParams ensures `id` exists and is valid
+router.post('/:id/register', authMiddleware, validateEventParams, eventController.registerForEvent);
 
 module.exports = router;

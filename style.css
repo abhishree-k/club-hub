@@ -6832,3 +6832,19 @@ body.oled-mode .forum-stats-bar {
     height: 42px;
   }
 }
+
+/* ✅ LIGHT MODE MOBILE NAV FIX */
+@media (max-width: 768px) {
+  body.light-mode .cosmic-nav .nav-links a {
+    color: #2d3436;
+  }
+
+  body.light-mode .nav-hamburger .line {
+    background: #2d3436;
+  }
+
+  body.light-mode .nav-links a {
+    color: #ffffff !important;
+  }
+
+}

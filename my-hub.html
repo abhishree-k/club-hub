@@ -2,312 +2,310 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#6c5ce7">
-  <title>My Hub | DSCE Clubs</title>
-  <link rel="stylesheet" href="style.css?v=2.2">
-  <link rel="stylesheet" href="cursor.css">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    .hub-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6c5ce7">
+    <title>My Hub | DSCE Clubs</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="stylesheet" href="style.css?v=2.2">
+    <link rel="stylesheet" href="cursor.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .hub-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
 
-    .hub-header {
-      text-align: center;
-      margin-bottom: 3rem;
-      color: white;
-    }
+        .hub-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
 
-    .hub-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
+        .hub-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
 
-    @media (min-width: 768px) {
-      .hub-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
+        @media (min-width: 768px) {
+            .hub-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
 
-    .hub-section {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 2rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: white;
-    }
+        .hub-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
 
-    .hub-section h2 {
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid rgba(253, 121, 168, 0.3);
-      padding-bottom: 0.5rem;
-    }
+        .hub-section h2 {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(253, 121, 168, 0.3);
+            padding-bottom: 0.5rem;
+        }
 
-    .hub-section h2 i {
-      color: #fd79a8;
-      margin-right: 8px;
-    }
+        .hub-section h2 i {
+            color: #fd79a8;
+            margin-right: 8px;
+        }
 
-    .hub-item {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        .hub-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .hub-item-info h4 {
-      margin: 0;
-      color: var(--accent-color);
-    }
+        .hub-item-info h4 {
+            margin: 0;
+            color: var(--accent-color);
+        }
 
-    .hub-item-info p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
+        .hub-item-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-    .no-data {
-      text-align: center;
-      padding: 2rem;
-      color: rgba(255, 255, 255, 0.5);
-    }
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
 
-    .hero-content {
-      animation: fadeUp 0.8s ease-out;
-    }
+        .hero-content {
+            animation: fadeUp 0.8s ease-out;
+        }
 
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
 
-    .hub-section {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+        .hub-section {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .hub-section:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-    }
-  </style>
-  <link rel="apple-touch-icon" href="assets/icon-192.png">
+        .hub-section:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+    
 </head>
 
 <body>
-  <div class="stars-background"></div>
+    <div class="stars-background"></div>
 
-  <nav class="cosmic-nav">
-    <div class="nav-logo">
-      <span class="logo-icon">🌌</span>
-      <span class="logo-text">DSCE Clubs</span>
-    </div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="events.html">Events</a></li>
-      <li><a href="past-events.html">Past Events</a></li>
-      <li><a href="registration.html">Registration</a></li>
-      <li id="nav-my-hub" class="active"><a href="my-hub.html">My Hub</a></li>
-      <li><a href="admin-login.html">Admin</a></li>
-      <li id="nav-login" class="hidden"><a href="registration.html#student-login" class="nav-login-btn">Login</a></li>
-      <li id="nav-logout"><a href="#" id="student-logout-btn">Logout</a></li>
-      <li>
-        <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
-          <i class="fas fa-meteor"></i>
+    <nav class="cosmic-nav">
+        <div class="nav-logo">
+            <span class="logo-icon">🌌</span>
+            <span class="logo-text">DSCE Clubs</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="past-events.html">Past Events</a></li>
+            <li><a href="registration.html">Registration</a></li>
+            <li id="nav-my-hub" class="active"><a href="my-hub.html">My Hub</a></li>
+            <li><a href="admin-login.html">Admin</a></li>
+            <li id="nav-login" class="hidden"><a href="registration.html#student-login" class="nav-login-btn">Login</a></li>
+            <li id="nav-logout"><a href="#" id="student-logout-btn">Logout</a></li>
+            <li>
+                <button id="theme-switch" class="theme-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-meteor"></i>
+                </button>
+            </li>
+            <li>
+                <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail">
+                    <i class="fas fa-arrow-pointer"></i>
+                </button>
+            </li>
+            <li class="language-dropdown">
+              <button type="button" id="language-toggle" class="theme-btn" aria-label="Change Language" aria-expanded="false">
+                <i class="fas fa-globe"></i>
+              </button>
+              <div class="language-menu" id="language-menu">
+                <button type="button" class="language-option" data-lang="en">
+                  <span class="lang-flag">🇬🇧</span>
+                  <span class="lang-name">English</span>
+                </button>
+                <button type="button" class="language-option" data-lang="hi">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">हिन्दी</span>
+                </button>
+                <button type="button" class="language-option" data-lang="bn">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">বाংলা</span>
+                </button>
+                <button type="button" class="language-option" data-lang="mr">
+                  <span class="lang-flag">🇮🇳</span>
+                  <span class="lang-name">मराठी</span>
+                </button>
+              </div>
+            </li>
+        </ul>
+        <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
+        aria-controls="nav-links" type="button">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
         </button>
-      </li>
-      <li>
-        <button id="cursor-toggle" class="theme-btn" aria-label="Toggle Cursor Trail">
-          <i class="fas fa-arrow-pointer"></i>
-        </button>
-      </li>
-      <li class="language-dropdown">
-        <button type="button" id="language-toggle" class="theme-btn" aria-label="Change Language" aria-expanded="false">
-          <i class="fas fa-globe"></i>
-        </button>
-        <div class="language-menu" id="language-menu">
-          <button type="button" class="language-option" data-lang="en">
-            <span class="lang-flag">🇬🇧</span>
-            <span class="lang-name">English</span>
-          </button>
-          <button type="button" class="language-option" data-lang="hi">
-            <span class="lang-flag">🇮🇳</span>
-            <span class="lang-name">हिन्दी</span>
-          </button>
-          <button type="button" class="language-option" data-lang="bn">
-            <span class="lang-flag">🇮🇳</span>
-            <span class="lang-name">বाংলা</span>
-          </button>
-          <button type="button" class="language-option" data-lang="mr">
-            <span class="lang-flag">🇮🇳</span>
-            <span class="lang-name">मराठी</span>
-          </button>
-        </div>
-      </li>
-    </ul>
-    <button class="mobile-menu-toggle nav-hamburger" aria-label="Toggle navigation menu" aria-expanded="false"
-      aria-controls="nav-links" type="button">
-      <span class="line"></span>
-      <span class="line"></span>
-      <span class="line"></span>
-    </button>
-  </nav>
+    </nav>
 
-  <header class="registration-hero" style="height: 40vh; margin-top: 80px; padding-top: 1rem;">
-    <div class="hero-content">
-      <h1 class="hero-title">My <span class="text-gradient">Hub</span></h1>
-      <p class="hero-subtitle" id="hub-welcome-msg">Welcome back!</p>
+    <header class="registration-hero" style="height: 40vh; margin-top: 80px; padding-top: 1rem;">
+        <div class="hero-content">
+            <h1 class="hero-title">My <span class="text-gradient">Hub</span></h1>
+            <p class="hero-subtitle" id="hub-welcome-msg">Welcome back!</p>
+        </div>
+    </header>
+
+    <main class="hub-container">
+        <div class="hub-grid">
+            <section class="hub-section">
+                <h2><i class="fas fa-users"></i> Clubs I've Joined</h2>
+                <div id="joined-clubs-list">
+                    <!-- Dynamic Content -->
+                </div>
+            </section>
+
+            <section class="hub-section">
+                <h2><i class="fas fa-calendar-check"></i> My Upcoming Schedule</h2>
+                <div id="registered-events-list">
+                    <!-- Dynamic Content -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <a href="blog.html" class="fab-float" title="Club Blog"
+        style="bottom: 6rem; right: 2rem; display: flex; text-decoration: none;">
+        <i class="fas fa-newspaper"></i>
+    </a>
+
+    <footer class="cosmic-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2025 ClubsDSCE. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div class="cursor-container" id="cursor-container">
     </div>
-  </header>
 
-  <main class="hub-container">
-    <div class="hub-grid">
-      <section class="hub-section">
-        <h2><i class="fas fa-users"></i> Clubs I've Joined</h2>
-        <div id="joined-clubs-list">
-          <!-- Dynamic Content -->
-        </div>
-      </section>
+    <script src="app.js?v=2.0"></script>
+    <script>
+      (function () {
+        const toggle = document.getElementById('language-toggle');
+        const menu = document.getElementById('language-menu');
+        if (!toggle || !menu) return;
 
-      <section class="hub-section">
-        <h2><i class="fas fa-calendar-check"></i> My Upcoming Schedule</h2>
-        <div id="registered-events-list">
-          <!-- Dynamic Content -->
-        </div>
-      </section>
+        if (toggle.dataset.bound === 'true') return;
+        toggle.dataset.bound = 'true';
 
-      <section class="hub-section">
-        <h2><i class="fas fa-award"></i> My Certificates</h2>
-        <div id="hub-certificates-list">
-          <!-- Dynamic Content populated by certificate.js -->
-        </div>
-      </section>
-    </div>
-  </main>
+        let isOpen = false;
+        const setMenu = (open) => {
+          isOpen = open;
+          menu.classList.toggle('active', open);
+          menu.style.display = open ? 'block' : 'none';
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          if (!open) toggle.blur();
+        };
 
-  <footer class="cosmic-footer">
-    <div class="footer-bottom">
-      <p>&copy; 2025 ClubsDSCE. All rights reserved.</p>
-    </div>
-  </footer>
+        setMenu(false);
 
-  <div class="cursor-container" id="cursor-container">
-  </div>
+        toggle.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const willOpen = !isOpen;
+          const options = menu.querySelectorAll('.language-option');
+          
+          if (willOpen) {
+            const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+            options.forEach(opt => {
+              if (opt.getAttribute('data-lang') === currentLang) {
+                opt.classList.add('selected');
+              } else {
+                opt.classList.remove('selected');
+              }
+            });
+          } else {
+            options.forEach(opt => opt.classList.remove('selected'));
+          }
+          setMenu(willOpen);
+        });
 
-  <script src="certificate.js?v=1.0"></script>
-  <script src="app.js?v=2.0"></script>
-  <script>
-    (function () {
-      const toggle = document.getElementById('language-toggle');
-      const menu = document.getElementById('language-menu');
-      if (!toggle || !menu) return;
+        menu.addEventListener('click', function (e) {
+          const option = e.target.closest('.language-option');
+          if (!option) return;
+          e.preventDefault();
+          const langNameEl = option.querySelector('.lang-name');
+          const langName = langNameEl ? langNameEl.textContent : 'language';
+          const selectedLang = option.getAttribute('data-lang');
+          if (typeof window.setLanguage === 'function') {
+            window.setLanguage(selectedLang);
+          } else {
+            localStorage.setItem('selectedLanguage', selectedLang);
+          }
 
-      if (toggle.dataset.bound === 'true') return;
-      toggle.dataset.bound = 'true';
+          if (typeof window.showLanguageNotification === 'function') {
+            const prefix = typeof window.getTranslation === 'function'
+              ? window.getTranslation('Language changed to', selectedLang)
+              : 'Language changed to';
+            window.showLanguageNotification(`${prefix} ${langName}`);
+          }
 
-      let isOpen = false;
-      const setMenu = (open) => {
-        isOpen = open;
-        menu.classList.toggle('active', open);
-        menu.style.display = open ? 'block' : 'none';
-        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        if (!open) toggle.blur();
-      };
+          setMenu(false);
+        });
 
-      setMenu(false);
+        document.addEventListener('click', function (e) {
+          if (!isOpen) return;
+          if (menu.contains(e.target) || toggle.contains(e.target)) return;
+          setMenu(false);
+        });
 
-      toggle.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const willOpen = !isOpen;
-        const options = menu.querySelectorAll('.language-option');
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && isOpen) setMenu(false);
+        });
+      })();
+    </script>
+    <script src="darkmode.js?v=2.0"></script>
+    <script src="cursor.js"></script>
+    <script>
+        // TEMP LOGIN FIX (for project/demo)
+        if (!localStorage.getItem("studentLoggedIn")) {
+            localStorage.setItem("studentLoggedIn", "true");
+            localStorage.setItem("studentName", "Student");
+        }
 
-        if (willOpen) {
-          const currentLang = localStorage.getItem('selectedLanguage') || 'en';
-          options.forEach(opt => {
-            if (opt.getAttribute('data-lang') === currentLang) {
-              opt.classList.add('selected');
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof initMyHub === 'function') {
+                initMyHub();
             } else {
-              opt.classList.remove('selected');
+                console.warn("initMyHub() function not found");
             }
-          });
-        } else {
-          options.forEach(opt => opt.classList.remove('selected'));
-        }
-        setMenu(willOpen);
-      });
-
-      menu.addEventListener('click', function (e) {
-        const option = e.target.closest('.language-option');
-        if (!option) return;
-        e.preventDefault();
-        const langNameEl = option.querySelector('.lang-name');
-        const langName = langNameEl ? langNameEl.textContent : 'language';
-        const selectedLang = option.getAttribute('data-lang');
-        if (typeof window.setLanguage === 'function') {
-          window.setLanguage(selectedLang);
-        } else {
-          localStorage.setItem('selectedLanguage', selectedLang);
-        }
-
-        if (typeof window.showLanguageNotification === 'function') {
-          const prefix = typeof window.getTranslation === 'function'
-            ? window.getTranslation('Language changed to', selectedLang)
-            : 'Language changed to';
-          window.showLanguageNotification(`${prefix} ${langName}`);
-        }
-
-        setMenu(false);
-      });
-
-      document.addEventListener('click', function (e) {
-        if (!isOpen) return;
-        if (menu.contains(e.target) || toggle.contains(e.target)) return;
-        setMenu(false);
-      });
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && isOpen) setMenu(false);
-      });
-    })();
-  </script>
-  <script src="darkmode.js?v=2.0"></script>
-  <script src="cursor.js"></script>
-  <script>
-    // TEMP LOGIN FIX (for project/demo)
-    if (!localStorage.getItem("studentLoggedIn")) {
-      localStorage.setItem("studentLoggedIn", "true");
-      localStorage.setItem("studentName", "Student");
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-      if (typeof initMyHub === 'function') {
-        initMyHub();
-      } else {
-        console.warn("initMyHub() function not found");
-      }
-    });
-  </script>
+        });
+    </script>
 </body>
 
 </html>

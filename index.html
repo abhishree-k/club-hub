@@ -13,9 +13,68 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap"
     rel="stylesheet" />
-  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <script type="text/javascript" src="darkmode.js?v=2.0" defer></script>
 </head>
+
+<style>
+  /* Refined Popup Tags & CTA */
+#modal-club-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+#modal-club-tags .tag {
+  background: rgba(253, 121, 168, 0.2); /* Matches main card tags */
+  color: var(--accent-color);
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+}
+
+.modal-cta-container {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.modal-cta-btn {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background: var(--gradient);
+  color: white;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+}
+
+.modal-cta-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Club Modal Description - Default (Dark Mode) */
+#modal-club-description {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Club Modal Description - Light Mode Fix */
+body.light-mode #modal-club-description {
+  color: #2d3436 !important; /* Forces black/dark grey text in light mode */
+}
+
+/* Ensure the Club Name also follows the theme */
+body.light-mode #modal-club-name {
+  color: #2d3436 !important;
+}
+</style>
 
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -478,6 +537,24 @@
   </script>
   <script src="scroll.js?v=2.0"></script>
   <script src="cursor.js"></script>
+
+  <div id="club-modal" class="modal" role="dialog" aria-labelledby="modal-club-name" aria-hidden="true">
+  <div class="modal-content">
+    <button class="close-modal" aria-label="Close modal">&times;</button>
+    <div id="modal-club-details" style="text-align: center; color: white;">
+      <div id="modal-club-icon" style="font-size: 3.5rem; margin-bottom: 1rem;"></div>
+      <h2 id="modal-club-name" class="section-title" style="margin-bottom: 1rem; font-size: 2rem;"></h2>
+      <p id="modal-club-description" style="line-height: 1.6; margin-bottom: 1.5rem;"></p>
+      
+      <div id="modal-club-tags">
+        </div>
+
+      <div class="modal-cta-container">
+        <a href="registration.html#student-login" class="modal-cta-btn">Login to Join Club</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 

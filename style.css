@@ -253,29 +253,6 @@ button:focus-visible,
 }
 
 @media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
-    /* ensure button visible on mobile */
-  }
-
-  .nav-links {
-    position: absolute;
-    top: 100%;
-    right: 5%;
-    background: rgba(26, 26, 46, 0.95);
-    padding: 0.5rem;
-    min-width: 200px;
-    border-radius: 8px;
-    flex-direction: column;
-    gap: 0.25rem;
-    display: none;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  }
-
-  .nav-links.active {
-    display: flex;
-  }
-
   .nav-links a {
     display: block;
     padding: 0.6rem 0.8rem;
@@ -285,6 +262,9 @@ button:focus-visible,
   /* Language dropdown mobile adjustments */
   .language-dropdown {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .language-menu {
@@ -2481,30 +2461,6 @@ body.light-mode .dot:hover {
 }
 
 @media (max-width: 768px) {
-  .nav-links {
-    position: fixed;
-    top: 80px;
-    left: -100%;
-    width: 90%;
-    height: calc(100vh - 80px);
-    background: rgba(26, 26, 46, 0.95);
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    transition: var(--transition);
-    text-align: center;
-    border-radius: 15px;
-  }
-
-  .nav-links.active {
-    left: 5%;
-  }
-
-  .nav-hamburger {
-    display: flex;
-  }
-
   .hero-title {
     font-size: 2.5rem;
   }
@@ -3192,7 +3148,8 @@ body.light-mode .dot:hover {
   transition: var(--transition);
 }
 
-.toggle-password:hover {
+.toggle-password,
+.toggle-confirm-password {
   color: var(--accent-color);
 }
 
@@ -3629,10 +3586,6 @@ body.light-mode .dot:hover {
    RESPONSIVE
 */
 @media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-
   .faq-wrapper h1 {
     font-size: 2.3rem;
   }
@@ -6300,6 +6253,33 @@ body.oled-mode .forum-stats-bar {
   margin: 0; /* removes centering */
 }
 
+
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background: rgba(26, 26, 46, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 999;
+  }
+
+  .nav-links.active {
+    transform: translateX(0);
+  }
+
+  .nav-hamburger {
+    display: flex;
+    z-index: 1000;
+
 /* ============================================================
    E-Certificate Generator Styles
    ============================================================ */
@@ -6831,4 +6811,20 @@ body.oled-mode .forum-stats-bar {
     width: 42px;
     height: 42px;
   }
+}
+
+/* ✅ LIGHT MODE MOBILE NAV FIX */
+@media (max-width: 768px) {
+  body.light-mode .cosmic-nav .nav-links a {
+    color: #2d3436;
+  }
+
+  body.light-mode .nav-hamburger .line {
+    background: #2d3436;
+  }
+
+  body.light-mode .nav-links a {
+    color: #ffffff !important;
+  }
+
 }

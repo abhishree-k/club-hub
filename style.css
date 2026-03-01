@@ -2458,32 +2458,6 @@ body.light-mode .dot:hover {
 }
 
 @media (max-width: 768px) {
-  .nav-links {
-    position: fixed;
-    top: 80px;
-    left: 0;
-    transform: translateX(-100%);
-    width: 100%;
-    z-index: 999;
-    height: calc(100vh - 80px);
-    background: rgba(26, 26, 46, 0.95);
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    transition: var(--transition);
-    text-align: center;
-    border-radius: 15px;
-  }
-
-  .nav-links.active {
-    transform: translateX(0);
-  }
-
-  .nav-hamburger {
-    display: flex;
-  }
-
   .hero-title {
     font-size: 2.5rem;
   }
@@ -6276,7 +6250,6 @@ body.oled-mode .forum-stats-bar {
 }
 
 @media (max-width: 768px) {
-
   .nav-links {
     position: fixed;
     top: 80px;

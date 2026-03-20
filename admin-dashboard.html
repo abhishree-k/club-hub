@@ -387,7 +387,7 @@
                 </section>
 
                 <!-- Club Management Section -->
-                <section id="clubs" class="admin-section admin-tab-content" style="display: none;">
+                <section id="clubs" class="admin-section admin-tab-content">
                     <div class="section-header">
                         <h2>Club Memberships</h2>
                         <button class="action-btn" id="add-club-member-btn">
@@ -526,6 +526,39 @@
     </div>
 
     <script src="app.js?v=2.0"></script>
+
+    <script>
+    (function () {
+        const addBtn = document.getElementById('add-club-member-btn');
+        const modal = document.getElementById('club-member-modal');
+        const closeBtns = document.querySelectorAll('.close-club-modal');
+
+        if (!addBtn || !modal) return;
+
+        addBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+    
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+              modal.classList.remove('active');
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                modal.classList.remove('active');
+            }
+        });
+    })();
+    </script>
+    
     <script>
       (function () {
         const toggle = document.getElementById('language-toggle');
